@@ -3,6 +3,9 @@ uuid = "d39bb3b7-cc9c-4bb9-be86-52b494dfee17"
 authors = ["Chris Waudby <c.waudby@ucl.ac.uk> and contributors"]
 version = "0.1.0"
 
+[deps]
+DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
+
 [compat]
 julia = "1"
 
