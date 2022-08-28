@@ -11,5 +11,5 @@ makedocs(
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(
-    repo = ""
+    repo = "github.com/waudbygroup/MulticomplexNumbers.jl.git"
 )
