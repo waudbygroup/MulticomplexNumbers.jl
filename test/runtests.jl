@@ -6,14 +6,17 @@ using Test
     # Write your tests here.
     @inferred Multicomplex(1.)
     m0 = Multicomplex(1.)
-
+    m1 = Multicomplex(m0, m0)
+    m2 = Multicomplex(m1, m1)
+    m3 = Multicomplex{3}(SVector{8}(1:8))
+    m4 = Multicomplex{4}(SVector{16}(1:16))
+    
     @inferred Multicomplex(1, 2)
     @inferred Multicomplex(1, 2.5)
     @inferred Multicomplex(true, 2.5)
     @inferred Multicomplex(1 + 2im)
     @inferred Multicomplex{1}(SVector{2}(1:2))
     @inferred Multicomplex(m0, m0)
-    m1 = Multicomplex(m0, m0)
     @test Multicomplex(1,2) == Multicomplex{1}(SVector{2}(1:2))
 
     @inferred Multicomplex(1, 2.5, 3, 4)
@@ -21,12 +24,10 @@ using Test
     @inferred Multicomplex(1+2.5im, 3)
     @inferred Multicomplex(1, 3.5+4im)
     @inferred Multicomplex(m2, m2)
-    m2 = Multicomplex(m1, m1)
     @test Multicomplex(1,2,3,4) == Multicomplex{2}(SVector{4}(1:4))
 
     @inferred Multicomplex{3}(SVector{8}(1:8))
     @inferred Multicomplex(m2, m2)
-    m3 = Multicomplex{3}(SVector{8}(1:8))
     @test Multicomplex(
             Multicomplex{2}(SVector{4}(1:4)),
             Multicomplex{2}(SVector{4}(5:8))
@@ -34,7 +35,6 @@ using Test
 
     @inferred Multicomplex{4}(SVector{16}(1:16))
     @inferred Multicomplex(m3, m3)
-    m4 = Multicomplex{4}(SVector{16}(1:16))
     @test Multicomplex(
             Multicomplex{3}(SVector{8}(1:8)),
             Multicomplex{3}(SVector{8}(9:16))
