@@ -72,15 +72,15 @@ end
     @test imag(m0) == 0
     @test imag(m1) == 2
     @test imag(m2) == Multicomplex{1}(SVector{2}(3:4))
-    @test imag(m3) == Multicomplex{2}(SVector{3}(5:8))
-    @test imag(m4) == Multicomplex{3}(SVector{4}(9:16))
+    @test imag(m3) == Multicomplex{2}(SVector{4}(5:8))
+    @test imag(m4) == Multicomplex{3}(SVector{8}(9:16))
     
     #reim
-    @test reim(m0) == 1, 0
-    @test reim(m1) == 1, 2
-    @test reim(m2) == m1, Multicomplex{1}(SVector{2}(3:4))
-    @test reim(m3) == m2, Multicomplex{2}(SVector{3}(5:8))
-    @test reim(m4) == m3, Multicomplex{3}(SVector{4}(9:16))
+    @test reim(m0) == (1, 0)
+    @test reim(m1) == (1, 2)
+    @test reim(m2) == (m1, Multicomplex{1}(SVector{2}(3:4)))
+    @test reim(m3) == (m2, Multicomplex{2}(SVector{4}(5:8)))
+    @test reim(m4) == (m3, Multicomplex{3}(SVector{8}(9:16)))
 
     #isreal
     @test isreal(m0) == true
