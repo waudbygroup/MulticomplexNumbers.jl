@@ -1,4 +1,5 @@
 using MulticomplexNumbers
+using StaticArrays
 using Test
 
 @testset "MulticomplexNumbers.jl - constructors" begin
