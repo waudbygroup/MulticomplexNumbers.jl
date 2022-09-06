@@ -2,9 +2,17 @@ using Documenter
 using MulticomplexNumbers
 
 makedocs(
-    sitename = "MulticomplexNumbers",
+    sitename = "MulticomplexNumbers.jl",
+    authors = "Chris Waudby",
     format = Documenter.HTML(),
-    modules = [MulticomplexNumbers]
+    modules = [MulticomplexNumbers],
+    pages = [
+        "Home" => "index.md",
+        "Background" => "background.md",
+        "User guide" => "userguide.md",
+        "Examples" => "examples.md",
+        "API" => "api.md"
+    ]
 )
 
 # Documenter can also automatically deploy documentation to gh-pages.
