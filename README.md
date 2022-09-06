@@ -6,8 +6,25 @@
 
 A Julia package for representing multicomplex numbers and performing multicomplex algebra.
 
-## useful links
+## Multicomplex numbers
+
+Multicomplex numbers are a generalisation of complex numbers, recursively defined to contain multiple imaginary numbers, $i_1$, $i_2$ etc. Unlike Clifford algebras, these numbers commute, i.e. $i_1i_2=i_2i_1$.
+
+* NIST report describing multicomplex algebra and computer implementation (for numberical differentiation): https://nvlpubs.nist.gov/nistpubs/jres/126/jres.126.033.pdf
+* NIST C++ implementation: https://github.com/usnistgov/multicomplex/blob/master/multicomplex/src/main.cpp
+* Casado JMV, Hewson R. Algorithm 1008: Multicomplex Number Class for Matlab, with a Focus on the Accurate Calculation of Small Imaginary Terms for Multicomplex Step Sensitivity Calculations. ACM Trans Math Softw. 2020;46: 1–26. http://dx.doi.org/10.1145/3378542
+* Simple C++ implementation: http://tamivox.org/eugene/multicomplex/index.html
+
+
+
+## useful links (notes to self for development)
 
 * Creating a package: https://jaantollander.com/post/how-to-create-software-packages-with-julia-language/#package-structure
 * Documentation: https://juliadocs.github.io/Documenter.jl/stable/
 * Creating a package: https://syl1.gitbook.io/julia-language-a-concise-tutorial/language-core/11-developing-julia-packages - this has notes on codecov, managing dependencies for the main package and testing, and using TagBot
+
+
+
+## notes for coding
+
+`@boundscheck` - fence off code requiring bound checking - https://docs.julialang.org/en/v1/devdocs/boundscheck/
