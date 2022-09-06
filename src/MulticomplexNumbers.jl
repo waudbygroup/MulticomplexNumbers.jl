@@ -1,11 +1,13 @@
-# module MulticomplexNumbers
+module MulticomplexNumbers
 
 using StaticArrays
 
-# export greet
-
-# """Greetings!"""
-# greet() = println("Hello world!")
+export Multicomplex
+export im1, im2, im3, im4, im5, im6
+export component
+export realest
+export matrep
+export ascomplex
 
 
 ################
@@ -236,4 +238,4 @@ Base.ArithmeticStyle(::Type{<:Multicomplex{T}}) where {T} = Base.ArithmeticStyle
         " If the type behaves as a scalar, define MulticomplexNumbers.can_multicomplex(::Type{$T}) = true."))
 end
 
-# end
+end
