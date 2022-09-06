@@ -3,8 +3,12 @@ uuid = "d39bb3b7-cc9c-4bb9-be86-52b494dfee17"
 authors = ["Chris Waudby <c.waudby@ucl.ac.uk> and contributors"]
 version = "0.1.0"
 
+[deps]
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
 [compat]
-julia = "1"
+StaticArrays = "~1.5"
+julia = "~1.8"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
