@@ -2,9 +2,8 @@
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://waudbygroup.github.io/MulticomplexNumbers.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://waudbygroup.github.io/MulticomplexNumbers.jl/dev)
-[![Runtests](https://github.com/waudbygroup/MulticomplexNumbers.jl/actions/workflows/Runtests.yml/badge.svg)](https://github.com/waudbygroup/MulticomplexNumbers.jl/actions/workflows/Runtests.yml)
-[![codecov.io](http://github.com/waudbygroup/MulticomplexNumbers.jl/coverage.svg?branch=main)](http://github.com/waudbygroup/MulticomplexNumbers.jl/coverage.svg?branch=main)
-
+[![CI](https://github.com/waudbygroup/MulticomplexNumbers.jl/actions/workflows/Runtests.yml/badge.svg)](https://github.com/waudbygroup/MulticomplexNumbers.jl/actions/workflows/Runtests.yml)
+[![codecov](https://codecov.io/gh/waudbygroup/MulticomplexNumbers.jl/branch/main/graph/badge.svg?token=V9ND8Y3R8A)](https://codecov.io/gh/waudbygroup/MulticomplexNumbers.jl)
 
 A Julia package for representing multicomplex numbers and performing multicomplex algebra.
 
@@ -24,8 +23,8 @@ Multicomplex numbers are a generalisation of complex numbers, recursively define
 * Creating a package: https://jaantollander.com/post/how-to-create-software-packages-with-julia-language/#package-structure
 * Documentation: https://juliadocs.github.io/Documenter.jl/stable/
 * Creating a package: https://syl1.gitbook.io/julia-language-a-concise-tutorial/language-core/11-developing-julia-packages - this has notes on codecov, managing dependencies for the main package and testing, and using TagBot
-
-
+* Registering package releases with Registrator/TagBot - https://github.com/JuliaComputing/Registrator.jl
+* CodeCov Julia example - https://github.com/codecov/example-julia
 
 ## notes for coding
 
