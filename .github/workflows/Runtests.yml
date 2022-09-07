@@ -15,3 +15,6 @@ jobs:
           version: ${{ matrix.julia-version }}
       - uses: julia-actions/julia-buildpkg@latest
       - uses: julia-actions/julia-runtest@latest
+    steps:
+      - name: Upload coverage to Codecov
+      - uses: codecov/codecov-action@v3
