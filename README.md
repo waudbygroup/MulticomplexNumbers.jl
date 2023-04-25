@@ -17,6 +17,15 @@ Multicomplex numbers are a generalisation of complex numbers, recursively define
 * Simple C++ implementation: http://tamivox.org/eugene/multicomplex/index.html
 
 
+## TODO
+
+* Show/display functions
+* Read/write functions
+* Powers
+* Logarithms
+* sqrt
+* FFT
+
 
 ## useful links (notes to self for development)
 

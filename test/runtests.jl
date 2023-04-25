@@ -3,7 +3,6 @@ using StaticArrays
 using Test
 
 @testset "MulticomplexNumbers.jl - constructors" begin
-    # Write your tests here.
     @inferred Multicomplex(1.)
     m0 = Multicomplex(1.)
     m1 = Multicomplex(m0, m0)
@@ -138,6 +137,11 @@ end
     @test 2m1 == Multicomplex{1}(SVector{2}(2,4))
     @test 2m2 == Multicomplex{2}(SVector{4}(2,4,6,8))
 
+    # forming combinations
+    @test 0.1 + 0.2im1 == Multicomplex{1}(SVector{2}(0.1, 0.2))
+    @test 0.1 + 0.2im1 + 0.3im1 + 0.4im1*im2 == Multicomplex{2}(SVector{4}(0.1, 0.2, 0.3, 0.4))
+    @test 0.1 + 0.2im1 + 0.3im1 + 0.4im1*im2 + 0.5im3 + 0.6im1*im3 + 0.7im2*im3 + 0.8im1*im2*im3 == Multicomplex{4}(SVector{8}(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8))
+
     # imaginary units square to -1
     @test im1*im1 == Multicomplex(-1)
     @test im2*im2 == Multicomplex(-1)
@@ -151,6 +155,16 @@ end
     @test m1*m1 == Multicomplex(-3+4im)
     @test m0*m1 == Multicomplex(1,2)
     @test m2*m2 == Multicomplex(4-20im, -10+20im)
+
+    # division
+    @test (im1/im2)*im2==im1
+    @test (im1/im3)*im3==im1
+    @test (im2/im3)*im3==im2
+    @test (im4/im3)*im3==im4
+
+    # matrix exponential
+    @test exp(Multicomplex(1)) == ℯ
+
 end
 
 @testset "Equality" begin
