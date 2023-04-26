@@ -184,3 +184,63 @@ end
     @test_broken m0 == 1
     @test_broken m1 == 1 + 2im
 end
+
+
+@testset "I/O" begin
+    # show
+    io = IOBuffer()
+    show(io, im1)
+    @test String(take!(io)) == "0 + 1*im1"
+
+    io = IOBuffer()
+    show(io, 0.5im2)
+    @test String(take!(io)) == "(0.0 + 0.0*im1) + (0.5 + 0.0*im1)*im2"
+
+    io = IOBuffer()
+    show(io, 1 - 2im1 - 0.5im2 + 0.3im1*im2)
+    @test String(take!(io)) == "(1.0 - 2.0*im1) + (-0.5 + 0.3*im1)*im2"
+
+    # int
+    m0 = Multicomplex{0}(SVector{1}(1))
+    m1 = Multicomplex{1}(SVector{2}(1:2))
+    m2 = Multicomplex{2}(SVector{4}(1:4))
+    m3 = Multicomplex{3}(SVector{8}(1:8))
+
+    io = IOBuffer()
+    write(io, m0)
+    write(io, m1)
+    write(io, m2)
+    write(io, m3)
+    seekstart(io)
+    m0r = read(io,Multicomplex{Int64,0})
+    m1r = read(io,Multicomplex{Int64,1})
+    m2r = read(io,Multicomplex{Int64,2})
+    m3r = read(io,Multicomplex{Int64,3})
+
+    @test m0r == m0
+    @test m1r == m1
+    @test m2r == m2
+    @test m3r == m3
+
+    # float
+    m0 = 0.5 * Multicomplex{0}(SVector{1}(1))
+    m1 = 0.5 * Multicomplex{1}(SVector{2}(1:2))
+    m2 = 0.5 * Multicomplex{2}(SVector{4}(1:4))
+    m3 = 0.5 * Multicomplex{3}(SVector{8}(1:8))
+
+    io = IOBuffer()
+    write(io, m0)
+    write(io, m1)
+    write(io, m2)
+    write(io, m3)
+    seekstart(io)
+    m0r = read(io,Multicomplex{Float64,0})
+    m1r = read(io,Multicomplex{Float64,1})
+    m2r = read(io,Multicomplex{Float64,2})
+    m3r = read(io,Multicomplex{Float64,3})
+    
+    @test m0r == m0
+    @test m1r == m1
+    @test m2r == m2
+    @test m3r == m3
+end

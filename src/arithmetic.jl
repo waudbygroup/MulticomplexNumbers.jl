@@ -1,9 +1,6 @@
 "invert if y<0"
 Base.flipsign(x::Multicomplex, y::Real) = ifelse(signbit(y), -x, x)
 
-"byte order swaps: components are swapped individually"
-Base.bswap(m::Multicomplex{T,N}) where {T,N} = Multicomplex{N}(bswap.(m.value))
-
 
 ###############
 # comparisons #
@@ -58,6 +55,8 @@ Base.:(-)(a::Real, b::Multicomplex{T,N}) where {T,N} = Multicomplex(a) - b
 Base.:(*)(a::Real, m::Multicomplex{T,N,C}) where {T,N,C} = Multicomplex{N}(a*m.value)
 Base.:(*)(m::Multicomplex{T,N,C}, a::Real) where {T,N,C} = Multicomplex{N}(a*m.value)
 
+"division by a scalar"
+Base.:(/)(m::Multicomplex{T,N,C}, a::Real) where {T,N,C} = Multicomplex{N}(m.value / a)
 
 ##################
 # multiplication #

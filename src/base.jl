@@ -71,7 +71,7 @@ const im6 = Multicomplex{6}(SVector{64,Int8}(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ############################
 
 # cast real into defined multicomplex type:
-Multicomplex{T,N,C}(x::Real) where {T<:Real,N,C} = Multicomplex{T,N,C}(convert(T,x))
+Multicomplex{T,N,C}(x::Real) where {T<:Real,N,C} = Multicomplex(convert(T,x))
 # cast complex into defined multicomplex type:
 Multicomplex{T,1,2}(z::Complex) where {T<:Real} = Multicomplex(reim(convert(Complex{T}, z))...)
 # change multicomplex type:
@@ -114,6 +114,16 @@ Base.float(::Type{Multicomplex{T,N,C}}) where {T,N,C} = Multicomplex{float(T),N,
 ##############
 # Components #
 ##############
+
+"""Order of the multicomplex number is the number of imaginary units"""
+order(::Real) = 0
+order(::Complex) = 1
+order(::Multicomplex{T,N}) where {T,N} = N
+
+"""Get components as a vector"""
+flat(x::Real) = SVector(x)
+flat(z::Complex) = SVector(real(z), imag(z))
+flat(m::Multicomplex) = m.value
 
 """Utility function to extract a real-valued component from a multicomplex number"""
 component(m::Multicomplex, k) = m.value[k]
