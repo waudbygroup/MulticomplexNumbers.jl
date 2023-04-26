@@ -141,12 +141,12 @@ Base.imag(m::Multicomplex{T,N,C}) where {T,N,C} = Multicomplex{N-1}(m.value[SOne
 
 """testing for realness"""
 Base.isreal(m::Multicomplex{T,N,C}) where {T,N,C} = iszero(m.value[SOneTo(C-1) .+ Scalar(1)])
-Base.isinteger(m::Multicomplex) = isreal(m) & isinteger(m.value[1])
-Base.isfinite(m::Multicomplex) = isfinite(m.value)
-Base.isnan(m::Multicomplex) = isnan(m.value)
-Base.isinf(m::Multicomplex) = isinf(m.value)
-Base.iszero(m::Multicomplex) = iszero(m.value)
-Base.isone(m::Multicomplex) = isreal(m) & isone(m.value[1])
+Base.isinteger(m::Multicomplex) = isreal(m) && isinteger(m.value[1])
+Base.isfinite(m::Multicomplex) = all(isfinite.(m.value))
+Base.isnan(m::Multicomplex) = any(isnan.(m.value))
+Base.isinf(m::Multicomplex) = any(isinf.(m.value))
+Base.iszero(m::Multicomplex) = all(iszero.(m.value))
+Base.isone(m::Multicomplex) = isreal(m) && isone(m.value[1])
 
 
 ##########

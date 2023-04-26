@@ -137,6 +137,11 @@ end
     @test 2m1 == Multicomplex{1}(SVector{2}(2,4))
     @test 2m2 == Multicomplex{2}(SVector{4}(2,4,6,8))
 
+    # division by scalar
+    @test m0/2 == Multicomplex{0}(SVector{1}(0.5))
+    @test m1/2 == Multicomplex{1}(SVector{2}(0.5,1))
+    @test m2/2 == Multicomplex{2}(SVector{4}(0.5, 1, 1.5, 2))
+
     # forming combinations
     @test 0.1 + 0.2im1 == Multicomplex{1}(SVector{2}(0.1, 0.2))
     @test 0.1 + 0.2im1 + 0.3im2 + 0.4im1*im2 == Multicomplex{2}(SVector{4}(0.1, 0.2, 0.3, 0.4))
@@ -164,7 +169,15 @@ end
 
     # matrix exponential
     @test exp(Multicomplex(1)) == ℯ
-
+    @test exp(0im1) ≈ 1
+    @test exp(π*im1) ≈ -1
+    @test exp(π*im1/2) ≈ im1
+    @test exp(0im2) ≈ 1
+    @test exp(π*im2) ≈ -1
+    @test exp(π*im2/2) ≈ im2
+    @test exp(0im3) ≈ 1
+    @test exp(π*im3) ≈ -1
+    @test exp(π*im3/2) ≈ im3
 end
 
 @testset "Equality" begin
@@ -181,8 +194,8 @@ end
     @test m0 ≠ m1
     @test m1 ≠ m2
 
-    @test_broken m0 == 1
-    @test_broken m1 == 1 + 2im
+    @test m0 == 1
+    @test m1 == 1 + 2im
 end
 
 
