@@ -51,6 +51,13 @@ Multicomplex(a::Complex, b::Complex) = Multicomplex{2}(SVector(a.re, a.im, b.re,
 Multicomplex(a::Complex, b::Real) = Multicomplex(a, complex(b))
 Multicomplex(a::Real, b::Complex) = Multicomplex(complex(a), b)
 
+# Multicomplex{3} constructor from reals
+Multicomplex(rrr::Real, irr::Real, rir::Real, iir::Real, rri::Real, iri::Real, rii::Real, iii::Real) = Multicomplex{3}(SVector(rrr, irr, rir, iir, rri, iri, rii, iii))
+
+# Multicomplex{4} constructor from reals
+Multicomplex(rrrr::Real, irrr::Real, rirr::Real, iirr::Real, rrir::Real, irir::Real, riir::Real, iiir::Real,
+             rrri::Real, irri::Real, riri::Real, iiri::Real, rrii::Real, irii::Real, riii::Real, iiii::Real) = Multicomplex{4}(SVector(rrrr, irrr, rirr, iirr, rrir, irir, riir, iiir, rrri, irri, riri, iiri, rrii, irii, riii, iiii))
+
 
 """
     im1, im2, im3, im4, im5, im6

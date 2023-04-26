@@ -53,6 +53,20 @@ end
     m3 = Multicomplex{3}(SVector{8}(1:8))
     m4 = Multicomplex{4}(SVector{16}(1:16))
 
+    # order
+    @test order(m0) == 0
+    @test order(m1) == 1
+    @test order(m2) == 2
+    @test order(m3) == 3
+    @test order(m4) == 4
+
+    # flat
+    @test flat(m0) == [1]
+    @test flat(m1) == [1,2]
+    @test flat(m2) == [1,2,3,4]
+    @test flat(m3) == [1,2,3,4,5,6,7,8]
+    @test flat(m4) == [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+
     #realest
     @test realest(m0) == 1
     @test realest(m1) == 1
