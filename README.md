@@ -19,11 +19,6 @@ Multicomplex numbers are a generalisation of complex numbers, recursively define
 
 ## TODO
 
-* Show/display functions
-* Read/write functions
-* Powers
-* Logarithms
-* sqrt
 * FFT
 
 

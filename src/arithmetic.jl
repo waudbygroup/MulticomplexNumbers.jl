@@ -70,6 +70,24 @@ function Base.:(*)(a::Multicomplex{T,N,C}, b::Multicomplex{T,N,C}) where {T,N,C}
 end
 
 
+
+##################
+# powers         #
+##################
+"""
+    ^(a,b::Real)
+Multicomplex multiplication via the matrix representation.
+"""
+function Base.:(^)(a::Multicomplex{T,N,C}, b::Real) where {T,N,C}
+    Multicomplex{N}(SMatrix{C,C}(real(matrep(a) ^ b))[SVector{C}(SOneTo(C))])
+end
+# integer specialisation needed to avoid method ambiguity
+function Base.:(^)(a::Multicomplex{T,N,C}, b::Integer) where {T,N,C}
+    Multicomplex{N}(SMatrix{C,C}(real(matrep(a) ^ b))[SVector{C}(SOneTo(C))])
+end
+
+
+
 ############
 # division #
 ############
@@ -99,4 +117,28 @@ Multicomplex exponential via the matrix representation.
 """
 function Base.exp(m::Multicomplex{T,N,C}) where {T,N,C}
     Multicomplex{N}(exp(matrep(m))[SVector{C}(SOneTo(C))])
+end
+
+
+################
+# logarithm    #
+################
+"""
+    log(m)
+Multicomplex logarithm via the matrix representation.
+"""
+function Base.log(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SMatrix{C,C}(log(matrep(m)))[SVector{C}(SOneTo(C))])
+end
+
+
+################
+# square root  #
+################
+"""
+    sqrt(m)
+Multicomplex square root via the matrix representation.
+"""
+function Base.sqrt(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SMatrix{C,C}(sqrt(matrep(m)))[SVector{C}(SOneTo(C))])
 end

@@ -21,6 +21,21 @@
     x14 = m3 / m2
     x15 = m4 / m3
 
+    x20 = sqrt(m0)
+    x21 = sqrt(m1)
+    x22 = sqrt(m2)
+    x23 = sqrt(m3)
+
+    x30 = log(m0)
+    x31 = log(m1)
+    x32 = log(m2)
+    x33 = log(m3)
+
+    x40 = (m0^2)^2.5
+    x41 = (m1^2)^2.5
+    x42 = (m2^2)^2.5
+    x43 = (m3^2)^2.5
+
     io = IOBuffer()
     show(io, m0)
     show(io, m1)
