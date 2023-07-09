@@ -81,6 +81,8 @@ const im6 = Multicomplex{6}(SVector{64,Int8}(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 Multicomplex{T,N,C}(x::Real) where {T<:Real,N,C} = Multicomplex(convert(T,x))
 # cast complex into defined multicomplex type:
 Multicomplex{T,1,2}(z::Complex) where {T<:Real} = Multicomplex(reim(convert(Complex{T}, z))...)
+Multicomplex{T,N,C}(z::Complex) where {T<:Real,N,C} = Multicomplex{T,N,C}(convert(Multicomplex{T,1,2},z))
+
 # change multicomplex type:
 Multicomplex{T,N,C}(m::Multicomplex{S,N,C}) where {T<:Real,N,C,S} = Multicomplex{N}(convert(SVector{C,T}, m.value))
 # convert multicomplex size and/or type:
