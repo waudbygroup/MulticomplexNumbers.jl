@@ -20,6 +20,7 @@ Multicomplex numbers are a generalisation of complex numbers, recursively define
 ## TODO
 
 * FFT
+* The comparison `exp(0im1) == 1.` throws a TypeError
 
 
 ## useful links (notes to self for development)

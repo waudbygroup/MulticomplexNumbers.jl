@@ -119,6 +119,20 @@ Base.widen(::Type{Multicomplex{T,N,C}}) where {T,N,C} = Multicomplex{widen(T),N,
 Base.float(::Type{Multicomplex{T,N,C}}) where {T<:AbstractFloat,N,C} = Multicomplex{T,N,C}
 Base.float(::Type{Multicomplex{T,N,C}}) where {T,N,C} = Multicomplex{float(T),N,C}
 
+Base.rtoldefault(::Type{Multicomplex{T,N,C}}) where {T,N,C} = Base.rtoldefault(T)
+Base.rtoldefault(::Multicomplex{T,N,C}) where {T,N,C} = Base.rtoldefault(T)
+function Base.rtoldefault(x::Union{T,Type{T}}, y::Union{S,Type{S}}, atol::Real) where {T<:Multicomplex,S<:Number}
+    rtol = max(Base.rtoldefault(T),Base.rtoldefault(real(S)))
+    return atol > 0 ? zero(rtol) : rtol
+end
+function Base.rtoldefault(x::Union{T,Type{T}}, y::Union{S,Type{S}}, atol::Real) where {T<:Number,S<:Multicomplex}
+    rtol = max(Base.rtoldefault(real(T)),Base.rtoldefault(S))
+    return atol > 0 ? zero(rtol) : rtol
+end
+function Base.rtoldefault(x::Union{T,Type{T}}, y::Union{S,Type{S}}, atol::Real) where {T<:Multicomplex,S<:Multicomplex}
+    rtol = max(Base.rtoldefault(T),Base.rtoldefault(S))
+    return atol > 0 ? zero(rtol) : rtol
+end
 
 ##############
 # Components #
@@ -156,6 +170,10 @@ Base.isnan(m::Multicomplex) = any(isnan.(m.value))
 Base.isinf(m::Multicomplex) = any(isinf.(m.value))
 Base.iszero(m::Multicomplex) = all(iszero.(m.value))
 Base.isone(m::Multicomplex) = isreal(m) && isone(m.value[1])
+
+
+"""Norm is sum of squares of components"""
+LinearAlgebra.norm(m::Multicomplex) = norm(m.value)
 
 
 ##########
