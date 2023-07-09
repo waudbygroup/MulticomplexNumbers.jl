@@ -5,7 +5,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: ['1.8'] #, 'nightly']
+        julia-version: ['1.9'] #, 'nightly']
         julia-arch: [x64]
         os: [macOS-latest]
         # os: [ubuntu-latest, windows-latest, macOS-latest]
@@ -13,7 +13,7 @@ jobs:
         #   - os: macOS-latest
         #     julia-arch: x86
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.julia-version }}
