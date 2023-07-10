@@ -344,5 +344,3 @@ end
         0 + 0im
     ])
 end
-
-end
