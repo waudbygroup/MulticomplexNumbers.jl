@@ -8,13 +8,21 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 PrecompileTools = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
+[weakdeps]
+FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
+
+[extensions]
+FFTWExt = "FFTW"
+
 [compat]
+FFTW = "1.7"
 PrecompileTools = "1.1"
 StaticArrays = "1.6"
 julia = "1.9"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 
 [targets]
-test = ["Test"]
+test = ["Test", "SafeTestsets", "FFTW"]
