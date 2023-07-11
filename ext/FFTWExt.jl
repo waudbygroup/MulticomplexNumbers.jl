@@ -27,7 +27,7 @@ function fft!(A::AbstractArray{M}, unit::Integer) where M<:Multicomplex{T,N,C} w
 end
 
 function fft!(A::AbstractArray{M}, unit::Integer, dims) where M<:Multicomplex{T,N,C} where {T,N,C}
-    w = unsafe_ascomplex!(A, unit)
+    w = MulticomplexNumbers.unsafe_ascomplex!(A, unit)
     try
         if N == 1
             fft!(w, dims)
@@ -39,10 +39,10 @@ function fft!(A::AbstractArray{M}, unit::Integer, dims) where M<:Multicomplex{T,
             fft!(w, d)
         end
     catch e
-        unsafe_fromcomplex!(A, unit)
+        MulticomplexNumbers.unsafe_fromcomplex!(A, unit)
         throw(e)
     end
-    unsafe_fromcomplex!(A, unit)
+    MulticomplexNumbers.unsafe_fromcomplex!(A, unit)
 end
 
 end
