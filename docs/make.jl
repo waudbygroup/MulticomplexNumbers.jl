@@ -6,6 +6,7 @@ makedocs(
     authors = "Chris Waudby",
     format = Documenter.HTML(),
     modules = [MulticomplexNumbers],
+    checkdocs = :exports,
     pages = [
         "Home" => "index.md",
         "Background" => "background.md",
