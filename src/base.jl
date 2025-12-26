@@ -1,3 +1,5 @@
+using Random
+
 """
     can_multicomplex(::Type)
 Determines whether a type is allowed as the scalar type in a
@@ -208,6 +210,52 @@ function Base.one(::Type{Multicomplex{T,N,C}}) where {T,N,C}
     Multicomplex{N}(SVector(v))
 end
 Base.one(m::Multicomplex{T,N,C}) where {T,N,C} = one(Multicomplex{T,N,C})
+
+
+######################
+# Random number generation
+######################
+
+"""
+    rand([rng=GLOBAL_RNG], ::Type{Multicomplex{T,N,C}})
+
+Generate a random multicomplex number with components drawn from the default distribution for type T.
+
+# Examples
+```julia
+julia> rand(Multicomplex{Float64,1,2})
+0.234 + 0.891*im1
+
+julia> rand(Multicomplex{Float64,2,4})
+(0.123 + 0.456*im1) + (0.789 + 0.234*im1)*im2
+```
+"""
+function Base.rand(rng::AbstractRNG, ::Random.SamplerType{Multicomplex{T,N,C}}) where {T,N,C}
+    Multicomplex{N}(rand(rng, SVector{C,T}))
+end
+
+"""
+    randn([rng=GLOBAL_RNG], ::Type{Multicomplex{T,N,C}}) where {T<:AbstractFloat}
+
+Generate a random multicomplex number with components drawn from a standard normal distribution.
+
+Only available for floating-point types.
+
+# Examples
+```julia
+julia> randn(Multicomplex{Float64,1,2})
+-0.543 + 1.234*im1
+
+julia> randn(Multicomplex{Float64,2,4})
+(0.891 - 0.234*im1) + (-1.567 + 0.432*im1)*im2
+```
+"""
+function Base.randn(rng::AbstractRNG, ::Type{Multicomplex{T,N,C}}) where {T<:AbstractFloat,N,C}
+    Multicomplex{N}(SVector{C,T}(randn(rng, T) for _ in 1:C))
+end
+
+# Convenience methods without explicit RNG
+Base.randn(::Type{Multicomplex{T,N,C}}) where {T<:AbstractFloat,N,C} = randn(Random.default_rng(), Multicomplex{T,N,C})
 
 
 ##############
