@@ -1,4 +1,4 @@
-# MulticomplexNumbers
+# MulticomplexNumbers.jl
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://waudbygroup.github.io/MulticomplexNumbers.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://waudbygroup.github.io/MulticomplexNumbers.jl/dev)
@@ -7,29 +7,50 @@
 
 A Julia package for representing multicomplex numbers and performing multicomplex algebra.
 
-## Multicomplex numbers
+## Installation
+
+```julia
+using Pkg
+Pkg.add("MulticomplexNumbers")
+```
+
+## Quick Start
+
+```julia
+using MulticomplexNumbers
+
+# Create multicomplex numbers
+z = 1.0 + 2.0*im1                    # Complex (order 1)
+w = 1.0 + 2.0*im1 + 3.0*im2          # Bicomplex (order 2)
+
+# Arithmetic works naturally
+z * w
+exp(w)
+sqrt(w)
+
+# Numerical differentiation example
+# Compute f'(x) for f(x) = x^3 at x = 2
+h = 1e-100
+x = 2.0 + h*im1
+f_x = x^3
+derivative = imag(f_x) / h  # Returns 12.0 (exact!)
+```
+
+## What are Multicomplex Numbers?
 
 Multicomplex numbers are a generalisation of complex numbers, recursively defined to contain multiple imaginary numbers, $i_1$, $i_2$ etc. Unlike Clifford algebras, these numbers commute, i.e. $i_1i_2=i_2i_1$.
 
-* NIST report describing multicomplex algebra and computer implementation (for numberical differentiation): https://nvlpubs.nist.gov/nistpubs/jres/126/jres.126.033.pdf
-* NIST C++ implementation: https://github.com/usnistgov/multicomplex/blob/master/multicomplex/src/main.cpp
-* Casado JMV, Hewson R. Algorithm 1008: Multicomplex Number Class for Matlab, with a Focus on the Accurate Calculation of Small Imaginary Terms for Multicomplex Step Sensitivity Calculations. ACM Trans Math Softw. 2020;46: 1–26. http://dx.doi.org/10.1145/3378542
-* Simple C++ implementation: http://tamivox.org/eugene/multicomplex/index.html
+The primary application is **high-precision numerical differentiation**. The multicomplex step method computes derivatives with machine precision, avoiding the subtractive cancellation errors of finite differences.
 
+## Features
 
-## TODO
+- **Full arithmetic**: `+`, `-`, `*`, `/`, `^`, `exp`, `log`, `sqrt`
+- **Imaginary units**: `im1` through `im6` (orders 1-6)
+- **Type-stable**: Uses StaticArrays for performance
+- **FFT support**: Via FFTW extension (load FFTW to enable)
 
-* FFT
+## References
 
-
-## useful links (notes to self for development)
-
-* Creating a package: https://jaantollander.com/post/how-to-create-software-packages-with-julia-language/#package-structure
-* Documentation: https://juliadocs.github.io/Documenter.jl/stable/
-* Creating a package: https://syl1.gitbook.io/julia-language-a-concise-tutorial/language-core/11-developing-julia-packages - this has notes on codecov, managing dependencies for the main package and testing, and using TagBot
-* Registering package releases with Registrator/TagBot - https://github.com/JuliaComputing/Registrator.jl
-* CodeCov Julia example - https://github.com/codecov/example-julia
-
-## notes for coding
-
-`@boundscheck` - fence off code requiring bound checking - https://docs.julialang.org/en/v1/devdocs/boundscheck/
+* NIST report on multicomplex algebra: https://nvlpubs.nist.gov/nistpubs/jres/126/jres.126.033.pdf
+* NIST C++ implementation: https://github.com/usnistgov/multicomplex
+* Casado JMV, Hewson R. Algorithm 1008: Multicomplex Number Class for Matlab. ACM Trans Math Softw. 2020;46: 1–26. http://dx.doi.org/10.1145/3378542

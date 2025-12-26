@@ -37,6 +37,15 @@ function fft!(A::AbstractArray{M}, unit::Integer, dims) where M<:Multicomplex{T,
         elseif N == 3
             d = dims .+ 2
             fft!(w, d)
+        elseif N == 4
+            d = dims .+ 3
+            fft!(w, d)
+        else
+            throw(ArgumentError(
+                "fft! does not yet support multicomplex order N=$N. " *
+                "Currently supported orders: 1, 2, 3, 4. " *
+                "Please file an issue at https://github.com/waudbygroup/MulticomplexNumbers.jl/issues"
+            ))
         end
     catch e
         MulticomplexNumbers.unsafe_fromcomplex!(A, unit)

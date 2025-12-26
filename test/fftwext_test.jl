@@ -33,6 +33,23 @@ using Test
     fft!(test33, 3)
     @test ansRe ≈ realest.(test33)
 
+    # N=4 tests
+    test41 = testRe + im1*testIm .+ 0im4
+    fft!(test41, 1)
+    @test ansRe ≈ realest.(test41)
+
+    test42 = testRe + im2*testIm .+ 0im4
+    fft!(test42, 2)
+    @test ansRe ≈ realest.(test42)
+
+    test43 = testRe + im3*testIm .+ 0im4
+    fft!(test43, 3)
+    @test ansRe ≈ realest.(test43)
+
+    test44 = testRe + im4*testIm
+    fft!(test44, 4)
+    @test ansRe ≈ realest.(test44)
+
     # selecting a dimension
 
     for d=1:3
@@ -65,5 +82,22 @@ using Test
         test33 = testRe + im3*testIm
         fft!(test33, 3, d)
         @test ansRe ≈ realest.(test33)
+
+        # N=4 tests
+        test41 = testRe + im1*testIm .+ 0im4
+        fft!(test41, 1, d)
+        @test ansRe ≈ realest.(test41)
+
+        test42 = testRe + im2*testIm .+ 0im4
+        fft!(test42, 2, d)
+        @test ansRe ≈ realest.(test42)
+
+        test43 = testRe + im3*testIm .+ 0im4
+        fft!(test43, 3, d)
+        @test ansRe ≈ realest.(test43)
+
+        test44 = testRe + im4*testIm
+        fft!(test44, 4, d)
+        @test ansRe ≈ realest.(test44)
     end
 end

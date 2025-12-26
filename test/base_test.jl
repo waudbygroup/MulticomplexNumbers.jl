@@ -344,3 +344,30 @@ end
         0 + 0im
     ])
 end
+
+@testset "zero and one" begin
+    # Test zero
+    @test @inferred(zero(Multicomplex{Float64,0,1})) == Multicomplex(0.0)
+    @test @inferred(zero(Multicomplex{Float64,1,2})) == Multicomplex(0.0, 0.0)
+    @test @inferred(zero(Multicomplex{Float64,2,4})) == Multicomplex(0.0, 0.0, 0.0, 0.0)
+    @test @inferred(zero(Multicomplex{Int,1,2})) == Multicomplex(0, 0)
+
+    # Test zero from instance
+    m2 = Multicomplex(1.0, 2.0, 3.0, 4.0)
+    @test @inferred(zero(m2)) == Multicomplex(0.0, 0.0, 0.0, 0.0)
+
+    # Test one
+    @test @inferred(one(Multicomplex{Float64,0,1})) == Multicomplex(1.0)
+    @test @inferred(one(Multicomplex{Float64,1,2})) == Multicomplex(1.0, 0.0)
+    @test @inferred(one(Multicomplex{Float64,2,4})) == Multicomplex(1.0, 0.0, 0.0, 0.0)
+    @test @inferred(one(Multicomplex{Int,1,2})) == Multicomplex(1, 0)
+
+    # Test one from instance
+    @test @inferred(one(m2)) == Multicomplex(1.0, 0.0, 0.0, 0.0)
+
+    # Test properties: m + zero(m) == m and m * one(m) == m
+    m = Multicomplex(1.0, 2.0, 3.0, 4.0)
+    @test m + zero(m) == m
+    @test m * one(m) == m
+    @test one(m) * m == m
+end
