@@ -806,6 +806,31 @@ throw(ArgumentError(
 
 **Estimated effort**: 20 minutes
 
+#### 1.6 Extend FFTW Support to N=4,5
+Add support for higher order multicomplex numbers in FFT operations:
+```julia
+# In ext/FFTWExt.jl
+elseif N == 4
+    if unit == 1
+        fft!(w, dims)
+    elseif unit == 2
+        d = dims .+ 1
+        fft!(w, d)
+    elseif unit == 3
+        d = dims .+ 2
+        fft!(w, d)
+    else
+        d = dims .+ 3
+        fft!(w, d)
+    end
+# Similar pattern for N == 5
+```
+
+**Location**: `ext/FFTWExt.jl:39`
+**Estimated effort**: 3 hours
+
+**Rationale**: FFT is a core feature mentioned in the package description. Completing support for higher orders removes a significant limitation and improves the package's utility for scientific computing applications.
+
 ### Priority 2: Mathematical Completeness
 
 #### 2.1 Implement Trigonometric Functions
@@ -950,37 +975,29 @@ StructTypes.StructType(::Type{<:Multicomplex}) = StructTypes.Struct()
 
 **Estimated effort**: 1 hour
 
-#### 6.3 Extend FFTW Support
-Add support for N=4, 5 (and potentially higher):
-```julia
-# In ext/FFTWExt.jl
-elseif N == 4
-    # Implement dimension mapping for N=4
-```
-
-**Estimated effort**: 3 hours
-
 ---
 
 ## Strategic Roadmap
 
 ### Short Term (1-2 weeks)
-1. ✅ Fix README and update TODO list
-2. ✅ Expand CI to Linux/Windows
-3. ✅ Add `zero`, `one`, and basic utilities
-4. ✅ Split test files for maintainability
-5. ✅ Implement trigonometric functions
+1. Fix README and update TODO list
+2. Expand CI to Linux/Windows
+3. Add `zero`, `one`, and basic utilities
+4. Split test files for maintainability
+5. Improve error messages
+6. Extend FFTW support to N=4,5
 
-**Total effort**: ~10 hours
+**Total effort**: ~7 hours
 
 ### Medium Term (1-2 months)
-1. Add comprehensive benchmarks
-2. Write performance optimization guide
-3. Expand FFTW support to N=4,5
-4. Add ChainRules for AD compatibility
-5. Create tutorial notebooks
+1. Implement trigonometric functions
+2. Implement hyperbolic and inverse trig functions
+3. Add comprehensive benchmarks
+4. Write performance optimization guide
+5. Add ChainRules for AD compatibility
+6. Create tutorial notebooks
 
-**Total effort**: ~25 hours
+**Total effort**: ~29 hours
 
 ### Long Term (3-6 months)
 1. Performance optimization campaign
