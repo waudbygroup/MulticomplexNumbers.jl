@@ -4,15 +4,20 @@ using MulticomplexNumbers
 makedocs(
     sitename = "MulticomplexNumbers.jl",
     authors = "Chris Waudby",
-    format = Documenter.HTML(),
+    format = Documenter.HTML(
+        prettyurls = get(ENV, "CI", nothing) == "true",
+        canonical = "https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/",
+    ),
     modules = [MulticomplexNumbers],
     checkdocs = :exports,
     pages = [
         "Home" => "index.md",
+        "Getting Started" => "getting-started.md",
         "Background" => "background.md",
-        "User guide" => "userguide.md",
+        "User Guide" => "userguide.md",
+        "Tutorials" => "tutorials.md",
         "Examples" => "examples.md",
-        "API" => "api.md"
+        "API Reference" => "api.md"
     ]
 )
 

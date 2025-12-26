@@ -1,2 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+MulticomplexNumbers = "d39bb3b7-cc9c-4bb9-be86-52b494dfee17"
+
+[sources]
+MulticomplexNumbers = {path = ".."}

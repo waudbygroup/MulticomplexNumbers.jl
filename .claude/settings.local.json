@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(julia --project=docs -e:*)",
+      "Bash(/Users/chris/.juliaup/bin/julia:*)"
+    ]
+  }
+}
