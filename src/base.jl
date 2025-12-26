@@ -185,6 +185,31 @@ LinearAlgebra.norm(m::Multicomplex) = norm(m.value)
 Base.ArithmeticStyle(::Type{<:Multicomplex{T}}) where {T} = Base.ArithmeticStyle(T)
 
 
+################
+# Constructors #
+################
+
+"""
+    zero(::Type{Multicomplex{T,N,C}})
+
+Return the additive identity (zero) for the given multicomplex type.
+"""
+Base.zero(::Type{Multicomplex{T,N,C}}) where {T,N,C} = Multicomplex{N}(zeros(SVector{C,T}))
+Base.zero(m::Multicomplex{T,N,C}) where {T,N,C} = zero(Multicomplex{T,N,C})
+
+"""
+    one(::Type{Multicomplex{T,N,C}})
+
+Return the multiplicative identity (one) for the given multicomplex type.
+"""
+function Base.one(::Type{Multicomplex{T,N,C}}) where {T,N,C}
+    v = zeros(MVector{C,T})
+    v[1] = one(T)
+    Multicomplex{N}(SVector(v))
+end
+Base.one(m::Multicomplex{T,N,C}) where {T,N,C} = one(Multicomplex{T,N,C})
+
+
 ##############
 # Exceptions #
 ##############
