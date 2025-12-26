@@ -14,7 +14,7 @@ MulticomplexNumbers
 ## Types
 
 ```@docs
-MulticomplexNumber
+Multicomplex
 ```
 
 ## Functions and methods
