@@ -22,13 +22,13 @@ Base.hash(m::Multicomplex, h::UInt) = hash(m.value, h)
 Multicomplex conjugation in ℂₙ is defined by inverting the sign of the
 imaginary component: ``conj(mₙ = aₙ₋₁ + iₙbₙ₋₁) = mₙ = aₙ₋₁ - iₙbₙ₋₁``.
 """
-Base.conj(m::Multicomplex) = Multicomplex(real(m),-imag(m))
+Base.conj(m::Multicomplex) = Multicomplex(real(m), -imag(m))
 
 
 ###################
 # absolute values #
 ###################
-Base.abs2(m::Multicomplex{T,N}) where {T,N} = sum(x->x^2, m.value)
+Base.abs2(m::Multicomplex{T,N}) where {T,N} = sum(x -> x^2, m.value)
 Base.abs(m::Multicomplex{T,N}) where {T,N} = sqrt(abs2(m))
 
 
@@ -52,8 +52,8 @@ Base.:(-)(a::Multicomplex{T,N}, b::Real) where {T,N} = a - Multicomplex(b)
 Base.:(-)(a::Real, b::Multicomplex{T,N}) where {T,N} = Multicomplex(a) - b
 
 "multiplication by a scalar"
-Base.:(*)(a::Real, m::Multicomplex{T,N,C}) where {T,N,C} = Multicomplex{N}(a*m.value)
-Base.:(*)(m::Multicomplex{T,N,C}, a::Real) where {T,N,C} = Multicomplex{N}(a*m.value)
+Base.:(*)(a::Real, m::Multicomplex{T,N,C}) where {T,N,C} = Multicomplex{N}(a * m.value)
+Base.:(*)(m::Multicomplex{T,N,C}, a::Real) where {T,N,C} = Multicomplex{N}(a * m.value)
 
 "division by a scalar"
 Base.:(/)(m::Multicomplex{T,N,C}, a::Real) where {T,N,C} = Multicomplex{N}(m.value / a)
@@ -66,7 +66,7 @@ Base.:(/)(m::Multicomplex{T,N,C}, a::Real) where {T,N,C} = Multicomplex{N}(m.val
 Multicomplex multiplication via the matrix representation.
 """
 function Base.:(*)(a::Multicomplex{T,N,C}, b::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}((matrep(a) * matrep(b))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}((matrep(a)*matrep(b))[SVector{C}(SOneTo(C))])
 end
 
 
@@ -79,11 +79,11 @@ end
 Multicomplex multiplication via the matrix representation.
 """
 function Base.:(^)(a::Multicomplex{T,N,C}, b::Real) where {T,N,C}
-    Multicomplex{N}(SMatrix{C,C}(real(matrep(a) ^ b))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SMatrix{C,C}(real(matrep(a)^b))[SVector{C}(SOneTo(C))])
 end
 # integer specialisation needed to avoid method ambiguity
 function Base.:(^)(a::Multicomplex{T,N,C}, b::Integer) where {T,N,C}
-    Multicomplex{N}(SMatrix{C,C}(real(matrep(a) ^ b))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SMatrix{C,C}(real(matrep(a)^b))[SVector{C}(SOneTo(C))])
 end
 
 
@@ -98,13 +98,13 @@ Multicomplex division via the matrix representation.
 Throws LinearAlgebra.SingularException if zero divisors exist (det b = 0).
 """
 function Base.:(/)(a::Multicomplex{T,N,C}, b::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}((matrep(a) / matrep(b))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}((matrep(a)/matrep(b))[SVector{C}(SOneTo(C))])
 end
 
 function Base.inv(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}((I / matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}((I(C)/matrep(m))[SVector{C}(SOneTo(C))])
 end
-Base.inv(m::Multicomplex{<:Integer}) = inv(float(m))
+# Base.inv(m::Multicomplex{<:Integer}) = inv(float(m))
 
 
 
