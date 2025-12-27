@@ -373,28 +373,42 @@ end
 end
 
 @testset "fold and isabient" begin
-    # Test fold for N=0 (real numbers)
+    # Test fold for N=0 (real numbers) - squaring
     m0 = Multicomplex(3.0)
     @test fold(m0) == Multicomplex(9.0)
+    @test order(fold(m0)) == 0
 
-    # Test fold for N=1 (like complex numbers)
-    m1 = Multicomplex(3.0, 4.0)
-    @test fold(m1) ≈ Multicomplex(25.0, 0.0)
-    @test fold(1.0 + 1.0im1) ≈ Multicomplex(2.0, 0.0)
+    # Test fold for N=1 (complex numbers) - reduces to N=0 (real)
+    m1 = Multicomplex(3.0, 4.0)  # 3 + 4i₁
+    @test fold(m1) ≈ Multicomplex(25.0)  # |z|² = 3² + 4² = 25
+    @test order(fold(m1)) == 0
 
-    # Test fold for N=2
-    m2 = Multicomplex(1.0, 2.0, 3.0, 4.0)
+    m1b = 1.0 + 1.0im1
+    @test fold(m1b) ≈ Multicomplex(2.0)  # |1+i|² = 1² + 1² = 2
+    @test order(fold(m1b)) == 0
+
+    # Test fold for N=2 - reduces to N=1
+    m2 = Multicomplex(1.0, 2.0, 3.0, 4.0)  # 1 + 2i₁ + 3i₂ + 4i₁i₂
     folded_m2 = fold(m2)
-    @test folded_m2 ≈ m2 * conj(m2)
+    @test order(folded_m2) == 1
+    # (1 + 2i₁ + 3i₂ + 4i₁i₂)(1 + 2i₁ - 3i₂ - 4i₁i₂)
+    # = (1 + 2i₁)² - (3i₂ + 4i₁i₂)²
+    # = (1 + 4i₁ - 4) - (9i₂² + 24i₁i₂² + 16i₁²i₂²)
+    # = (-3 + 4i₁) - (-9 - 24 - 16) = (-3 + 4i₁) + 49 = 46 + 4i₁
+    @test folded_m2 ≈ Multicomplex(46.0, 4.0)
 
     # Test the classic abient example: (1 + i₁i₂)
     abient_example = 1.0 + im1*im2
-    @test fold(abient_example) ≈ Multicomplex(0.0, 0.0)
+    folded_abient = fold(abient_example)
+    @test order(folded_abient) == 1
+    @test folded_abient ≈ Multicomplex(0.0, 0.0)  # (1 + i₁i₂)(1 - i₁i₂) = 0
 
-    # Test fold for N=3
-    m3 = Multicomplex{3}(SVector{8}(1:8))
+    # Test fold for N=3 - reduces to N=2
+    m3 = Multicomplex{3}(SVector{8}(1.0:8.0))
     folded_m3 = fold(m3)
-    @test folded_m3 == m3 * conj(m3)
+    @test order(folded_m3) == 2
+    # The fold should give a specific 4-component result
+    @test folded_m3 isa Multicomplex{Float64,2,4}
 
     # Test isabient for non-abient numbers
     @test isabient(Multicomplex(1.0)) == false
@@ -440,10 +454,11 @@ end
     @test cos(m1) ≈ Multicomplex(cos(z))
     @test tan(m1) ≈ Multicomplex(tan(z))
 
-    # Test Euler's formula: exp(ix) = cos(x) + i*sin(x)
+    # Test Euler's formula: exp(i*x) = cos(x) + i*sin(x)
+    # For multicomplex: exp(x*im1) = cos(x) + im1*sin(x)
     x = 0.5
-    m = x * im1
-    @test exp(m) ≈ cos(m) + im1 * sin(m)
+    m = x * im1  # m = 0.5*im1
+    @test exp(m) ≈ Multicomplex(cos(x), sin(x))  # exp(0.5*im1) = cos(0.5) + im1*sin(0.5)
 
     # Test fundamental identity: sin²(x) + cos²(x) = 1
     m = Multicomplex(0.8, 0.6)

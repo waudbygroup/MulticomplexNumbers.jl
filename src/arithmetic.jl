@@ -154,7 +154,10 @@ Folding operation that multiplies a multicomplex number by its conjugate.
 
 With w ∈ ℂₙ₊₁, fold(w) = w × conj(w) = conj(w) × w ∈ ℂₙ.
 
-The fold of a ℂ₀ number (real number) is simply its square.
+The fold operation reduces the order by 1:
+- fold(ℂₙ) → ℂₙ₋₁
+- fold(ℂ₁) → ℂ₀ (real numbers)
+- fold(ℂ₀) → ℂ₀ (squaring)
 
 # Examples
 ```julia
@@ -171,8 +174,21 @@ Sometimes the fold of a nonzero number turns out to be zero; for example,
 preserved under multiplication, thus the multicomplex numbers are not a
 composition algebra.
 """
+function fold(m::Multicomplex{T,0,1}) where {T}
+    # For real numbers (ℂ₀), fold is just squaring
+    Multicomplex{0}(SVector(m.value[1]^2))
+end
+
+function fold(m::Multicomplex{T,1,2}) where {T}
+    # For complex numbers (ℂ₁), fold gives |z|² as a real number (ℂ₀)
+    result = m * conj(m)
+    Multicomplex{0}(SVector(real(result)))
+end
+
 function fold(m::Multicomplex{T,N,C}) where {T,N,C}
-    m * conj(m)
+    # For higher orders (ℂₙ where n≥2), fold reduces order by 1
+    result = m * conj(m)
+    real(result)  # Returns Multicomplex{N-1}
 end
 
 @doc raw"""
@@ -205,13 +221,14 @@ numbers are not a composition algebra - the norm is not always preserved
 under multiplication.
 """
 function isabient(m::Multicomplex{T,N,C}; atol::Real=0, rtol::Real=Base.rtoldefault(T)) where {T,N,C}
-    # Fold N times to reduce to a real number
+    # Fold N times to reduce to a real number (ℂ₀)
     result = m
     for _ in 1:N
         result = fold(result)
     end
-    # Check if the resulting real number is approximately zero
-    return isapprox(realest(result), zero(T); atol=atol, rtol=rtol)
+    # After N folds, result is Multicomplex{0} - check if it's approximately zero
+    # For Multicomplex{0}, we check the single value component
+    return isapprox(result.value[1], zero(T); atol=atol, rtol=rtol)
 end
 
 
