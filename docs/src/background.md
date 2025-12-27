@@ -36,6 +36,14 @@ Each imaginary unit squares to negative one:
 i_k^2 = -1 \quad \text{for all } k \geq 1
 ```
 
+In code:
+```@repl background
+using MulticomplexNumbers
+
+im1 * im1
+im2 * im2
+```
+
 Crucially, imaginary units **commute** with each other:
 ```math
 i_j i_k = i_k i_j \quad \text{for all } j, k
@@ -43,9 +51,19 @@ i_j i_k = i_k i_j \quad \text{for all } j, k
 
 This commutativity distinguishes multicomplex numbers from quaternions and other hypercomplex systems where imaginary units anticommute.
 
+```@repl background
+# Commutativity
+im1 * im2 == im2 * im1
+```
+
 Interestingly, products of *distinct* imaginary units square to **positive one**:
 ```math
 (i_j i_k)^2 = i_j i_k i_j i_k = i_j^2 i_k^2 = (-1)(-1) = +1 \quad \text{(when } j \neq k \text{)}
+```
+
+```@repl background
+# Hyperbolic units
+(im1 * im2)^2
 ```
 
 This reveals an important property: products like ``i_1 i_2`` are **hyperbolic units** (they square to +1), not elliptic units (which square to -1). This is why ``\mathbb{C}_n`` for ``n \geq 2`` contains zero divisors.
@@ -79,7 +97,17 @@ m = a + i_n \cdot b
 ```
 where ``a, b \in \mathbb{C}_{n-1}`` are called the "real" and "imaginary" parts (with respect to ``i_n``).
 
-This recursive structure is central to the implementation: the `real()` and `imag()` functions return multicomplex numbers of order ``n-1``.
+This recursive structure is central to the implementation: the [`real`](@ref) and [`imag`](@ref) functions return multicomplex numbers of order ``n-1``.
+
+```@repl background
+using MulticomplexNumbers
+
+z = 1.0 + 2.0*im1 + 3.0*im2 + 4.0*im1*im2
+
+# Recursive structure: z = real(z) + im2 * imag(z)
+real(z)   # Order 1 (with respect to im2)
+imag(z)   # Order 1
+```
 
 ## Matrix Representations
 
@@ -92,12 +120,24 @@ For ``\mathbb{C}_1`` (complex numbers), the familiar 2×2 representation:
 a + b \cdot i_1 \mapsto \begin{pmatrix} a & -b \\ b & a \end{pmatrix}
 ```
 
+```@repl background
+using MulticomplexNumbers
+
+z = 3.0 + 4.0*im1
+matrep(z)
+```
+
 For ``\mathbb{C}_2`` (bicomplex numbers), a 4×4 matrix where the structure is built recursively:
 ```math
 (a + b \cdot i_1) + (c + d \cdot i_1) \cdot i_2 \mapsto \begin{pmatrix} M(a + b \cdot i_1) & -M(c + d \cdot i_1) \\ M(c + d \cdot i_1) & M(a + b \cdot i_1) \end{pmatrix}
 ```
 
 where ``M(\cdot)`` denotes the matrix representation.
+
+```@repl background
+w = 1.0 + 2.0*im1 + 3.0*im2 + 4.0*im1*im2
+matrep(w)
+```
 
 ### Recursive Construction
 
@@ -117,6 +157,27 @@ The matrix representation enables:
 4. **Transcendental functions**: ``\exp(m)``, ``\log(m)``, ``\sqrt{m}`` via matrix functions
 
 The result is extracted from the first column of the resulting matrix.
+
+```@repl background
+using MulticomplexNumbers
+using LinearAlgebra
+
+z = 1.0 + 0.5*im1
+
+# Verify: multiplication via matrices
+w = 2.0 + 0.3*im1
+z * w
+
+# Compare to matrix multiplication
+M_z = matrep(z)
+M_w = matrep(w)
+M_product = M_z * M_w
+M_product[:, 1]  # First column contains the components
+
+# Transcendental functions use matrix functions
+exp(z)
+exp(M_z)[:, 1]  # Same result
+```
 
 ### Zero Divisors
 
@@ -142,11 +203,25 @@ Component-wise operations:
 
 This extends naturally to all orders.
 
+```@repl background
+using MulticomplexNumbers
+
+a = 1.0 + 2.0*im1
+b = 3.0 + 4.0*im1
+a + b
+```
+
 ### Multiplication
 
 Multiplication follows from the algebraic rules. For complex numbers:
 ```math
 (a + b \cdot i_1)(c + d \cdot i_1) = (ac - bd) + (ad + bc) \cdot i_1
+```
+
+```@repl background
+a = 1.0 + 2.0*im1
+b = 3.0 + 4.0*im1
+a * b
 ```
 
 For bicomplex and higher orders, multiplication is most efficiently computed via the matrix representation.
@@ -162,6 +237,13 @@ where ``a, b \in \mathbb{C}_{n-1}``.
 
 Note: This is different from complex conjugation applied to all imaginary units.
 
+```@repl background
+using MulticomplexNumbers
+
+z = 1.0 + 2.0*im1 + 3.0*im2 + 4.0*im1*im2
+conj(z)  # Negates the im2 component
+```
+
 ### Norm
 
 The Euclidean norm is defined as:
@@ -170,6 +252,15 @@ The Euclidean norm is defined as:
 ```
 
 where ``c_k`` are the real components of the multicomplex number.
+
+```@repl background
+using MulticomplexNumbers
+using LinearAlgebra
+
+z = 3.0 + 4.0*im1
+norm(z)  # sqrt(3² + 4²) = 5
+abs(z)   # Same as norm
+```
 
 ## Applications
 
