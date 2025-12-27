@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tutorials · MulticomplexNumbers.jl</title><meta name="title" content="Tutorials · MulticomplexNumbers.jl"/><meta property="og:title" content="Tutorials · MulticomplexNumbers.jl"/><meta property="twitter:title" content="Tutorials · MulticomplexNumbers.jl"/><meta name="description" content="Documentation for MulticomplexNumbers.jl."/><meta property="og:description" content="Documentation for MulticomplexNumbers.jl."/><meta property="twitter:description" content="Documentation for MulticomplexNumbers.jl."/><meta property="og:url" content="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/tutorials/"/><meta property="twitter:url" content="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/tutorials/"/><link rel="canonical" href="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/tutorials/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">MulticomplexNumbers.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../getting-started/">Getting Started</a></li><li><a class="tocitem" href="../background/">Background</a></li><li><a class="tocitem" href="../userguide/">User Guide</a></li><li class="is-active"><a class="tocitem" href>Tutorials</a><ul class="internal"><li><a class="tocitem" href="#Tutorial-1:-Numerical-Differentiation"><span>Tutorial 1: Numerical Differentiation</span></a></li><li><a class="tocitem" href="#Tutorial-2:-Multi-dimensional-NMR-Signal-Processing"><span>Tutorial 2: Multi-dimensional NMR Signal Processing</span></a></li><li><a class="tocitem" href="#Tutorial-3:-Matrix-Representations"><span>Tutorial 3: Matrix Representations</span></a></li><li><a class="tocitem" href="#Summary"><span>Summary</span></a></li><li><a class="tocitem" href="#References"><span>References</span></a></li></ul></li><li><a class="tocitem" href="../examples/">Examples</a></li><li><a class="tocitem" href="../api/">API Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Tutorials</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Tutorials</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/waudbygroup/MulticomplexNumbers.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/waudbygroup/MulticomplexNumbers.jl/blob/main/docs/src/tutorials.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="tutorials"><a class="docs-heading-anchor" href="#tutorials">Tutorials</a><a id="tutorials-1"></a><a class="docs-heading-anchor-permalink" href="#tutorials" title="Permalink"></a></h1><p>This section provides practical tutorials for common use cases of multicomplex numbers.</p><h2 id="Tutorial-1:-Numerical-Differentiation"><a class="docs-heading-anchor" href="#Tutorial-1:-Numerical-Differentiation">Tutorial 1: Numerical Differentiation</a><a id="Tutorial-1:-Numerical-Differentiation-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial-1:-Numerical-Differentiation" title="Permalink"></a></h2><p>The multicomplex step method is the primary application of multicomplex numbers. It extends the complex step derivative to compute higher-order derivatives with machine precision, avoiding the subtractive cancellation errors that plague finite difference methods.</p><h3 id="The-Problem-with-Finite-Differences"><a class="docs-heading-anchor" href="#The-Problem-with-Finite-Differences">The Problem with Finite Differences</a><a id="The-Problem-with-Finite-Differences-1"></a><a class="docs-heading-anchor-permalink" href="#The-Problem-with-Finite-Differences" title="Permalink"></a></h3><p>Traditional numerical differentiation uses finite differences:</p><p class="math-container">\[f&#39;(x) \approx \frac{f(x+h) - f(x)}{h}\]</p><p>This suffers from a fundamental trade-off:</p><ul><li><strong>Large h</strong>: Truncation error dominates (formula is only approximate)</li><li><strong>Small h</strong>: Roundoff error dominates (subtractive cancellation in <code>f(x+h) - f(x)</code>)</li></ul><p>The optimal <code>h</code> is typically around <code>√ε ≈ 10⁻⁸</code> for Float64, limiting accuracy to about 8 digits.</p><h3 id="The-Complex-Step-Method"><a class="docs-heading-anchor" href="#The-Complex-Step-Method">The Complex Step Method</a><a id="The-Complex-Step-Method-1"></a><a class="docs-heading-anchor-permalink" href="#The-Complex-Step-Method" title="Permalink"></a></h3><p>For an analytic function <code>f</code>, we have the Taylor expansion:</p><p class="math-container">\[f(x + ih) = f(x) + ih \cdot f&#39;(x) - \frac{h^2}{2}f&#39;&#39;(x) - \frac{ih^3}{6}f&#39;&#39;&#39;(x) + ...\]</p><p>Taking the imaginary part:</p><p class="math-container">\[\text{Im}[f(x + ih)] = h \cdot f&#39;(x) + O(h^3)\]</p><p>Thus:</p><p class="math-container">\[f&#39;(x) \approx \frac{\text{Im}[f(x + ih)]}{h}\]</p><p>Since we&#39;re not computing a difference, there&#39;s <strong>no subtractive cancellation</strong>! We can use arbitrarily small <code>h</code>, giving nearly machine-precision derivatives.</p><h3 id="First-Derivatives-with-im1"><a class="docs-heading-anchor" href="#First-Derivatives-with-im1">First Derivatives with <code>im1</code></a><a id="First-Derivatives-with-im1-1"></a><a class="docs-heading-anchor-permalink" href="#First-Derivatives-with-im1" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using MulticomplexNumbers</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Define a test function
+       f(x) = sin(x) * exp(-x^2)</code><code class="nohighlight hljs ansi" style="display:block;">f (generic function with 1 method)</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Compute derivative at x = 0.5
+       x = 0.5</code><code class="nohighlight hljs ansi" style="display:block;">0.5</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; h = 1e-100  # Extremely small step - impossible with finite differences!</code><code class="nohighlight hljs ansi" style="display:block;">1.0e-100</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Evaluate f at x + h*im1
+       result = f(x + h*im1)</code><code class="nohighlight hljs ansi" style="display:block;">0.3733769848893833 + 3.100850015206484e-101*im1</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Extract derivative from imaginary part
+       f_prime = imag(result) / h</code><code class="nohighlight hljs ansi" style="display:block;">0.3100850015206484</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Compute exact derivative for comparison: f&#39;(x) = cos(x)*exp(-x²) - 2x*sin(x)*exp(-x²)
+       exact = cos(x)*exp(-x^2) - 2x*sin(x)*exp(-x^2)</code><code class="nohighlight hljs ansi" style="display:block;">0.3100850015206486</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Error
+       abs(f_prime - exact)</code><code class="nohighlight hljs ansi" style="display:block;">2.220446049250313e-16</code></pre><p>The error is at the level of machine epsilon!</p><h3 id="Second-Derivatives-with-im1-and-im2"><a class="docs-heading-anchor" href="#Second-Derivatives-with-im1-and-im2">Second Derivatives with <code>im1</code> and <code>im2</code></a><a id="Second-Derivatives-with-im1-and-im2-1"></a><a class="docs-heading-anchor-permalink" href="#Second-Derivatives-with-im1-and-im2" title="Permalink"></a></h3><p>For second derivatives, we use bicomplex numbers (<code>im1</code> and <code>im2</code>):</p><p class="math-container">\[f&#39;&#39;(x) \approx \frac{\text{component}_{i_1 i_2}[f(x + h \cdot i_1 + h \cdot i_2)]}{h^2}\]</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using MulticomplexNumbers</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Compute second derivative of f(x) = x^4 at x = 2
+       # Exact answer: f&#39;&#39;(x) = 12x² = 48
+       
+       x = 2.0</code><code class="nohighlight hljs ansi" style="display:block;">2.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; h = 1e-50</code><code class="nohighlight hljs ansi" style="display:block;">1.0e-50</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Evaluate at x + h*im1 + h*im2
+       result = (x + h*im1 + h*im2)^4</code><code class="nohighlight hljs ansi" style="display:block;">(16.0 + 3.2e-49*im1) + (3.2e-49 + 4.8e-99*im1)*im2</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # The i₁i₂ component is at index 4: [1, i₁, i₂, i₁i₂]
+       second_derivative = component(result, 4) / h^2</code><code class="nohighlight hljs ansi" style="display:block;">48.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Exact value
+       exact = 12 * x^2</code><code class="nohighlight hljs ansi" style="display:block;">48.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; abs(second_derivative - exact)</code><code class="nohighlight hljs ansi" style="display:block;">0.0</code></pre><h3 id="Third-Derivatives-with-im1,-im2,-and-im3"><a class="docs-heading-anchor" href="#Third-Derivatives-with-im1,-im2,-and-im3">Third Derivatives with <code>im1</code>, <code>im2</code>, and <code>im3</code></a><a id="Third-Derivatives-with-im1,-im2,-and-im3-1"></a><a class="docs-heading-anchor-permalink" href="#Third-Derivatives-with-im1,-im2,-and-im3" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using MulticomplexNumbers</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Compute third derivative of f(x) = x^5 at x = 1
+       # Exact answer: f&#39;&#39;&#39;(x) = 60x² = 60
+       
+       x = 1.0</code><code class="nohighlight hljs ansi" style="display:block;">1.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; h = 1e-30</code><code class="nohighlight hljs ansi" style="display:block;">1.0e-30</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Evaluate at x + h*im1 + h*im2 + h*im3
+       result = (x + h*im1 + h*im2 + h*im3)^5</code><code class="nohighlight hljs ansi" style="display:block;">((1.0 + 5.0000000000000004e-30*im1) + (5.0000000000000004e-30 + 2.0e-59*im1)*im2) + ((5.0000000000000004e-30 + 2.0e-59*im1) + (2.0e-59 + 6.000000000000001e-89*im1)*im2)*im3</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # The i₁i₂i₃ component is at index 8
+       third_derivative = component(result, 8) / h^3</code><code class="nohighlight hljs ansi" style="display:block;">60.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; exact = 60.0</code><code class="nohighlight hljs ansi" style="display:block;">60.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; abs(third_derivative - exact)</code><code class="nohighlight hljs ansi" style="display:block;">0.0</code></pre><h3 id="Practical-Tips-for-Numerical-Differentiation"><a class="docs-heading-anchor" href="#Practical-Tips-for-Numerical-Differentiation">Practical Tips for Numerical Differentiation</a><a id="Practical-Tips-for-Numerical-Differentiation-1"></a><a class="docs-heading-anchor-permalink" href="#Practical-Tips-for-Numerical-Differentiation" title="Permalink"></a></h3><ol><li><p><strong>Step size</strong>: Use <code>h ≈ 10⁻¹⁰⁰/n</code> for the n-th derivative. Smaller is generally better.</p></li><li><p><strong>Component indices</strong>: For an n-th derivative, extract component <code>2^n</code> from an order-n multicomplex number.</p></li><li><p><strong>Computational cost</strong>: Storage and computation scale as <code>2^n</code> for the n-th derivative. For orders above ~10, this becomes expensive.</p></li><li><p><strong>Function requirements</strong>: Your function must accept multicomplex arguments and use operations that work on them (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>^</code>, <code>exp</code>, <code>log</code>, <code>sqrt</code>, etc.).</p></li></ol><h3 id="Derivative-Helper-Function"><a class="docs-heading-anchor" href="#Derivative-Helper-Function">Derivative Helper Function</a><a id="Derivative-Helper-Function-1"></a><a class="docs-heading-anchor-permalink" href="#Derivative-Helper-Function" title="Permalink"></a></h3><p>Here&#39;s a convenient wrapper function:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+
+&quot;&quot;&quot;
+    derivative(f, x, n=1; h=1e-50)
+
+Compute the n-th derivative of f at x using multicomplex step method.
+&quot;&quot;&quot;
+function derivative(f, x::Real, n::Int=1; h::Real=1e-50)
+    if n &lt; 1
+        return f(x)
+    elseif n == 1
+        result = f(x + h*im1)
+        return imag(result) / h
+    elseif n == 2
+        result = f(x + h*im1 + h*im2)
+        return component(result, 4) / h^2
+    elseif n == 3
+        result = f(x + h*im1 + h*im2 + h*im3)
+        return component(result, 8) / h^3
+    elseif n == 4
+        result = f(x + h*im1 + h*im2 + h*im3 + h*im4)
+        return component(result, 16) / h^4
+    else
+        error(&quot;Derivatives of order &gt; 4 not implemented in this example&quot;)
+    end
+end
+
+# Test it
+f(x) = sin(x)
+x = 1.0
+
+derivative(f, x, 1)  # f&#39;(1) = cos(1) ≈ 0.5403
+derivative(f, x, 2)  # f&#39;&#39;(1) = -sin(1) ≈ -0.8415
+derivative(f, x, 3)  # f&#39;&#39;&#39;(1) = -cos(1) ≈ -0.5403
+derivative(f, x, 4)  # f&#39;&#39;&#39;&#39;(1) = sin(1) ≈ 0.8415</code></pre><hr/><h2 id="Tutorial-2:-Multi-dimensional-NMR-Signal-Processing"><a class="docs-heading-anchor" href="#Tutorial-2:-Multi-dimensional-NMR-Signal-Processing">Tutorial 2: Multi-dimensional NMR Signal Processing</a><a id="Tutorial-2:-Multi-dimensional-NMR-Signal-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial-2:-Multi-dimensional-NMR-Signal-Processing" title="Permalink"></a></h2><p>Multicomplex numbers provide a natural representation for multi-dimensional NMR data, where each indirect dimension has its own imaginary component. This tutorial shows how to use multicomplex FFT for processing NMR-like signals.</p><h3 id="Background:-NMR-and-Quadrature-Detection"><a class="docs-heading-anchor" href="#Background:-NMR-and-Quadrature-Detection">Background: NMR and Quadrature Detection</a><a id="Background:-NMR-and-Quadrature-Detection-1"></a><a class="docs-heading-anchor-permalink" href="#Background:-NMR-and-Quadrature-Detection" title="Permalink"></a></h3><p>In NMR spectroscopy:</p><ul><li>Each time-domain dimension uses <strong>quadrature detection</strong>, recording both real and imaginary components</li><li>A 2D NMR experiment produces data that is complex in both dimensions</li><li>This is naturally represented as bicomplex numbers: <code>z = a + b*i₁ + c*i₂ + d*i₁i₂</code></li></ul><p>Where:</p><ul><li><code>i₁</code> represents the imaginary component of the direct (acquisition) dimension</li><li><code>i₂</code> represents the imaginary component of the indirect dimension</li></ul><h3 id="Setting-Up-FFT-Support"><a class="docs-heading-anchor" href="#Setting-Up-FFT-Support">Setting Up FFT Support</a><a id="Setting-Up-FFT-Support-1"></a><a class="docs-heading-anchor-permalink" href="#Setting-Up-FFT-Support" title="Permalink"></a></h3><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW  # This loads the FFT extension</code></pre><h3 id="Creating-Test-Signals"><a class="docs-heading-anchor" href="#Creating-Test-Signals">Creating Test Signals</a><a id="Creating-Test-Signals-1"></a><a class="docs-heading-anchor-permalink" href="#Creating-Test-Signals" title="Permalink"></a></h3><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create a 2D time-domain signal (bicomplex)
+# This simulates a signal with frequencies in both dimensions
+
+function create_2d_signal(n1, n2, freq1, freq2, decay1, decay2)
+    t1 = range(0, 1, length=n1)  # Direct dimension time
+    t2 = range(0, 1, length=n2)  # Indirect dimension time
+
+    signal = Array{Multicomplex{Float64, 2, 4}}(undef, n1, n2)
+
+    for (j, τ2) in enumerate(t2), (i, τ1) in enumerate(t1)
+        # Signal in direct dimension: exp(i*ω₁*t₁) * exp(-t₁/T₂)
+        # Signal in indirect dimension: exp(i*ω₂*t₂) * exp(-t₂/T₂)
+
+        # Real/imaginary in dim 1 (im1)
+        s1_r = cos(2π * freq1 * τ1) * exp(-τ1 * decay1)
+        s1_i = sin(2π * freq1 * τ1) * exp(-τ1 * decay1)
+
+        # Real/imaginary in dim 2 (im2)
+        s2_r = cos(2π * freq2 * τ2) * exp(-τ2 * decay2)
+        s2_i = sin(2π * freq2 * τ2) * exp(-τ2 * decay2)
+
+        # Combine as bicomplex: (s1_r + s1_i*im1) * (s2_r + s2_i*im2)
+        # = s1_r*s2_r + s1_i*s2_r*im1 + s1_r*s2_i*im2 + s1_i*s2_i*im1*im2
+        signal[i, j] = Multicomplex(
+            s1_r * s2_r,     # real part
+            s1_i * s2_r,     # im1 coefficient
+            s1_r * s2_i,     # im2 coefficient
+            s1_i * s2_i      # im1*im2 coefficient
+        )
+    end
+
+    return signal
+end
+
+# Create a test signal
+n = 64
+signal = create_2d_signal(n, n, 5.0, 10.0, 2.0, 3.0)
+# size(signal) =&gt; (64, 64)
+# eltype(signal) =&gt; Multicomplex{Float64, 2, 4}</code></pre><h3 id="FFT-Along-Specific-Dimensions"><a class="docs-heading-anchor" href="#FFT-Along-Specific-Dimensions">FFT Along Specific Dimensions</a><a id="FFT-Along-Specific-Dimensions-1"></a><a class="docs-heading-anchor-permalink" href="#FFT-Along-Specific-Dimensions" title="Permalink"></a></h3><p>The <code>fft!</code> function performs in-place FFT along a specific imaginary unit:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create a simple bicomplex array for demonstration
+data = [Multicomplex(1.0, 0.0, 0.0, 0.0) for i in 1:8]
+
+# FFT along im1 (direct dimension)
+fft!(data, 1)
+# After FFT along im1: [8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+# Note: The original data is modified in-place</code></pre><h3 id="Complete-2D-Transform-Example"><a class="docs-heading-anchor" href="#Complete-2D-Transform-Example">Complete 2D Transform Example</a><a id="Complete-2D-Transform-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Complete-2D-Transform-Example" title="Permalink"></a></h3><p>For a 2D NMR spectrum, you typically:</p><ol><li>FFT along the direct dimension (im1)</li><li>FFT along the indirect dimension (im2)</li></ol><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create a 2D bicomplex signal
+function make_test_fid()
+    n = 32
+    data = Array{Multicomplex{Float64, 2, 4}}(undef, n, n)
+
+    for j in 1:n, i in 1:n
+        # Simple oscillating signal
+        t1, t2 = (i-1)/n, (j-1)/n
+        ω1, ω2 = 3.0, 7.0  # Frequencies
+
+        r1, i1 = cos(2π*ω1*t1), sin(2π*ω1*t1)
+        r2, i2 = cos(2π*ω2*t2), sin(2π*ω2*t2)
+
+        data[i,j] = Multicomplex(r1*r2, i1*r2, r1*i2, i1*i2)
+    end
+    return data
+end
+
+fid = make_test_fid()
+
+# Transform both dimensions
+fid_copy = copy(fid)
+fft!(fid_copy, 1)  # Direct dimension
+fft!(fid_copy, 2)  # Indirect dimension
+
+# Peak at position (4, 8) contains the signal
+abs(realest(fid_copy[4, 8]))  # Should be large</code></pre><h3 id="Working-with-Higher-Dimensions"><a class="docs-heading-anchor" href="#Working-with-Higher-Dimensions">Working with Higher Dimensions</a><a id="Working-with-Higher-Dimensions-1"></a><a class="docs-heading-anchor-permalink" href="#Working-with-Higher-Dimensions" title="Permalink"></a></h3><p>For 3D NMR data, use tricomplex numbers with <code>im1</code>, <code>im2</code>, <code>im3</code>:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create 3D data with tricomplex numbers
+data_3d = Array{Multicomplex{Float64, 3, 8}}(undef, 16, 16, 16)
+
+# Fill with test signal...
+# (Each element has 8 components: 1, im1, im2, im1*im2, im3, im1*im3, im2*im3, im1*im2*im3)
+
+# FFT each dimension
+fft!(data_3d, 1)  # Direct dimension (im1)
+fft!(data_3d, 2)  # First indirect (im2)
+fft!(data_3d, 3)  # Second indirect (im3)</code></pre><h3 id="Viewing-Multicomplex-Data-as-Complex"><a class="docs-heading-anchor" href="#Viewing-Multicomplex-Data-as-Complex">Viewing Multicomplex Data as Complex</a><a id="Viewing-Multicomplex-Data-as-Complex-1"></a><a class="docs-heading-anchor-permalink" href="#Viewing-Multicomplex-Data-as-Complex" title="Permalink"></a></h3><p>The <code>ascomplex</code> function provides views of multicomplex arrays as complex arrays:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using MulticomplexNumbers</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Create bicomplex data
+       data = [Multicomplex(1.0, 2.0, 3.0, 4.0) for _ in 1:4]</code><code class="nohighlight hljs ansi" style="display:block;">4-element Vector{Multicomplex{Float64, 2, 4}}:
+ (1.0 + 2.0*im1) + (3.0 + 4.0*im1)*im2
+ (1.0 + 2.0*im1) + (3.0 + 4.0*im1)*im2
+ (1.0 + 2.0*im1) + (3.0 + 4.0*im1)*im2
+ (1.0 + 2.0*im1) + (3.0 + 4.0*im1)*im2</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # View as complex along im1
+       view_im1 = ascomplex(data, 1)</code><code class="nohighlight hljs ansi" style="display:block;">2×4 reinterpret(reshape, ComplexF64, ::Vector{Multicomplex{Float64, 2, 4}}) with eltype ComplexF64:
+ 1.0+2.0im  1.0+2.0im  1.0+2.0im  1.0+2.0im
+ 3.0+4.0im  3.0+4.0im  3.0+4.0im  3.0+4.0im</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; size(view_im1)</code><code class="nohighlight hljs ansi" style="display:block;">(2, 4)</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # View as complex along im2
+       view_im2 = ascomplex(data, 2)</code><code class="nohighlight hljs ansi" style="display:block;">2×4 reinterpret(reshape, ComplexF64, ::Array{Float64, 3}) with eltype ComplexF64:
+ 1.0+3.0im  1.0+3.0im  1.0+3.0im  1.0+3.0im
+ 2.0+4.0im  2.0+4.0im  2.0+4.0im  2.0+4.0im</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; size(view_im2)</code><code class="nohighlight hljs ansi" style="display:block;">(2, 4)</code></pre><h3 id="Tips-for-NMR-Applications"><a class="docs-heading-anchor" href="#Tips-for-NMR-Applications">Tips for NMR Applications</a><a id="Tips-for-NMR-Applications-1"></a><a class="docs-heading-anchor-permalink" href="#Tips-for-NMR-Applications" title="Permalink"></a></h3><ol><li><p><strong>Choose the right order</strong>: Use bicomplex (N=2) for 2D, tricomplex (N=3) for 3D, etc.</p></li><li><p><strong>Component ordering</strong>: Components follow a binary pattern:</p><ul><li>Order 2: <code>[1, i₁, i₂, i₁i₂]</code> (indices 1-4)</li><li>Order 3: <code>[1, i₁, i₂, i₁i₂, i₃, i₁i₃, i₂i₃, i₁i₂i₃]</code> (indices 1-8)</li></ul></li><li><p><strong>Integration with NMRTools.jl</strong>: See <a href="https://github.com/waudbygroup/NMRTools.jl">NMRTools.jl</a> for comprehensive NMR data handling that builds on this package.</p></li><li><p><strong>Memory efficiency</strong>: Multicomplex arrays store components contiguously, making them cache-friendly for numerical operations.</p></li></ol><hr/><h2 id="Tutorial-3:-Matrix-Representations"><a class="docs-heading-anchor" href="#Tutorial-3:-Matrix-Representations">Tutorial 3: Matrix Representations</a><a id="Tutorial-3:-Matrix-Representations-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial-3:-Matrix-Representations" title="Permalink"></a></h2><p>Every multicomplex number has an equivalent matrix representation that preserves algebraic operations. This is useful for understanding the structure and for implementing functions like <code>exp</code>, <code>log</code>, and <code>sqrt</code>.</p><h3 id="The-Matrix-Representation"><a class="docs-heading-anchor" href="#The-Matrix-Representation">The Matrix Representation</a><a id="The-Matrix-Representation-1"></a><a class="docs-heading-anchor-permalink" href="#The-Matrix-Representation" title="Permalink"></a></h3><p>For complex numbers, the 2×2 matrix representation is:</p><p class="math-container">\[a + bi \mapsto \begin{pmatrix} a &amp; -b \\ b &amp; a \end{pmatrix}\]</p><p>For bicomplex numbers, this extends to 4×4 matrices, and so on.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using MulticomplexNumbers</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Complex number matrix representation
+       z = 3.0 + 4.0*im1</code><code class="nohighlight hljs ansi" style="display:block;">3.0 + 4.0*im1</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; M_z = matrep(z)</code><code class="nohighlight hljs ansi" style="display:block;">2×2 StaticArraysCore.SMatrix{2, 2, Float64, 4} with indices SOneTo(2)×SOneTo(2):
+ 3.0  -4.0
+ 4.0   3.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Verify: multiplication via matrices
+       w = 1.0 + 2.0*im1</code><code class="nohighlight hljs ansi" style="display:block;">1.0 + 2.0*im1</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; M_w = matrep(w)</code><code class="nohighlight hljs ansi" style="display:block;">2×2 StaticArraysCore.SMatrix{2, 2, Float64, 4} with indices SOneTo(2)×SOneTo(2):
+ 1.0  -2.0
+ 2.0   1.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Matrix product corresponds to multicomplex product
+       z * w</code><code class="nohighlight hljs ansi" style="display:block;">-5.0 + 10.0*im1</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; Multicomplex{1}(M_z * M_w * [1, 0])  # First column of product</code><code class="nohighlight hljs ansi" style="display:block;">-5.0 + 10.0*im1</code></pre><h3 id="Using-Matrix-Representations"><a class="docs-heading-anchor" href="#Using-Matrix-Representations">Using Matrix Representations</a><a id="Using-Matrix-Representations-1"></a><a class="docs-heading-anchor-permalink" href="#Using-Matrix-Representations" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using MulticomplexNumbers</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Bicomplex number
+       z = 1.0 + 2.0*im1 + 3.0*im2 + 4.0*im1*im2</code><code class="nohighlight hljs ansi" style="display:block;">(1.0 + 2.0*im1) + (3.0 + 4.0*im1)*im2</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; M = matrep(z)</code><code class="nohighlight hljs ansi" style="display:block;">4×4 StaticArraysCore.SMatrix{4, 4, Float64, 16} with indices SOneTo(4)×SOneTo(4):
+ 1.0  -2.0  -3.0   4.0
+ 2.0   1.0  -4.0  -3.0
+ 3.0  -4.0   1.0  -2.0
+ 4.0   3.0   2.0   1.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # The matrix is 4×4 for bicomplex
+       size(M)</code><code class="nohighlight hljs ansi" style="display:block;">(4, 4)</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # First column contains the components
+       M[:, 1]</code><code class="nohighlight hljs ansi" style="display:block;">4-element StaticArraysCore.SVector{4, Float64} with indices SOneTo(4):
+ 1.0
+ 2.0
+ 3.0
+ 4.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; flat(z)</code><code class="nohighlight hljs ansi" style="display:block;">4-element StaticArraysCore.SVector{4, Float64} with indices SOneTo(4):
+ 1.0
+ 2.0
+ 3.0
+ 4.0</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Matrix functions give multicomplex functions
+       using LinearAlgebra</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; exp_M = exp(M)</code><code class="nohighlight hljs ansi" style="display:block;">4×4 StaticArraysCore.SMatrix{4, 4, Float64, 16} with indices SOneTo(4)×SOneTo(4):
+  40.101    62.4666  -62.4188   40.0869
+ -62.4666   40.101   -40.0869  -62.4188
+  62.4188  -40.0869   40.101    62.4666
+  40.0869   62.4188  -62.4666   40.101</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; exp_z = exp(z)</code><code class="nohighlight hljs ansi" style="display:block;">(40.101047396459194 - 62.46655458845914*im1) + (62.41881256003688 + 40.08692468783817*im1)*im2</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; # Compare first columns
+       exp_M[:, 1]</code><code class="nohighlight hljs ansi" style="display:block;">4-element StaticArraysCore.SVector{4, Float64} with indices SOneTo(4):
+  40.101047396459194
+ -62.46655458845914
+  62.41881256003688
+  40.08692468783817</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; flat(exp_z)</code><code class="nohighlight hljs ansi" style="display:block;">4-element StaticArraysCore.SVector{4, Float64} with indices SOneTo(4):
+  40.101047396459194
+ -62.46655458845914
+  62.41881256003688
+  40.08692468783817</code></pre><p>This matrix approach is how <code>exp</code>, <code>log</code>, <code>sqrt</code>, and <code>^</code> are implemented internally.</p><hr/><h2 id="Summary"><a class="docs-heading-anchor" href="#Summary">Summary</a><a id="Summary-1"></a><a class="docs-heading-anchor-permalink" href="#Summary" title="Permalink"></a></h2><table><tr><th style="text-align: right">Application</th><th style="text-align: right">Order</th><th style="text-align: right">Units Used</th><th style="text-align: right">Key Functions</th></tr><tr><td style="text-align: right">1st derivative</td><td style="text-align: right">1</td><td style="text-align: right"><code>im1</code></td><td style="text-align: right"><code>imag(f(x + h*im1)) / h</code></td></tr><tr><td style="text-align: right">2nd derivative</td><td style="text-align: right">2</td><td style="text-align: right"><code>im1</code>, <code>im2</code></td><td style="text-align: right"><code>component(result, 4) / h²</code></td></tr><tr><td style="text-align: right">3rd derivative</td><td style="text-align: right">3</td><td style="text-align: right"><code>im1</code>, <code>im2</code>, <code>im3</code></td><td style="text-align: right"><code>component(result, 8) / h³</code></td></tr><tr><td style="text-align: right">2D NMR</td><td style="text-align: right">2</td><td style="text-align: right"><code>im1</code>, <code>im2</code></td><td style="text-align: right"><code>fft!(data, 1)</code>, <code>fft!(data, 2)</code></td></tr><tr><td style="text-align: right">3D NMR</td><td style="text-align: right">3</td><td style="text-align: right"><code>im1</code>, <code>im2</code>, <code>im3</code></td><td style="text-align: right"><code>fft!(data, 1)</code>, <code>fft!(data, 2)</code>, <code>fft!(data, 3)</code></td></tr></table><h2 id="References"><a class="docs-heading-anchor" href="#References">References</a><a id="References-1"></a><a class="docs-heading-anchor-permalink" href="#References" title="Permalink"></a></h2><ul><li><a href="https://nhigham.com/2020/10/06/what-is-the-complex-step-approximation/">Complex Step Approximation (Nick Higham)</a></li><li>Lantoine, G., Russell, R. P., Dargent, T. &quot;Using Multicomplex Variables for Automatic Computation of High-order Derivatives.&quot; ACM TOMS, 2012.</li><li><a href="https://nvlpubs.nist.gov/nistpubs/jres/126/jres.126.033.pdf">NIST Multicomplex Report</a></li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../userguide/">« User Guide</a><a class="docs-footer-nextpage" href="../examples/">Examples »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Saturday 27 December 2025 10:00">Saturday 27 December 2025</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
