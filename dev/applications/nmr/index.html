@@ -50,48 +50,14 @@ fft!(fid, 1, dims=1)
 # Transform indirect dimension (im2 along dimension 2)
 fft!(fid, 2, dims=2)
 
-# Now fid contains the 2D frequency-domain spectrum</code></pre><p>This pattern is clean and intuitive: <code>im1</code> ↔ dimension 1, <code>im2</code> ↔ dimension 2.</p><h3 id="Step-4:-Phase-Correction"><a class="docs-heading-anchor" href="#Step-4:-Phase-Correction">Step 4: Phase Correction</a><a id="Step-4:-Phase-Correction-1"></a><a class="docs-heading-anchor-permalink" href="#Step-4:-Phase-Correction" title="Permalink"></a></h3><p>Phase errors are common in NMR. We correct them by multiplying by phase factors.</p><h4 id="Zero-Order-Phase-Correction"><a class="docs-heading-anchor" href="#Zero-Order-Phase-Correction">Zero-Order Phase Correction</a><a id="Zero-Order-Phase-Correction-1"></a><a class="docs-heading-anchor-permalink" href="#Zero-Order-Phase-Correction" title="Permalink"></a></h4><pre><code class="language-julia hljs">&quot;&quot;&quot;Apply zero-order phase correction to direct dimension.&quot;&quot;&quot;
-function phase_correct_0th_direct!(spectrum, theta1)
-    spectrum .*= exp(im1 * theta1)
-    return spectrum
-end
-
-&quot;&quot;&quot;Apply zero-order phase correction to indirect dimension.&quot;&quot;&quot;
-function phase_correct_0th_indirect!(spectrum, theta2)
-    spectrum .*= exp(im2 * theta2)
-    return spectrum
-end
-
-# Example: Apply 30° correction to direct, 45° to indirect
-phase_correct_0th_direct!(fid, π/6)      # 30° = π/6 radians
-phase_correct_0th_indirect!(fid, π/4)    # 45° = π/4 radians</code></pre><h4 id="First-Order-Phase-Correction"><a class="docs-heading-anchor" href="#First-Order-Phase-Correction">First-Order Phase Correction</a><a id="First-Order-Phase-Correction-1"></a><a class="docs-heading-anchor-permalink" href="#First-Order-Phase-Correction" title="Permalink"></a></h4><p>First-order phase correction applies a linearly varying phase:</p><pre><code class="language-julia hljs">&quot;&quot;&quot;
-Apply first-order phase correction.
-
-# Arguments
-- `spectrum`: The spectrum array
-- `theta0`: Zero-order phase (radians)
-- `theta1`: First-order phase (radians per point)
-- `dim`: Dimension to correct (1 or 2)
-&quot;&quot;&quot;
-function phase_correct_1st!(spectrum, theta0, theta1, dim)
-    if dim == 1
-        n = size(spectrum, 1)
-        for i in 1:n
-            phase = theta0 + theta1 * (i - 1) / n
-            spectrum[i, :] .*= exp(im1 * phase)
-        end
-    elseif dim == 2
-        n = size(spectrum, 2)
-        for j in 1:n
-            phase = theta0 + theta1 * (j - 1) / n
-            spectrum[:, j] .*= exp(im2 * phase)
-        end
-    end
-    return spectrum
-end
-
-# Apply first-order correction: 0° to 180° across direct dimension
-phase_correct_1st!(fid, 0.0, π, 1)</code></pre><h3 id="Step-5:-Extracting-Complex-Sub-Components"><a class="docs-heading-anchor" href="#Step-5:-Extracting-Complex-Sub-Components">Step 5: Extracting Complex Sub-Components</a><a id="Step-5:-Extracting-Complex-Sub-Components-1"></a><a class="docs-heading-anchor-permalink" href="#Step-5:-Extracting-Complex-Sub-Components" title="Permalink"></a></h3><p>After processing, you often need to extract specific complex projections for visualization or further analysis.</p><h4 id="Extracting-Real/Im1-Component"><a class="docs-heading-anchor" href="#Extracting-Real/Im1-Component">Extracting Real/Im1 Component</a><a id="Extracting-Real/Im1-Component-1"></a><a class="docs-heading-anchor-permalink" href="#Extracting-Real/Im1-Component" title="Permalink"></a></h4><p>This gives you the spectrum as if only <code>im1</code> were the complex unit (traditional F1 view):</p><pre><code class="language-julia hljs"># Method 1: Using real() to get order-1 multicomplex
+# Now fid contains the 2D frequency-domain spectrum</code></pre><p>This pattern is clean and intuitive: <code>im1</code> ↔ dimension 1, <code>im2</code> ↔ dimension 2.</p><h3 id="Step-4:-Phase-Correction"><a class="docs-heading-anchor" href="#Step-4:-Phase-Correction">Step 4: Phase Correction</a><a id="Step-4:-Phase-Correction-1"></a><a class="docs-heading-anchor-permalink" href="#Step-4:-Phase-Correction" title="Permalink"></a></h3><p>Phase errors are common in NMR. Correct them by multiplying by phase factors:</p><pre><code class="language-julia hljs"># Zero-order phase correction: multiply by exp(imN * θ)
+fid .*= exp(im1 * π/6)   # 30° correction for direct dimension
+fid .*= exp(im2 * π/4)   # 45° correction for indirect dimension</code></pre><p>For first-order (linear) phase correction, apply varying phases across the dimension:</p><pre><code class="language-julia hljs"># First-order correction: 0° to 180° across direct dimension
+n = size(fid, 1)
+for i in 1:n
+    θ = π * (i - 1) / n
+    fid[i, :] .*= exp(im1 * θ)
+end</code></pre><h3 id="Step-5:-Extracting-Complex-Sub-Components"><a class="docs-heading-anchor" href="#Step-5:-Extracting-Complex-Sub-Components">Step 5: Extracting Complex Sub-Components</a><a id="Step-5:-Extracting-Complex-Sub-Components-1"></a><a class="docs-heading-anchor-permalink" href="#Step-5:-Extracting-Complex-Sub-Components" title="Permalink"></a></h3><p>After processing, you often need to extract specific complex projections for visualization or further analysis.</p><h4 id="Extracting-Real/Im1-Component"><a class="docs-heading-anchor" href="#Extracting-Real/Im1-Component">Extracting Real/Im1 Component</a><a id="Extracting-Real/Im1-Component-1"></a><a class="docs-heading-anchor-permalink" href="#Extracting-Real/Im1-Component" title="Permalink"></a></h4><p>This gives you the spectrum as if only <code>im1</code> were the complex unit (traditional F1 view):</p><pre><code class="language-julia hljs"># Method 1: Using real() to get order-1 multicomplex
 spectrum_im1 = real.(fid)  # Returns array of Multicomplex{Float64, 1, 2}
 
 # Convert to standard Complex for plotting
@@ -156,9 +122,8 @@ fft!(fid, 1, dims=1)  # Direct dimension
 fft!(fid, 2, dims=2)  # Indirect dimension
 
 # 5. Phase correction
-phase_correct_0th_direct!(fid, π/8)      # 22.5°
-phase_correct_0th_indirect!(fid, π/6)    # 30°
-phase_correct_1st!(fid, 0.0, π/4, 1)     # 45° across F1
+fid .*= exp(im1 * π/8)   # 22.5° for direct dimension
+fid .*= exp(im2 * π/6)   # 30° for indirect dimension
 
 # 6. Extract magnitude for plotting
 magnitude = abs.(realest.(fid))
@@ -225,4 +190,4 @@ for spectrum in spectra
     fft!(workspace, 1, dims=1)
     fft!(workspace, 2, dims=2)
     # ... process workspace ...
-end</code></pre></li></ol><hr/><h2 id="See-Also"><a class="docs-heading-anchor" href="#See-Also">See Also</a><a id="See-Also-1"></a><a class="docs-heading-anchor-permalink" href="#See-Also" title="Permalink"></a></h2><ul><li><strong><a href="../../guide/fft/#fft-operations">FFT Operations</a></strong>: Detailed FFT documentation</li><li><strong><a href="../../guide/components/#components">Accessing Components</a></strong>: Extract parts and components</li><li><strong><a href="../../examples/#Examples">Examples</a></strong>: Quick code snippets</li><li><strong><a href="../../api/#API-Reference">API Reference</a></strong>: Complete function documentation</li><li><strong><a href="https://github.com/waudbygroup/NMRTools.jl">NMRTools.jl</a></strong>: Production NMR processing toolkit</li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../guide/fft/">« FFT Operations</a><a class="docs-footer-nextpage" href="../differentiation/">Numerical Differentiation »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Saturday 27 December 2025 11:58">Saturday 27 December 2025</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+end</code></pre></li></ol><hr/><h2 id="See-Also"><a class="docs-heading-anchor" href="#See-Also">See Also</a><a id="See-Also-1"></a><a class="docs-heading-anchor-permalink" href="#See-Also" title="Permalink"></a></h2><ul><li><strong><a href="../../guide/fft/#fft-operations">FFT Operations</a></strong>: Detailed FFT documentation</li><li><strong><a href="../../guide/components/#components">Accessing Components</a></strong>: Extract parts and components</li><li><strong><a href="../../examples/#Examples">Examples</a></strong>: Quick code snippets</li><li><strong><a href="../../api/#API-Reference">API Reference</a></strong>: Complete function documentation</li><li><strong><a href="https://github.com/waudbygroup/NMRTools.jl">NMRTools.jl</a></strong>: Production NMR processing toolkit</li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../guide/fft/">« FFT Operations</a><a class="docs-footer-nextpage" href="../differentiation/">Numerical Differentiation »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Saturday 27 December 2025 13:03">Saturday 27 December 2025</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

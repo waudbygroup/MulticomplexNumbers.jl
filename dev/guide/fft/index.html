@@ -76,54 +76,24 @@ fft!(fid, 1, dims=1)  # Transform direct dimension
 fft!(fid, 2, dims=2)  # Transform indirect dimension
 
 # The peak should appear near indices corresponding to the frequencies
-# (11, 16) for frequencies 10 and 15 out of 128 and 64 points</code></pre><hr/><h2 id="Phase-Correction"><a class="docs-heading-anchor" href="#Phase-Correction">Phase Correction</a><a id="Phase-Correction-1"></a><a class="docs-heading-anchor-permalink" href="#Phase-Correction" title="Permalink"></a></h2><p>Phase correction is performed by multiplying by complex exponentials. For multicomplex numbers, we use different imaginary units for different dimensions:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+# (11, 16) for frequencies 10 and 15 out of 128 and 64 points</code></pre><hr/><h2 id="Phase-Correction"><a class="docs-heading-anchor" href="#Phase-Correction">Phase Correction</a><a id="Phase-Correction-1"></a><a class="docs-heading-anchor-permalink" href="#Phase-Correction" title="Permalink"></a></h2><p>Phase correction is simply multiplication by a phase factor. Use the appropriate imaginary unit for each dimension:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
 using FFTW
 
-# After FFT, you may need to apply phase correction
-
-# Zero-order phase correction for the direct dimension (im1)
-function phase_correct_direct!(data, theta1)
-    phase_factor = exp(im1 * theta1)
-    data .*= phase_factor
-    return data
-end
-
-# Zero-order phase correction for the indirect dimension (im2)
-function phase_correct_indirect!(data, theta2)
-    phase_factor = exp(im2 * theta2)
-    data .*= phase_factor
-    return data
-end
-
-# First-order phase correction (linear phase)
-function phase_correct_first_order!(data, theta0, theta1_per_point, dim)
-    if dim == 1
-        n = size(data, 1)
-        for i in 1:n
-            phase = theta0 + theta1_per_point * (i - 1)
-            data[i, :] .*= exp(im1 * phase)
-        end
-    elseif dim == 2
-        n = size(data, 2)
-        for j in 1:n
-            phase = theta0 + theta1_per_point * (j - 1)
-            data[:, j] .*= exp(im2 * phase)
-        end
-    end
-    return data
-end
-
-# Example usage
+# Create and transform data
 fid = create_2d_nmr_signal(64, 32, 5.0, 10.0)
 fft!(fid, 1, dims=1)
 fft!(fid, 2, dims=2)
 
-# Apply zero-order phase corrections
-phase_correct_direct!(fid, π/6)      # 30° in direct dimension
-phase_correct_indirect!(fid, π/4)    # 45° in indirect dimension
+# Zero-order phase correction: multiply by exp(imN * θ)
+fid .*= exp(im1 * π/6)   # 30° correction for direct dimension
+fid .*= exp(im2 * π/4)   # 45° correction for indirect dimension
 
-# Or first-order correction
-# phase_correct_first_order!(fid, 0.0, π/180, 1)  # 1° per point in dim 1</code></pre><hr/><h2 id="Extracting-Complex-Sub-Components"><a class="docs-heading-anchor" href="#Extracting-Complex-Sub-Components">Extracting Complex Sub-Components</a><a id="Extracting-Complex-Sub-Components-1"></a><a class="docs-heading-anchor-permalink" href="#Extracting-Complex-Sub-Components" title="Permalink"></a></h2><p>After processing, you often want to extract specific complex projections:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+# For first-order (linear) phase correction, apply varying phases across the dimension
+n = size(fid, 1)
+for i in 1:n
+    θ = π/180 * (i - 1)  # 1° per point
+    fid[i, :] .*= exp(im1 * θ)
+end</code></pre><hr/><h2 id="Extracting-Complex-Sub-Components"><a class="docs-heading-anchor" href="#Extracting-Complex-Sub-Components">Extracting Complex Sub-Components</a><a id="Extracting-Complex-Sub-Components-1"></a><a class="docs-heading-anchor-permalink" href="#Extracting-Complex-Sub-Components" title="Permalink"></a></h2><p>After processing, you often want to extract specific complex projections:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
 using FFTW
 
 # Process 2D spectrum
@@ -173,4 +143,4 @@ fft!(data, 2, dims=(1, 3))
 # Most common: one unit per dimension
 fft!(data, 1, dims=1)  # im1 transforms along array dim 1
 fft!(data, 2, dims=2)  # im2 transforms along array dim 2
-# Dimension 3 could be e.g., different experiments</code></pre><hr/><h2 id="See-Also"><a class="docs-heading-anchor" href="#See-Also">See Also</a><a id="See-Also-1"></a><a class="docs-heading-anchor-permalink" href="#See-Also" title="Permalink"></a></h2><ul><li><strong><a href="../../applications/nmr/#nmr-applications">NMR Spectroscopy Applications</a></strong>: Complete NMR workflow examples</li><li><strong><a href="../components/#components">Accessing Components</a></strong>: Extract parts and components</li><li><strong><a href="../../api/#API-Reference">API Reference</a></strong>: Complete function documentation</li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../components/">« Accessing Components</a><a class="docs-footer-nextpage" href="../../applications/nmr/">NMR Spectroscopy »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Saturday 27 December 2025 11:58">Saturday 27 December 2025</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+# Dimension 3 could be e.g., different experiments</code></pre><hr/><h2 id="See-Also"><a class="docs-heading-anchor" href="#See-Also">See Also</a><a id="See-Also-1"></a><a class="docs-heading-anchor-permalink" href="#See-Also" title="Permalink"></a></h2><ul><li><strong><a href="../../applications/nmr/#nmr-applications">NMR Spectroscopy Applications</a></strong>: Complete NMR workflow examples</li><li><strong><a href="../components/#components">Accessing Components</a></strong>: Extract parts and components</li><li><strong><a href="../../api/#API-Reference">API Reference</a></strong>: Complete function documentation</li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../components/">« Accessing Components</a><a class="docs-footer-nextpage" href="../../applications/nmr/">NMR Spectroscopy »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Saturday 27 December 2025 13:03">Saturday 27 December 2025</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
