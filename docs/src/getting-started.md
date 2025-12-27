@@ -142,6 +142,12 @@ The result matches the exact derivative to machine precision!
 ## Next Steps
 
 - **[Background](@ref)**: Learn the mathematics behind multicomplex numbers
-- **[User Guide](@ref userguide)**: Detailed exploration of all features
-- **[Tutorials](@ref tutorials)**: Practical applications including numerical differentiation and NMR spectroscopy
+- **User Guide**: Detailed exploration of all features:
+  - [Creating Numbers](@ref creating)
+  - [Arithmetic Operations](@ref arithmetic)
+  - [Accessing Components](@ref components)
+  - [FFT Operations](@ref fft-operations)
+- **Applications**: Practical examples:
+  - [NMR Spectroscopy](@ref nmr-applications)
+  - [Numerical Differentiation](@ref differentiation-applications)
 - **[API Reference](@ref)**: Complete function documentation

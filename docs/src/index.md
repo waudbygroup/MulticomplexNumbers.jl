@@ -19,6 +19,28 @@ Multicomplex numbers are a generalization of complex numbers, recursively define
 
 ## Key Applications
 
+### Multi-dimensional NMR Spectroscopy
+
+Bicomplex and higher-order multicomplex numbers naturally represent multi-dimensional NMR data where each dimension has its own imaginary component:
+
+```julia
+using MulticomplexNumbers
+using FFTW
+
+# 2D NMR: bicomplex numbers (im1 = direct, im2 = indirect)
+# Create bicomplex FID where each dimension has real + imaginary components
+fid = Array{Multicomplex{Float64, 2, 4}}(undef, 128, 64)
+# ... load your NMR data ...
+
+# Transform each dimension with its associated imaginary unit
+fft!(fid, 1, dims=1)  # Direct dimension (im1)
+fft!(fid, 2, dims=2)  # Indirect dimension (im2)
+
+# Phase correction using appropriate imaginary units
+fid .*= exp(im1 * 0.1)  # Correct direct dimension
+fid .*= exp(im2 * 0.2)  # Correct indirect dimension
+```
+
 ### High-Precision Numerical Differentiation
 
 The multicomplex step method computes derivatives with **machine precision**, avoiding the subtractive cancellation errors that limit finite difference methods:
@@ -31,20 +53,6 @@ f(x) = sin(x) * exp(-x^2)
 h = 1e-100  # Impossibly small for finite differences!
 x = 0.5 + h*im1
 derivative = imag(f(x)) / h  # Exact to ~15 digits
-```
-
-### Multi-dimensional NMR Spectroscopy
-
-Bicomplex and higher-order multicomplex numbers naturally represent multi-dimensional NMR data where each indirect dimension has its own imaginary component:
-
-```julia
-using MulticomplexNumbers
-using FFTW
-
-# 2D NMR: bicomplex numbers (im1 = direct, im2 = indirect)
-fid = [Multicomplex(data...) for data in time_domain]
-fft!(fid, 1)  # Transform direct dimension
-fft!(fid, 2)  # Transform indirect dimension
 ```
 
 ## Quick Start
@@ -85,12 +93,16 @@ f_prime = imag(x^3) / h  # = 12.0 (exact!)
 Pages = [
     "getting-started.md",
     "background.md",
-    "userguide.md",
-    "tutorials.md",
+    "guide/creating.md",
+    "guide/arithmetic.md",
+    "guide/components.md",
+    "guide/fft.md",
+    "applications/nmr.md",
+    "applications/differentiation.md",
     "examples.md",
     "api.md"
 ]
-Depth = 1
+Depth = 2
 ```
 
 ---

@@ -14,8 +14,16 @@ makedocs(
         "Home" => "index.md",
         "Getting Started" => "getting-started.md",
         "Background" => "background.md",
-        "User Guide" => "userguide.md",
-        "Tutorials" => "tutorials.md",
+        "User Guide" => [
+            "Creating Numbers" => "guide/creating.md",
+            "Arithmetic Operations" => "guide/arithmetic.md",
+            "Accessing Components" => "guide/components.md",
+            "FFT Operations" => "guide/fft.md"
+        ],
+        "Applications" => [
+            "NMR Spectroscopy" => "applications/nmr.md",
+            "Numerical Differentiation" => "applications/differentiation.md"
+        ],
         "Examples" => "examples.md",
         "API Reference" => "api.md"
     ]
