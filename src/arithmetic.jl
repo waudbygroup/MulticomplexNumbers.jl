@@ -236,14 +236,21 @@ end
 # Trigonometric functions
 #########################
 
+# Helper to get matrix in the right format for trig functions
+# Julia 1.11 requires mutable matrices for exp!, Julia 1.12+ works with immutable
+@inline _matfunc_matrix(mat) = @static if VERSION >= v"1.12"
+    mat  # Use immutable SMatrix directly in Julia 1.12+
+else
+    Matrix(mat)  # Convert to mutable Matrix for Julia 1.11
+end
+
 """
     sin(m::Multicomplex)
 
 Multicomplex sine function via the matrix representation.
 """
 function Base.sin(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(sin(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(sin(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 """
@@ -252,8 +259,7 @@ end
 Multicomplex cosine function via the matrix representation.
 """
 function Base.cos(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(cos(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(cos(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 """
@@ -262,8 +268,7 @@ end
 Multicomplex tangent function via the matrix representation.
 """
 function Base.tan(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(tan(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(tan(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 """
@@ -272,8 +277,7 @@ end
 Multicomplex cotangent function via the matrix representation.
 """
 function Base.cot(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(cot(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(cot(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 """
@@ -282,8 +286,7 @@ end
 Multicomplex secant function via the matrix representation.
 """
 function Base.sec(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(sec(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(sec(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 """
@@ -292,8 +295,7 @@ end
 Multicomplex cosecant function via the matrix representation.
 """
 function Base.csc(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(csc(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(csc(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 
@@ -307,8 +309,7 @@ end
 Multicomplex hyperbolic sine function via the matrix representation.
 """
 function Base.sinh(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(sinh(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(sinh(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 """
@@ -317,8 +318,7 @@ end
 Multicomplex hyperbolic cosine function via the matrix representation.
 """
 function Base.cosh(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(cosh(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(cosh(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 """
@@ -327,8 +327,7 @@ end
 Multicomplex hyperbolic tangent function via the matrix representation.
 """
 function Base.tanh(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(tanh(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(tanh(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 """
@@ -337,8 +336,7 @@ end
 Multicomplex hyperbolic cotangent function via the matrix representation.
 """
 function Base.coth(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(coth(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(coth(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 """
@@ -347,8 +345,7 @@ end
 Multicomplex hyperbolic secant function via the matrix representation.
 """
 function Base.sech(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(sech(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(sech(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 """
@@ -357,8 +354,7 @@ end
 Multicomplex hyperbolic cosecant function via the matrix representation.
 """
 function Base.csch(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for compatibility with Julia 1.11 (exp! requirement)
-    Multicomplex{N}(SVector{C}(csch(Matrix(matrep(m)))[:, 1]))
+    Multicomplex{N}(SVector{C}(csch(_matfunc_matrix(matrep(m)))[:, 1]))
 end
 
 
@@ -373,8 +369,7 @@ Multicomplex arcsine function via the matrix representation.
 """
 function Base.asin(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(asin(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(asin(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 """
@@ -384,8 +379,7 @@ Multicomplex arccosine function via the matrix representation.
 """
 function Base.acos(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(acos(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(acos(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 """
@@ -395,8 +389,7 @@ Multicomplex arctangent function via the matrix representation.
 """
 function Base.atan(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(atan(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(atan(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 """
@@ -406,8 +399,7 @@ Multicomplex arccotangent function via the matrix representation.
 """
 function Base.acot(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(acot(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(acot(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 """
@@ -417,8 +409,7 @@ Multicomplex arcsecant function via the matrix representation.
 """
 function Base.asec(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(asec(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(asec(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 """
@@ -428,8 +419,7 @@ Multicomplex arccosecant function via the matrix representation.
 """
 function Base.acsc(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(acsc(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(acsc(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 
@@ -444,8 +434,7 @@ Multicomplex inverse hyperbolic sine function via the matrix representation.
 """
 function Base.asinh(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(asinh(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(asinh(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 """
@@ -455,8 +444,7 @@ Multicomplex inverse hyperbolic cosine function via the matrix representation.
 """
 function Base.acosh(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(acosh(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(acosh(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 """
@@ -466,8 +454,7 @@ Multicomplex inverse hyperbolic tangent function via the matrix representation.
 """
 function Base.atanh(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(atanh(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(atanh(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 """
@@ -477,8 +464,7 @@ Multicomplex inverse hyperbolic cotangent function via the matrix representation
 """
 function Base.acoth(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(acoth(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(acoth(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 """
@@ -488,8 +474,7 @@ Multicomplex inverse hyperbolic secant function via the matrix representation.
 """
 function Base.asech(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(asech(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(asech(_matfunc_matrix(matrep(m)))[:, 1])))
 end
 
 """
@@ -499,6 +484,5 @@ Multicomplex inverse hyperbolic cosecant function via the matrix representation.
 """
 function Base.acsch(m::Multicomplex{T,N,C}) where {T,N,C}
     # Inverse functions can return complex values, so extract real parts
-    # Convert to Matrix for Julia 1.11 compatibility
-    Multicomplex{N}(SVector{C}(real.(acsch(Matrix(matrep(m)))[:, 1])))
+    Multicomplex{N}(SVector{C}(real.(acsch(_matfunc_matrix(matrep(m)))[:, 1])))
 end
