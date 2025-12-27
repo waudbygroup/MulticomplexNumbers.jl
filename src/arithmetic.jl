@@ -225,7 +225,7 @@ end
 Multicomplex sine function via the matrix representation.
 """
 function Base.sin(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(sin(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(sin(matrep(m))[:, 1]))
 end
 
 """
@@ -234,7 +234,7 @@ end
 Multicomplex cosine function via the matrix representation.
 """
 function Base.cos(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(cos(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(cos(matrep(m))[:, 1]))
 end
 
 """
@@ -243,7 +243,7 @@ end
 Multicomplex tangent function via the matrix representation.
 """
 function Base.tan(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(tan(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(tan(matrep(m))[:, 1]))
 end
 
 """
@@ -252,7 +252,7 @@ end
 Multicomplex cotangent function via the matrix representation.
 """
 function Base.cot(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(cot(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(cot(matrep(m))[:, 1]))
 end
 
 """
@@ -261,7 +261,7 @@ end
 Multicomplex secant function via the matrix representation.
 """
 function Base.sec(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(sec(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(sec(matrep(m))[:, 1]))
 end
 
 """
@@ -270,7 +270,7 @@ end
 Multicomplex cosecant function via the matrix representation.
 """
 function Base.csc(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(csc(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(csc(matrep(m))[:, 1]))
 end
 
 
@@ -284,7 +284,7 @@ end
 Multicomplex hyperbolic sine function via the matrix representation.
 """
 function Base.sinh(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(sinh(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(sinh(matrep(m))[:, 1]))
 end
 
 """
@@ -293,7 +293,7 @@ end
 Multicomplex hyperbolic cosine function via the matrix representation.
 """
 function Base.cosh(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(cosh(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(cosh(matrep(m))[:, 1]))
 end
 
 """
@@ -302,7 +302,7 @@ end
 Multicomplex hyperbolic tangent function via the matrix representation.
 """
 function Base.tanh(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(tanh(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(tanh(matrep(m))[:, 1]))
 end
 
 """
@@ -311,7 +311,7 @@ end
 Multicomplex hyperbolic cotangent function via the matrix representation.
 """
 function Base.coth(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(coth(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(coth(matrep(m))[:, 1]))
 end
 
 """
@@ -320,7 +320,7 @@ end
 Multicomplex hyperbolic secant function via the matrix representation.
 """
 function Base.sech(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(sech(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(sech(matrep(m))[:, 1]))
 end
 
 """
@@ -329,7 +329,7 @@ end
 Multicomplex hyperbolic cosecant function via the matrix representation.
 """
 function Base.csch(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(csch(matrep(m))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(SVector{C}(csch(matrep(m))[:, 1]))
 end
 
 
@@ -343,10 +343,8 @@ end
 Multicomplex arcsine function via the matrix representation.
 """
 function Base.asin(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = asin(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(asin(matrep(m))[:, 1])))
 end
 
 """
@@ -355,10 +353,8 @@ end
 Multicomplex arccosine function via the matrix representation.
 """
 function Base.acos(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = acos(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acos(matrep(m))[:, 1])))
 end
 
 """
@@ -367,10 +363,8 @@ end
 Multicomplex arctangent function via the matrix representation.
 """
 function Base.atan(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = atan(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(atan(matrep(m))[:, 1])))
 end
 
 """
@@ -379,10 +373,8 @@ end
 Multicomplex arccotangent function via the matrix representation.
 """
 function Base.acot(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = acot(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acot(matrep(m))[:, 1])))
 end
 
 """
@@ -391,10 +383,8 @@ end
 Multicomplex arcsecant function via the matrix representation.
 """
 function Base.asec(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = asec(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(asec(matrep(m))[:, 1])))
 end
 
 """
@@ -403,10 +393,8 @@ end
 Multicomplex arccosecant function via the matrix representation.
 """
 function Base.acsc(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = acsc(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acsc(matrep(m))[:, 1])))
 end
 
 
@@ -420,10 +408,8 @@ end
 Multicomplex inverse hyperbolic sine function via the matrix representation.
 """
 function Base.asinh(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = asinh(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(asinh(matrep(m))[:, 1])))
 end
 
 """
@@ -432,10 +418,8 @@ end
 Multicomplex inverse hyperbolic cosine function via the matrix representation.
 """
 function Base.acosh(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = acosh(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acosh(matrep(m))[:, 1])))
 end
 
 """
@@ -444,10 +428,8 @@ end
 Multicomplex inverse hyperbolic tangent function via the matrix representation.
 """
 function Base.atanh(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = atanh(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(atanh(matrep(m))[:, 1])))
 end
 
 """
@@ -456,10 +438,8 @@ end
 Multicomplex inverse hyperbolic cotangent function via the matrix representation.
 """
 function Base.acoth(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = acoth(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acoth(matrep(m))[:, 1])))
 end
 
 """
@@ -468,10 +448,8 @@ end
 Multicomplex inverse hyperbolic secant function via the matrix representation.
 """
 function Base.asech(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = asech(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(asech(matrep(m))[:, 1])))
 end
 
 """
@@ -480,8 +458,6 @@ end
 Multicomplex inverse hyperbolic cosecant function via the matrix representation.
 """
 function Base.acsch(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    result = acsch(mat)
-    Multicomplex{N}(real.(result)[SVector{C}(SOneTo(C))])
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acsch(matrep(m))[:, 1])))
 end
