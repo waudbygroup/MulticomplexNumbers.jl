@@ -391,11 +391,11 @@ end
     m2 = Multicomplex(1.0, 2.0, 3.0, 4.0)  # 1 + 2i₁ + 3i₂ + 4i₁i₂
     folded_m2 = fold(m2)
     @test order(folded_m2) == 1
-    # (1 + 2i₁ + 3i₂ + 4i₁i₂)(1 + 2i₁ - 3i₂ - 4i₁i₂)
-    # = (1 + 2i₁)² - (3i₂ + 4i₁i₂)²
-    # = (1 + 4i₁ - 4) - (9i₂² + 24i₁i₂² + 16i₁²i₂²)
-    # = (-3 + 4i₁) - (-9 - 24 - 16) = (-3 + 4i₁) + 49 = 46 + 4i₁
-    @test folded_m2 ≈ Multicomplex(46.0, 4.0)
+    # m = (1 + 2i₁) + i₂(3 + 4i₁), conj(m) = (1 + 2i₁) - i₂(3 + 4i₁)
+    # fold(m) = (1 + 2i₁)² - i₂²(3 + 4i₁)²
+    #         = (1 + 4i₁ - 4) - (-1)(9 + 24i₁ - 16)
+    #         = (-3 + 4i₁) - (-7 + 24i₁) = -10 + 28i₁
+    @test folded_m2 ≈ Multicomplex(-10.0, 28.0)
 
     # Test the classic abient example: (1 + i₁i₂)
     abient_example = 1.0 + im1*im2
