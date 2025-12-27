@@ -107,61 +107,23 @@ This pattern is clean and intuitive: `im1` ↔ dimension 1, `im2` ↔ dimension 
 
 ### Step 4: Phase Correction
 
-Phase errors are common in NMR. We correct them by multiplying by phase factors.
-
-#### Zero-Order Phase Correction
+Phase errors are common in NMR. Correct them by multiplying by phase factors:
 
 ```julia
-"""Apply zero-order phase correction to direct dimension."""
-function phase_correct_0th_direct!(spectrum, theta1)
-    spectrum .*= exp(im1 * theta1)
-    return spectrum
-end
-
-"""Apply zero-order phase correction to indirect dimension."""
-function phase_correct_0th_indirect!(spectrum, theta2)
-    spectrum .*= exp(im2 * theta2)
-    return spectrum
-end
-
-# Example: Apply 30° correction to direct, 45° to indirect
-phase_correct_0th_direct!(fid, π/6)      # 30° = π/6 radians
-phase_correct_0th_indirect!(fid, π/4)    # 45° = π/4 radians
+# Zero-order phase correction: multiply by exp(imN * θ)
+fid .*= exp(im1 * π/6)   # 30° correction for direct dimension
+fid .*= exp(im2 * π/4)   # 45° correction for indirect dimension
 ```
 
-#### First-Order Phase Correction
-
-First-order phase correction applies a linearly varying phase:
+For first-order (linear) phase correction, apply varying phases across the dimension:
 
 ```julia
-"""
-Apply first-order phase correction.
-
-# Arguments
-- `spectrum`: The spectrum array
-- `theta0`: Zero-order phase (radians)
-- `theta1`: First-order phase (radians per point)
-- `dim`: Dimension to correct (1 or 2)
-"""
-function phase_correct_1st!(spectrum, theta0, theta1, dim)
-    if dim == 1
-        n = size(spectrum, 1)
-        for i in 1:n
-            phase = theta0 + theta1 * (i - 1) / n
-            spectrum[i, :] .*= exp(im1 * phase)
-        end
-    elseif dim == 2
-        n = size(spectrum, 2)
-        for j in 1:n
-            phase = theta0 + theta1 * (j - 1) / n
-            spectrum[:, j] .*= exp(im2 * phase)
-        end
-    end
-    return spectrum
+# First-order correction: 0° to 180° across direct dimension
+n = size(fid, 1)
+for i in 1:n
+    θ = π * (i - 1) / n
+    fid[i, :] .*= exp(im1 * θ)
 end
-
-# Apply first-order correction: 0° to 180° across direct dimension
-phase_correct_1st!(fid, 0.0, π, 1)
 ```
 
 ### Step 5: Extracting Complex Sub-Components
@@ -264,9 +226,8 @@ fft!(fid, 1, dims=1)  # Direct dimension
 fft!(fid, 2, dims=2)  # Indirect dimension
 
 # 5. Phase correction
-phase_correct_0th_direct!(fid, π/8)      # 22.5°
-phase_correct_0th_indirect!(fid, π/6)    # 30°
-phase_correct_1st!(fid, 0.0, π/4, 1)     # 45° across F1
+fid .*= exp(im1 * π/8)   # 22.5° for direct dimension
+fid .*= exp(im2 * π/6)   # 30° for indirect dimension
 
 # 6. Extract magnitude for plotting
 magnitude = abs.(realest.(fid))
