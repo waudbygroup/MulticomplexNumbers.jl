@@ -142,3 +142,347 @@ Multicomplex square root via the matrix representation.
 function Base.sqrt(m::Multicomplex{T,N,C}) where {T,N,C}
     Multicomplex{N}(SMatrix{C,C}(sqrt(matrep(m)))[SVector{C}(SOneTo(C))])
 end
+
+
+################
+# fold operator#
+################
+@doc raw"""
+    fold(m::Multicomplex{T,N})
+
+Folding operation that multiplies a multicomplex number by its conjugate.
+
+With w ∈ ℂₙ₊₁, fold(w) = w × conj(w) = conj(w) × w ∈ ℂₙ.
+
+The fold operation reduces the order by 1:
+- fold(ℂₙ) → ℂₙ₋₁
+- fold(ℂ₁) → ℂ₀ (real numbers)
+- fold(ℂ₀) → ℂ₀ (squaring)
+
+# Examples
+```julia
+julia> fold(1 + im1)
+Multicomplex(2.0)
+
+julia> fold(1 + im1*im2)  # (1 + i₁i₂)(1 - i₁i₂) = 0
+Multicomplex(0.0, 0.0)
+```
+
+# References
+Sometimes the fold of a nonzero number turns out to be zero; for example,
+(1 + i₁i₂)(1 - i₁i₂) = 0. This illustrates that the norm is not always
+preserved under multiplication, thus the multicomplex numbers are not a
+composition algebra.
+"""
+function fold(m::Multicomplex{T,0,1}) where {T}
+    # For real numbers (ℂ₀), fold is just squaring
+    Multicomplex{0}(SVector(m.value[1]^2))
+end
+
+function fold(m::Multicomplex{T,1,2}) where {T}
+    # For complex numbers (ℂ₁), fold gives |z|² as a real number (ℂ₀)
+    result = m * conj(m)
+    Multicomplex{0}(SVector(real(result)))
+end
+
+function fold(m::Multicomplex{T,N,C}) where {T,N,C}
+    # For higher orders (ℂₙ where n≥2), fold reduces order by 1
+    result = m * conj(m)
+    real(result)  # Returns Multicomplex{N-1}
+end
+
+@doc raw"""
+    isabient(m::Multicomplex; atol=0, rtol=atol>0 ? 0 : √eps)
+
+Determine if a multicomplex number is abient.
+
+A multicomplex number is abient (from a Latin participle meaning "going away")
+if after sufficiently many foldings it becomes zero. After N foldings, an ℂₙ
+multicomplex number becomes a real number; if it turns out to be zero, the
+multicomplex number is abient.
+
+# Arguments
+- `m::Multicomplex`: The multicomplex number to test
+- `atol::Real=0`: Absolute tolerance for zero comparison
+- `rtol::Real`: Relative tolerance (defaults to √eps if atol=0)
+
+# Examples
+```julia
+julia> isabient(1 + im1)
+false
+
+julia> isabient(1 + im1*im2)  # (1 + i₁i₂) is abient
+true
+```
+
+# References
+Not to be confused with "ambient". This concept arises because multicomplex
+numbers are not a composition algebra - the norm is not always preserved
+under multiplication.
+"""
+function isabient(m::Multicomplex{T,N,C}; atol::Real=0, rtol::Real=Base.rtoldefault(T)) where {T,N,C}
+    # Fold N times to reduce to a real number (ℂ₀)
+    result = m
+    for _ in 1:N
+        result = fold(result)
+    end
+    # After N folds, result is Multicomplex{0} - check if it's approximately zero
+    # For Multicomplex{0}, we check the single value component
+    return isapprox(result.value[1], zero(T); atol=atol, rtol=rtol)
+end
+
+
+#########################
+# Trigonometric functions
+#########################
+
+# Helper to get matrix in the right format for trig functions
+# Julia 1.11 requires mutable matrices for exp!, Julia 1.12+ works with immutable
+@inline _matfunc_matrix(mat) = @static if VERSION >= v"1.12"
+    mat  # Use immutable SMatrix directly in Julia 1.12+
+else
+    Matrix(mat)  # Convert to mutable Matrix for Julia 1.11
+end
+
+"""
+    sin(m::Multicomplex)
+
+Multicomplex sine function via the matrix representation.
+"""
+function Base.sin(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(sin(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+"""
+    cos(m::Multicomplex)
+
+Multicomplex cosine function via the matrix representation.
+"""
+function Base.cos(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(cos(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+"""
+    tan(m::Multicomplex)
+
+Multicomplex tangent function via the matrix representation.
+"""
+function Base.tan(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(tan(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+"""
+    cot(m::Multicomplex)
+
+Multicomplex cotangent function via the matrix representation.
+"""
+function Base.cot(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(cot(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+"""
+    sec(m::Multicomplex)
+
+Multicomplex secant function via the matrix representation.
+"""
+function Base.sec(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(sec(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+"""
+    csc(m::Multicomplex)
+
+Multicomplex cosecant function via the matrix representation.
+"""
+function Base.csc(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(csc(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+
+############################
+# Hyperbolic functions
+############################
+
+"""
+    sinh(m::Multicomplex)
+
+Multicomplex hyperbolic sine function via the matrix representation.
+"""
+function Base.sinh(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(sinh(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+"""
+    cosh(m::Multicomplex)
+
+Multicomplex hyperbolic cosine function via the matrix representation.
+"""
+function Base.cosh(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(cosh(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+"""
+    tanh(m::Multicomplex)
+
+Multicomplex hyperbolic tangent function via the matrix representation.
+"""
+function Base.tanh(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(tanh(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+"""
+    coth(m::Multicomplex)
+
+Multicomplex hyperbolic cotangent function via the matrix representation.
+"""
+function Base.coth(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(coth(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+"""
+    sech(m::Multicomplex)
+
+Multicomplex hyperbolic secant function via the matrix representation.
+"""
+function Base.sech(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(sech(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+"""
+    csch(m::Multicomplex)
+
+Multicomplex hyperbolic cosecant function via the matrix representation.
+"""
+function Base.csch(m::Multicomplex{T,N,C}) where {T,N,C}
+    Multicomplex{N}(SVector{C}(csch(_matfunc_matrix(matrep(m)))[:, 1]))
+end
+
+
+####################################
+# Inverse trigonometric functions
+####################################
+
+"""
+    asin(m::Multicomplex)
+
+Multicomplex arcsine function via the matrix representation.
+"""
+function Base.asin(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(asin(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+"""
+    acos(m::Multicomplex)
+
+Multicomplex arccosine function via the matrix representation.
+"""
+function Base.acos(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acos(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+"""
+    atan(m::Multicomplex)
+
+Multicomplex arctangent function via the matrix representation.
+"""
+function Base.atan(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(atan(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+"""
+    acot(m::Multicomplex)
+
+Multicomplex arccotangent function via the matrix representation.
+"""
+function Base.acot(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acot(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+"""
+    asec(m::Multicomplex)
+
+Multicomplex arcsecant function via the matrix representation.
+"""
+function Base.asec(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(asec(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+"""
+    acsc(m::Multicomplex)
+
+Multicomplex arccosecant function via the matrix representation.
+"""
+function Base.acsc(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acsc(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+
+####################################
+# Inverse hyperbolic functions
+####################################
+
+"""
+    asinh(m::Multicomplex)
+
+Multicomplex inverse hyperbolic sine function via the matrix representation.
+"""
+function Base.asinh(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(asinh(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+"""
+    acosh(m::Multicomplex)
+
+Multicomplex inverse hyperbolic cosine function via the matrix representation.
+"""
+function Base.acosh(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acosh(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+"""
+    atanh(m::Multicomplex)
+
+Multicomplex inverse hyperbolic tangent function via the matrix representation.
+"""
+function Base.atanh(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(atanh(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+"""
+    acoth(m::Multicomplex)
+
+Multicomplex inverse hyperbolic cotangent function via the matrix representation.
+"""
+function Base.acoth(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acoth(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+"""
+    asech(m::Multicomplex)
+
+Multicomplex inverse hyperbolic secant function via the matrix representation.
+"""
+function Base.asech(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(asech(_matfunc_matrix(matrep(m)))[:, 1])))
+end
+
+"""
+    acsch(m::Multicomplex)
+
+Multicomplex inverse hyperbolic cosecant function via the matrix representation.
+"""
+function Base.acsch(m::Multicomplex{T,N,C}) where {T,N,C}
+    # Inverse functions can return complex values, so extract real parts
+    Multicomplex{N}(SVector{C}(real.(acsch(_matfunc_matrix(matrep(m)))[:, 1])))
+end

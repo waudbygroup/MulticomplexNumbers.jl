@@ -12,6 +12,7 @@ export component
 export realest
 export matrep
 export ascomplex
+export fold, isabient
 
 include("base.jl")
 include("io.jl")

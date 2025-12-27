@@ -371,3 +371,245 @@ end
     @test m * one(m) == m
     @test one(m) * m == m
 end
+
+@testset "fold and isabient" begin
+    # Test fold for N=0 (real numbers) - squaring
+    m0 = Multicomplex(3.0)
+    @test fold(m0) == Multicomplex(9.0)
+    @test order(fold(m0)) == 0
+
+    # Test fold for N=1 (complex numbers) - reduces to N=0 (real)
+    m1 = Multicomplex(3.0, 4.0)  # 3 + 4i₁
+    @test fold(m1) ≈ Multicomplex(25.0)  # |z|² = 3² + 4² = 25
+    @test order(fold(m1)) == 0
+
+    m1b = 1.0 + 1.0im1
+    @test fold(m1b) ≈ Multicomplex(2.0)  # |1+i|² = 1² + 1² = 2
+    @test order(fold(m1b)) == 0
+
+    # Test fold for N=2 - reduces to N=1
+    m2 = Multicomplex(1.0, 2.0, 3.0, 4.0)  # 1 + 2i₁ + 3i₂ + 4i₁i₂
+    folded_m2 = fold(m2)
+    @test order(folded_m2) == 1
+    # m = (1 + 2i₁) + i₂(3 + 4i₁), conj(m) = (1 + 2i₁) - i₂(3 + 4i₁)
+    # fold(m) = (1 + 2i₁)² - i₂²(3 + 4i₁)²
+    #         = (1 + 4i₁ - 4) - (-1)(9 + 24i₁ - 16)
+    #         = (-3 + 4i₁) - (-7 + 24i₁) = -10 + 28i₁
+    @test folded_m2 ≈ Multicomplex(-10.0, 28.0)
+
+    # Test the classic abient example: (1 + i₁i₂)
+    abient_example = 1.0 + im1*im2
+    folded_abient = fold(abient_example)
+    @test order(folded_abient) == 1
+    @test folded_abient ≈ Multicomplex(0.0, 0.0)  # (1 + i₁i₂)(1 - i₁i₂) = 0
+
+    # Test fold for N=3 - reduces to N=2
+    m3 = Multicomplex{3}(SVector{8}(1.0:8.0))
+    folded_m3 = fold(m3)
+    @test order(folded_m3) == 2
+    # The fold should give a specific 4-component result
+    @test folded_m3 isa Multicomplex{Float64,2,4}
+
+    # Test isabient for non-abient numbers
+    @test isabient(Multicomplex(1.0)) == false
+    @test isabient(1.0 + 1.0im1) == false
+    @test isabient(Multicomplex(1.0, 2.0, 3.0, 4.0)) == false
+
+    # Test isabient for the classic abient example
+    @test isabient(1.0 + im1*im2) == true
+    @test isabient(2.0 + 2.0im1*im2) == true
+
+    # Test more abient examples
+    # For N=2: a + b*i₁i₂ where a = b is abient (zero divisor property)
+    @test isabient(1.0 + im2) == false
+    @test isabient(1.0 + im1) == false
+    @test isabient(im1*im2) == false  # i₁i₂ alone is not abient (folds to -1, then 1)
+
+    # Test isabient with tolerance
+    # This is mathematically abient (a = b form), should fold to ≈ 0
+    nearly_abient = Multicomplex(1e-10, 0.0, 0.0, 1e-10)
+    @test isabient(nearly_abient, atol=1e-8) == true
+    @test isabient(nearly_abient, atol=1e-20) == true  # Should be abient even with tight tolerance
+
+    # Test non-abient number with different tolerances
+    not_quite_abient = Multicomplex(1.0, 0.0, 0.0, 2.0)  # a ≠ b, not abient (folds to -3)
+    @test isabient(not_quite_abient, atol=1e-8) == false
+
+    # Test type inference
+    @test @inferred(fold(Multicomplex(1.0, 2.0))) isa Multicomplex
+    @test @inferred(isabient(Multicomplex(1.0, 2.0))) isa Bool
+end
+
+@testset "Trigonometric functions" begin
+    # Test basic trig functions on real multicomplex (should match real trig)
+    m0 = Multicomplex(0.5)
+    @test sin(m0) ≈ Multicomplex(sin(0.5))
+    @test cos(m0) ≈ Multicomplex(cos(0.5))
+    @test tan(m0) ≈ Multicomplex(tan(0.5))
+
+    # Test on N=1 (complex-like)
+    m1 = Multicomplex(0.5, 0.3)
+    z = 0.5 + 0.3im
+    @test sin(m1) ≈ Multicomplex(sin(z))
+    @test cos(m1) ≈ Multicomplex(cos(z))
+    @test tan(m1) ≈ Multicomplex(tan(z))
+
+    # Test Euler's formula: exp(i*x) = cos(x) + i*sin(x)
+    # For multicomplex: exp(x*im1) = cos(x) + im1*sin(x)
+    x = 0.5
+    m = x * im1  # m = 0.5*im1
+    @test exp(m) ≈ Multicomplex(cos(x), sin(x))  # exp(0.5*im1) = cos(0.5) + im1*sin(0.5)
+
+    # Test fundamental identity: sin²(x) + cos²(x) = 1
+    m = Multicomplex(0.8, 0.6)
+    @test sin(m)^2 + cos(m)^2 ≈ Multicomplex(1.0, 0.0)
+
+    # Test reciprocal functions
+    m = Multicomplex(0.5, 0.3)
+    @test sec(m) ≈ 1 / cos(m)
+    @test csc(m) ≈ 1 / sin(m)
+    @test cot(m) ≈ 1 / tan(m)
+
+    # Test type inference
+    @test @inferred(sin(Multicomplex(1.0, 2.0))) isa Multicomplex
+    @test @inferred(cos(Multicomplex(1.0, 2.0))) isa Multicomplex
+    @test @inferred(tan(Multicomplex(1.0, 2.0))) isa Multicomplex
+end
+
+@testset "Hyperbolic functions" begin
+    # Test basic hyperbolic functions on real multicomplex
+    m0 = Multicomplex(0.5)
+    @test sinh(m0) ≈ Multicomplex(sinh(0.5))
+    @test cosh(m0) ≈ Multicomplex(cosh(0.5))
+    @test tanh(m0) ≈ Multicomplex(tanh(0.5))
+
+    # Test on N=1 (complex-like)
+    m1 = Multicomplex(0.5, 0.3)
+    z = 0.5 + 0.3im
+    @test sinh(m1) ≈ Multicomplex(sinh(z))
+    @test cosh(m1) ≈ Multicomplex(cosh(z))
+    @test tanh(m1) ≈ Multicomplex(tanh(z))
+
+    # Test fundamental identity: cosh²(x) - sinh²(x) = 1
+    m = Multicomplex(0.8, 0.6)
+    @test cosh(m)^2 - sinh(m)^2 ≈ Multicomplex(1.0, 0.0)
+
+    # Test reciprocal functions
+    m = Multicomplex(0.5, 0.3)
+    @test sech(m) ≈ 1 / cosh(m)
+    @test csch(m) ≈ 1 / sinh(m)
+    @test coth(m) ≈ 1 / tanh(m)
+
+    # Test relationship to exp: sinh(x) = (exp(x) - exp(-x))/2
+    m = Multicomplex(0.5, 0.3)
+    @test sinh(m) ≈ (exp(m) - exp(-m)) / 2
+
+    # Test type inference
+    @test @inferred(sinh(Multicomplex(1.0, 2.0))) isa Multicomplex
+    @test @inferred(cosh(Multicomplex(1.0, 2.0))) isa Multicomplex
+    @test @inferred(tanh(Multicomplex(1.0, 2.0))) isa Multicomplex
+end
+
+@testset "Inverse trigonometric functions" begin
+    # Test inverse trig functions on real multicomplex
+    m0 = Multicomplex(0.5)
+    @test asin(m0) ≈ Multicomplex(asin(0.5))
+    @test acos(m0) ≈ Multicomplex(acos(0.5))
+    @test atan(m0) ≈ Multicomplex(atan(0.5))
+
+    # Test on N=1 (complex-like)
+    m1 = Multicomplex(0.5, 0.3)
+    z = 0.5 + 0.3im
+    @test asin(m1) ≈ Multicomplex(asin(z))
+    @test acos(m1) ≈ Multicomplex(acos(z))
+    @test atan(m1) ≈ Multicomplex(atan(z))
+
+    # Test inverse relationships
+    m = Multicomplex(0.4, 0.3)
+    @test sin(asin(m)) ≈ m
+    @test cos(acos(m)) ≈ m
+    @test tan(atan(m)) ≈ m
+
+    # Test type inference
+    @test @inferred(asin(Multicomplex(0.5, 0.3))) isa Multicomplex
+    @test @inferred(acos(Multicomplex(0.5, 0.3))) isa Multicomplex
+    @test @inferred(atan(Multicomplex(0.5, 0.3))) isa Multicomplex
+end
+
+@testset "Inverse hyperbolic functions" begin
+    # Test inverse hyperbolic functions on real multicomplex
+    m0 = Multicomplex(0.5)
+    @test asinh(m0) ≈ Multicomplex(asinh(0.5))
+    @test acosh(Multicomplex(1.5)) ≈ Multicomplex(acosh(1.5))
+    @test atanh(m0) ≈ Multicomplex(atanh(0.5))
+
+    # Test on N=1 (complex-like)
+    m1 = Multicomplex(0.5, 0.3)
+    z = 0.5 + 0.3im
+    @test asinh(m1) ≈ Multicomplex(asinh(z))
+    @test atanh(m1) ≈ Multicomplex(atanh(z))
+
+    # Test inverse relationships
+    m = Multicomplex(0.5, 0.3)
+    @test sinh(asinh(m)) ≈ m
+    @test tanh(atanh(m)) ≈ m
+
+    # Test type inference
+    @test @inferred(asinh(Multicomplex(0.5, 0.3))) isa Multicomplex
+    @test @inferred(atanh(Multicomplex(0.5, 0.3))) isa Multicomplex
+end
+
+@testset "Random number generation" begin
+    using Random
+
+    # Test rand for different orders
+    @test rand(Multicomplex{Float64,0,1}) isa Multicomplex{Float64,0,1}
+    @test rand(Multicomplex{Float64,1,2}) isa Multicomplex{Float64,1,2}
+    @test rand(Multicomplex{Float64,2,4}) isa Multicomplex{Float64,2,4}
+    @test rand(Multicomplex{Float64,3,8}) isa Multicomplex{Float64,3,8}
+
+    # Test that rand produces values in [0, 1) for Float64
+    m = rand(Multicomplex{Float64,2,4})
+    @test all(0 ≤ c < 1 for c in flat(m))
+
+    # Test rand with explicit RNG
+    rng = MersenneTwister(42)
+    m1 = rand(rng, Multicomplex{Float64,1,2})
+    @test m1 isa Multicomplex{Float64,1,2}
+
+    # Test reproducibility with seeded RNG
+    rng1 = MersenneTwister(123)
+    rng2 = MersenneTwister(123)
+    @test rand(rng1, Multicomplex{Float64,2,4}) == rand(rng2, Multicomplex{Float64,2,4})
+
+    # Test randn for different orders
+    @test randn(Multicomplex{Float64,0,1}) isa Multicomplex{Float64,0,1}
+    @test randn(Multicomplex{Float64,1,2}) isa Multicomplex{Float64,1,2}
+    @test randn(Multicomplex{Float64,2,4}) isa Multicomplex{Float64,2,4}
+    @test randn(Multicomplex{Float64,3,8}) isa Multicomplex{Float64,3,8}
+
+    # Test randn with explicit RNG
+    rng = MersenneTwister(42)
+    m = randn(rng, Multicomplex{Float64,1,2})
+    @test m isa Multicomplex{Float64,1,2}
+
+    # Test that randn produces different values than rand
+    rng1 = MersenneTwister(42)
+    rng2 = MersenneTwister(42)
+    m_rand = rand(rng1, Multicomplex{Float64,1,2})
+    m_randn = randn(rng2, Multicomplex{Float64,1,2})
+    @test m_rand != m_randn
+
+    # Test reproducibility with seeded RNG for randn
+    rng1 = MersenneTwister(456)
+    rng2 = MersenneTwister(456)
+    @test randn(rng1, Multicomplex{Float64,2,4}) == randn(rng2, Multicomplex{Float64,2,4})
+
+    # Test that rand works with integer types
+    m_int = rand(Multicomplex{Int,1,2})
+    @test m_int isa Multicomplex{Int,1,2}
+
+    # Test type inference
+    @test @inferred(rand(Multicomplex{Float64,1,2})) isa Multicomplex
+    @test @inferred(randn(Multicomplex{Float64,1,2})) isa Multicomplex
+end
