@@ -406,15 +406,20 @@ end
     @test isabient(2.0 + 2.0im1*im2) == true
 
     # Test more abient examples
-    # For N=2: a + b*i₁i₂ where a ≈ b is abient
+    # For N=2: a + b*i₁i₂ where a = b is abient (zero divisor property)
     @test isabient(1.0 + im2) == false
     @test isabient(1.0 + im1) == false
-    @test isabient(im1*im2) == true
+    @test isabient(im1*im2) == false  # i₁i₂ alone is not abient (folds to -1, then 1)
 
     # Test isabient with tolerance
+    # This is mathematically abient (a = b form), should fold to ≈ 0
     nearly_abient = Multicomplex(1e-10, 0.0, 0.0, 1e-10)
     @test isabient(nearly_abient, atol=1e-8) == true
-    @test isabient(nearly_abient, atol=1e-12) == false
+    @test isabient(nearly_abient, atol=1e-20) == true  # Should be abient even with tight tolerance
+
+    # Test non-abient number with different tolerances
+    not_quite_abient = Multicomplex(1e-10, 0.0, 0.0, 2e-10)  # a ≠ b, not abient
+    @test isabient(not_quite_abient, atol=1e-8) == false
 
     # Test type inference
     @test @inferred(fold(Multicomplex(1.0, 2.0))) isa Multicomplex
