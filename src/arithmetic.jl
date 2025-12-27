@@ -61,12 +61,45 @@ Base.:(/)(m::Multicomplex{T,N,C}, a::Real) where {T,N,C} = Multicomplex{N}(m.val
 ##################
 # multiplication #
 ##################
+@doc raw"""
+    *(a, b)
+
+Multicomplex multiplication using recursive definition.
+
+For two multicomplex numbers ``w,z \in \mathbb{C}_{n+1}``, written as
+``w = u + v \cdot i_{n+1}`` and ``z = x + y \cdot i_{n+1}`` where ``u,v,x,y \in \mathbb{C}_n``,
+the multiplication rule is:
+
+``w \cdot z = (u \cdot x - v \cdot y) + (u \cdot y + v \cdot x) \cdot i_{n+1}``
+
+This is more efficient than the matrix representation approach for most cases.
 """
-    *(a,b)
-Multicomplex multiplication via the matrix representation.
-"""
+# Base case: N=0 (real numbers wrapped in Multicomplex)
+function Base.:(*)(a::Multicomplex{T,0,1}, b::Multicomplex{T,0,1}) where {T}
+    Multicomplex{0}(SVector(a.value[1] * b.value[1]))
+end
+
+# Recursive case: N≥1
+# w = u + v*i_N, z = x + y*i_N
+# w*z = (u*x - v*y) + (u*y + v*x)*i_N
 function Base.:(*)(a::Multicomplex{T,N,C}, b::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}((matrep(a)*matrep(b))[SVector{C}(SOneTo(C))])
+    # Extract real and imaginary parts (each of order N-1)
+    u = real(a)  # Multicomplex{N-1}
+    v = imag(a)  # Multicomplex{N-1}
+    x = real(b)  # Multicomplex{N-1}
+    y = imag(b)  # Multicomplex{N-1}
+
+    # Compute products recursively
+    ux = u * x
+    vy = v * y
+    uy = u * y
+    vx = v * x
+
+    # Combine: (ux - vy) + (uy + vx)*i_N
+    real_part = ux - vy
+    imag_part = uy + vx
+
+    Multicomplex(real_part, imag_part)
 end
 
 
@@ -91,20 +124,64 @@ end
 ############
 # division #
 ############
-"""
-    /(a,b)
-Multicomplex division via the matrix representation.
+@doc raw"""
+    inv(m::Multicomplex)
 
-Throws LinearAlgebra.SingularException if zero divisors exist (det b = 0).
+Compute the multiplicative inverse of a multicomplex number using a recursive
+conjugate-folding algorithm.
+
+For a non-abient multicomplex number ``m \in \mathbb{C}_n``:
+```math
+m^{-1} = \overline{m} \cdot (\text{fold}(m))^{-1}
+```
+
+where ``\overline{m}`` is the conjugate and ``\text{fold}(m) = m \cdot \overline{m} \in \mathbb{C}_{n-1}``.
+
+This recursively reduces the order until we reach a real number, where inversion
+is simply taking the reciprocal.
+
+If `m` is abient (i.e., folds to zero), falls back to matrix representation
+which will throw `LinearAlgebra.SingularException`.
+"""
+# Base case: N=0 (real numbers)
+function Base.inv(m::Multicomplex{T,0,1}) where {T}
+    Multicomplex{0}(SVector(inv(m.value[1])))
+end
+
+# Recursive case: N≥1
+# inv(m) = conj(m) * inv(fold(m))
+function Base.inv(m::Multicomplex{T,N,C}) where {T,N,C}
+    folded = fold(m)
+    # Check if fold result is approximately zero (abient case)
+    # If so, fall back to matrix representation
+    if iszero(folded)
+        # Use matrix representation for abient numbers
+        return Multicomplex{N}((I(C)/matrep(m))[SVector{C}(SOneTo(C))])
+    end
+    # Recursive inversion: inv(m) = conj(m) * inv(fold(m))
+    conj(m) * inv(folded)
+end
+
+@doc raw"""
+    /(a, b)
+
+Multicomplex division using recursive conjugate-folding algorithm.
+
+The algorithm works by repeatedly multiplying numerator and denominator by the
+conjugate of the denominator:
+```math
+\frac{a}{b} = \frac{a \cdot \overline{b}}{b \cdot \overline{b}} = \frac{a \cdot \overline{b}}{\text{fold}(b)}
+```
+
+Each fold operation reduces the order of the denominator by 1. After ``n`` folds,
+the denominator becomes a real number, and division is simply scalar division.
+
+For abient divisors (where fold eventually produces zero), falls back to matrix
+representation which will throw `LinearAlgebra.SingularException`.
 """
 function Base.:(/)(a::Multicomplex{T,N,C}, b::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}((matrep(a)/matrep(b))[SVector{C}(SOneTo(C))])
+    a * inv(b)
 end
-
-function Base.inv(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}((I(C)/matrep(m))[SVector{C}(SOneTo(C))])
-end
-# Base.inv(m::Multicomplex{<:Integer}) = inv(float(m))
 
 
 
