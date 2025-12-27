@@ -142,7 +142,7 @@ The result matches the exact derivative to machine precision!
 ## Next Steps
 
 - **[Background](@ref)**: Learn the mathematics behind multicomplex numbers
-- **[User Guide](@ref)**: Detailed exploration of all features:
+- **User Guide**: Detailed exploration of all features:
   - [Creating Numbers](@ref creating)
   - [Arithmetic Operations](@ref arithmetic)
   - [Accessing Components](@ref components)

@@ -97,7 +97,7 @@ m = a + i_n \cdot b
 ```
 where ``a, b \in \mathbb{C}_{n-1}`` are called the "real" and "imaginary" parts (with respect to ``i_n``).
 
-This recursive structure is central to the implementation: the [`real`](@ref) and [`imag`](@ref) functions return multicomplex numbers of order ``n-1``.
+This recursive structure is central to the implementation: the `real` and `imag` functions return multicomplex numbers of order ``n-1``.
 
 ```@repl background
 using MulticomplexNumbers

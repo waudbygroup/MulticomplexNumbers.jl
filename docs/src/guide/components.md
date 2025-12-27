@@ -10,7 +10,7 @@ This page explains how to access and extract components from multicomplex number
 
 ## Real and Imaginary Parts
 
-The [`real`](@ref) and [`imag`](@ref) functions return multicomplex numbers of order N-1:
+The `real` and `imag` functions return multicomplex numbers of order N-1:
 
 ```@repl components
 using MulticomplexNumbers
@@ -126,7 +126,7 @@ flat(z * w)
 
 ## Complex Array Views
 
-The [`ascomplex`](@ref) function views multicomplex arrays as complex arrays. This is particularly useful for extracting specific complex sub-components in NMR applications.
+The `ascomplex` function views multicomplex arrays as complex arrays. This is particularly useful for extracting specific complex sub-components in NMR applications.
 
 ```@repl components
 using MulticomplexNumbers

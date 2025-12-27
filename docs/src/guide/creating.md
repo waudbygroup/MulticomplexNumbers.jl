@@ -1,4 +1,4 @@
-# Creating Multicomplex Numbers
+# [Creating Multicomplex Numbers](@id creating)
 
 ```@meta
 CurrentModule = MulticomplexNumbers
@@ -42,7 +42,7 @@ Number
 
 ## Using Imaginary Units
 
-The package exports [`im1`](@ref) through [`im6`](@ref):
+The package exports `im1` through `im6`:
 
 ```@repl creating
 using MulticomplexNumbers
