@@ -133,57 +133,27 @@ fft!(fid, 2, dims=2)  # Transform indirect dimension
 
 ## Phase Correction
 
-Phase correction is performed by multiplying by complex exponentials. For multicomplex numbers, we use different imaginary units for different dimensions:
+Phase correction is simply multiplication by a phase factor. Use the appropriate imaginary unit for each dimension:
 
 ```julia
 using MulticomplexNumbers
 using FFTW
 
-# After FFT, you may need to apply phase correction
-
-# Zero-order phase correction for the direct dimension (im1)
-function phase_correct_direct!(data, theta1)
-    phase_factor = exp(im1 * theta1)
-    data .*= phase_factor
-    return data
-end
-
-# Zero-order phase correction for the indirect dimension (im2)
-function phase_correct_indirect!(data, theta2)
-    phase_factor = exp(im2 * theta2)
-    data .*= phase_factor
-    return data
-end
-
-# First-order phase correction (linear phase)
-function phase_correct_first_order!(data, theta0, theta1_per_point, dim)
-    if dim == 1
-        n = size(data, 1)
-        for i in 1:n
-            phase = theta0 + theta1_per_point * (i - 1)
-            data[i, :] .*= exp(im1 * phase)
-        end
-    elseif dim == 2
-        n = size(data, 2)
-        for j in 1:n
-            phase = theta0 + theta1_per_point * (j - 1)
-            data[:, j] .*= exp(im2 * phase)
-        end
-    end
-    return data
-end
-
-# Example usage
+# Create and transform data
 fid = create_2d_nmr_signal(64, 32, 5.0, 10.0)
 fft!(fid, 1, dims=1)
 fft!(fid, 2, dims=2)
 
-# Apply zero-order phase corrections
-phase_correct_direct!(fid, π/6)      # 30° in direct dimension
-phase_correct_indirect!(fid, π/4)    # 45° in indirect dimension
+# Zero-order phase correction: multiply by exp(imN * θ)
+fid .*= exp(im1 * π/6)   # 30° correction for direct dimension
+fid .*= exp(im2 * π/4)   # 45° correction for indirect dimension
 
-# Or first-order correction
-# phase_correct_first_order!(fid, 0.0, π/180, 1)  # 1° per point in dim 1
+# For first-order (linear) phase correction, apply varying phases across the dimension
+n = size(fid, 1)
+for i in 1:n
+    θ = π/180 * (i - 1)  # 1° per point
+    fid[i, :] .*= exp(im1 * θ)
+end
 ```
 
 ---
