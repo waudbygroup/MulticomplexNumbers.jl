@@ -418,7 +418,7 @@ end
     @test isabient(nearly_abient, atol=1e-20) == true  # Should be abient even with tight tolerance
 
     # Test non-abient number with different tolerances
-    not_quite_abient = Multicomplex(1e-10, 0.0, 0.0, 2e-10)  # a ≠ b, not abient
+    not_quite_abient = Multicomplex(1.0, 0.0, 0.0, 2.0)  # a ≠ b, not abient (folds to -3)
     @test isabient(not_quite_abient, atol=1e-8) == false
 
     # Test type inference

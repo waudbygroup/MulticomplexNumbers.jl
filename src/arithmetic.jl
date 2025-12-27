@@ -225,9 +225,7 @@ end
 Multicomplex sine function via the matrix representation.
 """
 function Base.sin(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(sin(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(sin(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 """
@@ -236,9 +234,7 @@ end
 Multicomplex cosine function via the matrix representation.
 """
 function Base.cos(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(cos(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(cos(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 """
@@ -247,9 +243,7 @@ end
 Multicomplex tangent function via the matrix representation.
 """
 function Base.tan(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(tan(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(tan(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 """
@@ -258,9 +252,7 @@ end
 Multicomplex cotangent function via the matrix representation.
 """
 function Base.cot(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(cot(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(cot(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 """
@@ -269,9 +261,7 @@ end
 Multicomplex secant function via the matrix representation.
 """
 function Base.sec(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(sec(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(sec(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 """
@@ -280,9 +270,7 @@ end
 Multicomplex cosecant function via the matrix representation.
 """
 function Base.csc(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(csc(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(csc(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 
@@ -296,9 +284,7 @@ end
 Multicomplex hyperbolic sine function via the matrix representation.
 """
 function Base.sinh(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(sinh(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(sinh(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 """
@@ -307,9 +293,7 @@ end
 Multicomplex hyperbolic cosine function via the matrix representation.
 """
 function Base.cosh(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(cosh(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(cosh(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 """
@@ -318,9 +302,7 @@ end
 Multicomplex hyperbolic tangent function via the matrix representation.
 """
 function Base.tanh(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(tanh(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(tanh(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 """
@@ -329,9 +311,7 @@ end
 Multicomplex hyperbolic cotangent function via the matrix representation.
 """
 function Base.coth(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(coth(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(coth(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 """
@@ -340,9 +320,7 @@ end
 Multicomplex hyperbolic secant function via the matrix representation.
 """
 function Base.sech(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(sech(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(sech(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 """
@@ -351,9 +329,7 @@ end
 Multicomplex hyperbolic cosecant function via the matrix representation.
 """
 function Base.csch(m::Multicomplex{T,N,C}) where {T,N,C}
-    # Convert to mutable Matrix for LinearAlgebra functions
-    mat = Matrix(matrep(m))
-    Multicomplex{N}(real.(csch(mat))[SVector{C}(SOneTo(C))])
+    Multicomplex{N}(csch(matrep(m))[SVector{C}(SOneTo(C))])
 end
 
 
