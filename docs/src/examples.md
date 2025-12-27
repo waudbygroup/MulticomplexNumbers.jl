@@ -81,7 +81,7 @@ julia> a * b
 -5.0 + 10.0*im1
 
 julia> a / b
-0.44 + 0.08*im1
+0.44 + 0.07999999999999999*im1
 ```
 
 ### Powers and Transcendentals
