@@ -200,18 +200,45 @@ end
 ################
 # exponentials #
 ################
+@doc raw"""
+    exp(m::Multicomplex)
+
+Multicomplex exponential using recursive algorithm.
+
+For a multicomplex number ``a = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_{n-1}``:
+
+```math
+\exp(a) = \exp(x_0) \cos(x_1) + i_n \exp(x_0) \sin(x_1)
+```
+
+Equivalently: ``\exp(x_0 + i_n x_1) = \exp(x_0) [\cos(x_1) + i_n \sin(x_1)]``
+
+This recursive approach is more efficient than matrix representation.
+
+# References
+- NIST report equations (44-45): https://doi.org/10.6028/jres.126.033
 """
-    exp(m)
-Multicomplex exponential via the matrix representation.
-"""
+# Base case: real numbers
+function Base.exp(m::Multicomplex{T,0,1}) where {T}
+    Multicomplex{0}(SVector(exp(m.value[1])))
+end
+
 # Optimized case: N=1 (standard complex arithmetic)
 function Base.exp(m::Multicomplex{T,1,2}) where {T}
     Multicomplex(exp(Complex(m.value[1], m.value[2])))
 end
 
-# General case: use matrix representation
+# Recursive case: N≥2
+# exp(x0 + i_N*x1) = exp(x0) * [cos(x1) + i_N*sin(x1)]
 function Base.exp(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(exp(matrep(m))[SVector{C}(SOneTo(C))])
+    x0 = real(m)  # Multicomplex{N-1}
+    x1 = imag(m)  # Multicomplex{N-1}
+
+    exp_x0 = exp(x0)
+    y0 = exp_x0 * cos(x1)
+    y1 = exp_x0 * sin(x1)
+
+    Multicomplex(y0, y1)
 end
 
 
