@@ -229,16 +229,26 @@ function Base.exp(m::Multicomplex{T,1,2}) where {T}
 end
 
 # Recursive case: N≥2
-# exp(x0 + i_N*x1) = exp(x0) * [cos(x1) + i_N*sin(x1)]
+# Use equation 44 or 45 depending on magnitude of realest component
 function Base.exp(m::Multicomplex{T,N,C}) where {T,N,C}
-    x0 = real(m)  # Multicomplex{N-1}
-    x1 = imag(m)  # Multicomplex{N-1}
+    r = realest(m)
 
-    exp_x0 = exp(x0)
-    y0 = exp_x0 * cos(x1)
-    y1 = exp_x0 * sin(x1)
-
-    Multicomplex(y0, y1)
+    if abs(r) > 1
+        # Equation 45: exp(a) = exp(c₀{a}) * [cosh(a/c₀{a}) + sinh(a/c₀{a})]
+        # This avoids overflow in sinh/cosh for large negative arguments
+        exp_r = exp(r)
+        m_scaled = m / r
+        exp_r * (cosh(m_scaled) + sinh(m_scaled))
+    else
+        # Equation 44: exp(x₀ + i_n x₁) = exp(x₀)[cos(x₁) + i_n sin(x₁)]
+        # More efficient for typical small arguments
+        x0 = real(m)
+        x1 = imag(m)
+        exp_x0 = exp(x0)
+        y0 = exp_x0 * cos(x1)
+        y1 = exp_x0 * sin(x1)
+        Multicomplex(y0, y1)
+    end
 end
 
 
