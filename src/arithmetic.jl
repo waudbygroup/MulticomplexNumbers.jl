@@ -535,6 +535,14 @@ Base.csch(m::Multicomplex) = inv(sinh(m))
 # Inverse trigonometric functions
 ####################################
 
+# Helper to get matrix in the right format for matrix-based trig functions
+# Julia 1.11 requires mutable matrices for some operations, Julia 1.12+ works with immutable
+@inline _matfunc_matrix(mat) = @static if VERSION >= v"1.12"
+    mat  # Use immutable SMatrix directly in Julia 1.12+
+else
+    Matrix(mat)  # Convert to mutable Matrix for Julia 1.11
+end
+
 """
     asin(m::Multicomplex)
 
