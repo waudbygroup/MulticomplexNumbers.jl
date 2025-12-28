@@ -693,6 +693,109 @@ end
         # Relationship: cosh(x) = (exp(x) + exp(-x))/2
         @test cosh(m) ≈ (exp(m) + exp(-m)) / 2 rtol=1e-13
     end
+
+    @testset "Random value stress testing" begin
+        # Test recursive algorithms with random values across different magnitude ranges
+        using Random
+
+        rng = MersenneTwister(12345)  # Fixed seed for reproducibility
+
+        # Test different magnitude ranges
+        magnitude_ranges = [
+            ("Small [0, 0.1)", 0.0, 0.1),
+            ("Medium [0.1, 1)", 0.1, 1.0),
+            ("Large [1, 10)", 1.0, 10.0),
+            ("Very large [10, 100)", 10.0, 100.0),
+        ]
+
+        # Test different orders
+        orders_to_test = [1, 2, 3, 4]
+
+        @testset "Range: $label, N=$N" for (label, min_val, max_val) in magnitude_ranges, N in orders_to_test
+            C = 2^N
+
+            # Generate 10 random multicomplex numbers in this range
+            for trial in 1:10
+                # Generate random components with mixed signs
+                components = [(rand(rng) < 0.5 ? -1 : 1) * (min_val + (max_val - min_val) * rand(rng))
+                             for _ in 1:C]
+                m = Multicomplex{N}(SVector{C}(components...))
+
+                # Test trigonometric functions
+                @test sin(m) ≈ matrix_sin(m) rtol=1e-12
+                @test cos(m) ≈ matrix_cos(m) rtol=1e-12
+
+                # Test hyperbolic functions
+                @test sinh(m) ≈ matrix_sinh(m) rtol=1e-12
+                @test cosh(m) ≈ matrix_cosh(m) rtol=1e-12
+
+                # Test exponential
+                @test exp(m) ≈ matrix_exp(m) rtol=1e-12
+
+                # Test multiplication with another random value
+                components2 = [(rand(rng) < 0.5 ? -1 : 1) * (min_val + (max_val - min_val) * rand(rng))
+                              for _ in 1:C]
+                m2 = Multicomplex{N}(SVector{C}(components2...))
+                @test m * m2 ≈ matrix_mul(m, m2) rtol=1e-12
+            end
+        end
+
+        @testset "Extreme values: N=$N" for N in [1, 2, 3]
+            C = 2^N
+
+            # Test with very small values (near zero)
+            components_small = [1e-10 * rand(rng) for _ in 1:C]
+            m_small = Multicomplex{N}(SVector{C}(components_small...))
+            @test exp(m_small) ≈ matrix_exp(m_small) rtol=1e-10
+            @test sin(m_small) ≈ matrix_sin(m_small) rtol=1e-10
+
+            # Test with negative large values (tests equation 45 branch)
+            components_neg_large = [-50.0 - 50.0 * rand(rng) for _ in 1:C]
+            m_neg_large = Multicomplex{N}(SVector{C}(components_neg_large...))
+            # exp should use equation 45 branch here
+            @test exp(m_neg_large) ≈ matrix_exp(m_neg_large) rtol=1e-10
+
+            # Test with positive large values (tests equation 45 branch)
+            components_pos_large = [10.0 + 10.0 * rand(rng) for _ in 1:C]
+            m_pos_large = Multicomplex{N}(SVector{C}(components_pos_large...))
+            @test exp(m_pos_large) ≈ matrix_exp(m_pos_large) rtol=1e-10
+
+            # Test mixed magnitudes (some large, some small)
+            components_mixed = [i % 2 == 0 ? 0.1 * rand(rng) : 10.0 * rand(rng) for i in 1:C]
+            m_mixed = Multicomplex{N}(SVector{C}(components_mixed...))
+            @test exp(m_mixed) ≈ matrix_exp(m_mixed) rtol=1e-11
+            @test sin(m_mixed) ≈ matrix_sin(m_mixed) rtol=1e-11
+            @test sinh(m_mixed) ≈ matrix_sinh(m_mixed) rtol=1e-11
+        end
+
+        @testset "Equation 45 branch validation" begin
+            # Specifically test that equation 45 is being used correctly
+            # when abs(realest(m)) > 1
+
+            for N in [2, 3]
+                C = 2^N
+
+                # Create values where realest is definitely > 1
+                components = [2.5, (rand(rng, C-1) .- 0.5)...]
+                m = Multicomplex{N}(SVector{C}(components...))
+                @test abs(realest(m)) > 1  # Verify our assumption
+                @test exp(m) ≈ matrix_exp(m) rtol=1e-12
+
+                # Create values where realest is definitely < -1
+                components = [-2.5, (rand(rng, C-1) .- 0.5)...]
+                m = Multicomplex{N}(SVector{C}(components...))
+                @test abs(realest(m)) > 1  # Verify our assumption
+                @test exp(m) ≈ matrix_exp(m) rtol=1e-12
+
+                # Create values where realest is near the boundary
+                for boundary_val in [0.9, 1.0, 1.1, -0.9, -1.0, -1.1]
+                    components = [boundary_val, (0.1 * rand(rng, C-1))...]
+                    m = Multicomplex{N}(SVector{C}(components...))
+                    @test exp(m) ≈ matrix_exp(m) rtol=1e-12
+                end
+            end
+        end
+    end
 end
 
 @testset "Random number generation" begin
