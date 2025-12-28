@@ -325,13 +325,23 @@ For a multicomplex number ``x = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_
 ```
 
 This recursive approach is more efficient than matrix representation.
+
+# References
+- NIST report on multicomplex algebra: https://doi.org/10.6028/jres.126.033
 """
 # Base case: real numbers
 function Base.sin(m::Multicomplex{T,0,1}) where {T}
     Multicomplex{0}(SVector(sin(m.value[1])))
 end
 
-# Recursive case: N≥1
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.sin(m::Multicomplex{T,1,2}) where {T}
+    z = Complex(m.value[1], m.value[2])
+    result = sin(z)
+    Multicomplex{1}(SVector(real(result), imag(result)))
+end
+
+# Recursive case: N≥2
 function Base.sin(m::Multicomplex{T,N,C}) where {T,N,C}
     x0 = real(m)  # Multicomplex{N-1}
     x1 = imag(m)  # Multicomplex{N-1}
@@ -355,13 +365,23 @@ For a multicomplex number ``x = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_
 ```
 
 This recursive approach is more efficient than matrix representation.
+
+# References
+- NIST report on multicomplex algebra: https://doi.org/10.6028/jres.126.033
 """
 # Base case: real numbers
 function Base.cos(m::Multicomplex{T,0,1}) where {T}
     Multicomplex{0}(SVector(cos(m.value[1])))
 end
 
-# Recursive case: N≥1
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.cos(m::Multicomplex{T,1,2}) where {T}
+    z = Complex(m.value[1], m.value[2])
+    result = cos(z)
+    Multicomplex{1}(SVector(real(result), imag(result)))
+end
+
+# Recursive case: N≥2
 function Base.cos(m::Multicomplex{T,N,C}) where {T,N,C}
     x0 = real(m)  # Multicomplex{N-1}
     x1 = imag(m)  # Multicomplex{N-1}
@@ -418,13 +438,23 @@ For a multicomplex number ``x = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_
 ```
 
 This recursive approach is more efficient than matrix representation.
+
+# References
+- NIST report on multicomplex algebra: https://doi.org/10.6028/jres.126.033
 """
 # Base case: real numbers
 function Base.sinh(m::Multicomplex{T,0,1}) where {T}
     Multicomplex{0}(SVector(sinh(m.value[1])))
 end
 
-# Recursive case: N≥1
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.sinh(m::Multicomplex{T,1,2}) where {T}
+    z = Complex(m.value[1], m.value[2])
+    result = sinh(z)
+    Multicomplex{1}(SVector(real(result), imag(result)))
+end
+
+# Recursive case: N≥2
 function Base.sinh(m::Multicomplex{T,N,C}) where {T,N,C}
     x0 = real(m)  # Multicomplex{N-1}
     x1 = imag(m)  # Multicomplex{N-1}
@@ -448,13 +478,23 @@ For a multicomplex number ``x = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_
 ```
 
 This recursive approach is more efficient than matrix representation.
+
+# References
+- NIST report on multicomplex algebra: https://doi.org/10.6028/jres.126.033
 """
 # Base case: real numbers
 function Base.cosh(m::Multicomplex{T,0,1}) where {T}
     Multicomplex{0}(SVector(cosh(m.value[1])))
 end
 
-# Recursive case: N≥1
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.cosh(m::Multicomplex{T,1,2}) where {T}
+    z = Complex(m.value[1], m.value[2])
+    result = cosh(z)
+    Multicomplex{1}(SVector(real(result), imag(result)))
+end
+
+# Recursive case: N≥2
 function Base.cosh(m::Multicomplex{T,N,C}) where {T,N,C}
     x0 = real(m)  # Multicomplex{N-1}
     x1 = imag(m)  # Multicomplex{N-1}
