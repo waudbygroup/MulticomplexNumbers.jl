@@ -313,126 +313,186 @@ end
 # Trigonometric functions
 #########################
 
-# Helper to get matrix in the right format for trig functions
-# Julia 1.11 requires mutable matrices for exp!, Julia 1.12+ works with immutable
-@inline _matfunc_matrix(mat) = @static if VERSION >= v"1.12"
-    mat  # Use immutable SMatrix directly in Julia 1.12+
-else
-    Matrix(mat)  # Convert to mutable Matrix for Julia 1.11
-end
-
-"""
+@doc raw"""
     sin(m::Multicomplex)
 
-Multicomplex sine function via the matrix representation.
+Multicomplex sine function using recursive algorithm.
+
+For a multicomplex number ``x = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_{n-1}``:
+
+```math
+\sin(x) = \sin(x_0)\cosh(x_1) + i_n \cos(x_0)\sinh(x_1)
+```
+
+This recursive approach is more efficient than matrix representation.
 """
-function Base.sin(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(sin(_matfunc_matrix(matrep(m)))[:, 1]))
+# Base case: real numbers
+function Base.sin(m::Multicomplex{T,0,1}) where {T}
+    Multicomplex{0}(SVector(sin(m.value[1])))
 end
 
-"""
+# Recursive case: N≥1
+function Base.sin(m::Multicomplex{T,N,C}) where {T,N,C}
+    x0 = real(m)  # Multicomplex{N-1}
+    x1 = imag(m)  # Multicomplex{N-1}
+
+    # sin(x) = sin(x0)*cosh(x1) + i_N*cos(x0)*sinh(x1)
+    y0 = sin(x0) * cosh(x1)
+    y1 = cos(x0) * sinh(x1)
+
+    Multicomplex(y0, y1)
+end
+
+@doc raw"""
     cos(m::Multicomplex)
 
-Multicomplex cosine function via the matrix representation.
+Multicomplex cosine function using recursive algorithm.
+
+For a multicomplex number ``x = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_{n-1}``:
+
+```math
+\cos(x) = \cos(x_0)\cosh(x_1) - i_n \sin(x_0)\sinh(x_1)
+```
+
+This recursive approach is more efficient than matrix representation.
 """
+# Base case: real numbers
+function Base.cos(m::Multicomplex{T,0,1}) where {T}
+    Multicomplex{0}(SVector(cos(m.value[1])))
+end
+
+# Recursive case: N≥1
 function Base.cos(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(cos(_matfunc_matrix(matrep(m)))[:, 1]))
+    x0 = real(m)  # Multicomplex{N-1}
+    x1 = imag(m)  # Multicomplex{N-1}
+
+    # cos(x) = cos(x0)*cosh(x1) - i_N*sin(x0)*sinh(x1)
+    y0 = cos(x0) * cosh(x1)
+    y1 = -sin(x0) * sinh(x1)
+
+    Multicomplex(y0, y1)
 end
 
 """
     tan(m::Multicomplex)
 
-Multicomplex tangent function via the matrix representation.
+Multicomplex tangent function computed as sin/cos.
 """
-function Base.tan(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(tan(_matfunc_matrix(matrep(m)))[:, 1]))
-end
+Base.tan(m::Multicomplex) = sin(m) / cos(m)
 
 """
     cot(m::Multicomplex)
 
-Multicomplex cotangent function via the matrix representation.
+Multicomplex cotangent function computed as cos/sin.
 """
-function Base.cot(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(cot(_matfunc_matrix(matrep(m)))[:, 1]))
-end
+Base.cot(m::Multicomplex) = cos(m) / sin(m)
 
 """
     sec(m::Multicomplex)
 
-Multicomplex secant function via the matrix representation.
+Multicomplex secant function computed as 1/cos.
 """
-function Base.sec(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(sec(_matfunc_matrix(matrep(m)))[:, 1]))
-end
+Base.sec(m::Multicomplex) = inv(cos(m))
 
 """
     csc(m::Multicomplex)
 
-Multicomplex cosecant function via the matrix representation.
+Multicomplex cosecant function computed as 1/sin.
 """
-function Base.csc(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(csc(_matfunc_matrix(matrep(m)))[:, 1]))
-end
+Base.csc(m::Multicomplex) = inv(sin(m))
 
 
 ############################
 # Hyperbolic functions
 ############################
 
-"""
+@doc raw"""
     sinh(m::Multicomplex)
 
-Multicomplex hyperbolic sine function via the matrix representation.
+Multicomplex hyperbolic sine function using recursive algorithm.
+
+For a multicomplex number ``x = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_{n-1}``:
+
+```math
+\sinh(x) = \sinh(x_0)\cos(x_1) + i_n \cosh(x_0)\sin(x_1)
+```
+
+This recursive approach is more efficient than matrix representation.
 """
-function Base.sinh(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(sinh(_matfunc_matrix(matrep(m)))[:, 1]))
+# Base case: real numbers
+function Base.sinh(m::Multicomplex{T,0,1}) where {T}
+    Multicomplex{0}(SVector(sinh(m.value[1])))
 end
 
-"""
+# Recursive case: N≥1
+function Base.sinh(m::Multicomplex{T,N,C}) where {T,N,C}
+    x0 = real(m)  # Multicomplex{N-1}
+    x1 = imag(m)  # Multicomplex{N-1}
+
+    # sinh(x) = sinh(x0)*cos(x1) + i_N*cosh(x0)*sin(x1)
+    y0 = sinh(x0) * cos(x1)
+    y1 = cosh(x0) * sin(x1)
+
+    Multicomplex(y0, y1)
+end
+
+@doc raw"""
     cosh(m::Multicomplex)
 
-Multicomplex hyperbolic cosine function via the matrix representation.
+Multicomplex hyperbolic cosine function using recursive algorithm.
+
+For a multicomplex number ``x = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_{n-1}``:
+
+```math
+\cosh(x) = \cosh(x_0)\cos(x_1) + i_n \sinh(x_0)\sin(x_1)
+```
+
+This recursive approach is more efficient than matrix representation.
 """
+# Base case: real numbers
+function Base.cosh(m::Multicomplex{T,0,1}) where {T}
+    Multicomplex{0}(SVector(cosh(m.value[1])))
+end
+
+# Recursive case: N≥1
 function Base.cosh(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(cosh(_matfunc_matrix(matrep(m)))[:, 1]))
+    x0 = real(m)  # Multicomplex{N-1}
+    x1 = imag(m)  # Multicomplex{N-1}
+
+    # cosh(x) = cosh(x0)*cos(x1) + i_N*sinh(x0)*sin(x1)
+    y0 = cosh(x0) * cos(x1)
+    y1 = sinh(x0) * sin(x1)
+
+    Multicomplex(y0, y1)
 end
 
 """
     tanh(m::Multicomplex)
 
-Multicomplex hyperbolic tangent function via the matrix representation.
+Multicomplex hyperbolic tangent function computed as sinh/cosh.
 """
-function Base.tanh(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(tanh(_matfunc_matrix(matrep(m)))[:, 1]))
-end
+Base.tanh(m::Multicomplex) = sinh(m) / cosh(m)
 
 """
     coth(m::Multicomplex)
 
-Multicomplex hyperbolic cotangent function via the matrix representation.
+Multicomplex hyperbolic cotangent function computed as cosh/sinh.
 """
-function Base.coth(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(coth(_matfunc_matrix(matrep(m)))[:, 1]))
-end
+Base.coth(m::Multicomplex) = cosh(m) / sinh(m)
 
 """
     sech(m::Multicomplex)
 
-Multicomplex hyperbolic secant function via the matrix representation.
+Multicomplex hyperbolic secant function computed as 1/cosh.
 """
-function Base.sech(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(sech(_matfunc_matrix(matrep(m)))[:, 1]))
-end
+Base.sech(m::Multicomplex) = inv(cosh(m))
 
 """
     csch(m::Multicomplex)
 
-Multicomplex hyperbolic cosecant function via the matrix representation.
+Multicomplex hyperbolic cosecant function computed as 1/sinh.
 """
-function Base.csch(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(SVector{C}(csch(_matfunc_matrix(matrep(m)))[:, 1]))
-end
+Base.csch(m::Multicomplex) = inv(sinh(m))
 
 
 ####################################
