@@ -337,8 +337,7 @@ end
 # Optimized case: N=1 (standard complex arithmetic)
 function Base.sin(m::Multicomplex{T,1,2}) where {T}
     z = Complex(m.value[1], m.value[2])
-    result = sin(z)
-    Multicomplex{1}(SVector(real(result), imag(result)))
+    Multicomplex(sin(z))
 end
 
 # Recursive case: N≥2
@@ -377,8 +376,7 @@ end
 # Optimized case: N=1 (standard complex arithmetic)
 function Base.cos(m::Multicomplex{T,1,2}) where {T}
     z = Complex(m.value[1], m.value[2])
-    result = cos(z)
-    Multicomplex{1}(SVector(real(result), imag(result)))
+    Multicomplex(cos(z))
 end
 
 # Recursive case: N≥2
@@ -450,8 +448,7 @@ end
 # Optimized case: N=1 (standard complex arithmetic)
 function Base.sinh(m::Multicomplex{T,1,2}) where {T}
     z = Complex(m.value[1], m.value[2])
-    result = sinh(z)
-    Multicomplex{1}(SVector(real(result), imag(result)))
+    Multicomplex(sinh(z))
 end
 
 # Recursive case: N≥2
@@ -490,8 +487,7 @@ end
 # Optimized case: N=1 (standard complex arithmetic)
 function Base.cosh(m::Multicomplex{T,1,2}) where {T}
     z = Complex(m.value[1], m.value[2])
-    result = cosh(z)
-    Multicomplex{1}(SVector(real(result), imag(result)))
+    Multicomplex(cosh(z))
 end
 
 # Recursive case: N≥2
