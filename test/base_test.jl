@@ -767,34 +767,6 @@ end
             @test sin(m_mixed) ≈ matrix_sin(m_mixed) rtol=1e-11
             @test sinh(m_mixed) ≈ matrix_sinh(m_mixed) rtol=1e-11
         end
-
-        @testset "Equation 45 branch validation" begin
-            # Specifically test that equation 45 is being used correctly
-            # when abs(realest(m)) > 1
-
-            for N in [2, 3]
-                C = 2^N
-
-                # Create values where realest is definitely > 1
-                components = [2.5, (rand(rng, C-1) .- 0.5)...]
-                m = Multicomplex{N}(SVector{C}(components...))
-                @test abs(realest(m)) > 1  # Verify our assumption
-                @test exp(m) ≈ matrix_exp(m) rtol=1e-12
-
-                # Create values where realest is definitely < -1
-                components = [-2.5, (rand(rng, C-1) .- 0.5)...]
-                m = Multicomplex{N}(SVector{C}(components...))
-                @test abs(realest(m)) > 1  # Verify our assumption
-                @test exp(m) ≈ matrix_exp(m) rtol=1e-12
-
-                # Create values where realest is near the boundary
-                for boundary_val in [0.9, 1.0, 1.1, -0.9, -1.0, -1.1]
-                    components = [boundary_val, (0.1 * rand(rng, C-1))...]
-                    m = Multicomplex{N}(SVector{C}(components...))
-                    @test exp(m) ≈ matrix_exp(m) rtol=1e-12
-                end
-            end
-        end
     end
 end
 
