@@ -213,10 +213,14 @@ a + b
 
 ### Multiplication
 
-Multiplication follows from the algebraic rules. For complex numbers:
+MulticomplexNumbers.jl uses a **recursive algorithm** for multiplication that is more efficient than the matrix representation approach.
+
+For ``w = u + v \cdot i_n`` and ``z = x + y \cdot i_n`` where ``u,v,x,y \in \mathbb{C}_{n-1}``:
 ```math
-(a + b \cdot i_1)(c + d \cdot i_1) = (ac - bd) + (ad + bc) \cdot i_1
+w \cdot z = (u \cdot x - v \cdot y) + (u \cdot y + v \cdot x) \cdot i_n
 ```
+
+This recursively reduces to real number multiplication at the base case.
 
 ```@repl background
 a = 1.0 + 2.0*im1
@@ -224,7 +228,31 @@ b = 3.0 + 4.0*im1
 a * b
 ```
 
-For bicomplex and higher orders, multiplication is most efficiently computed via the matrix representation.
+The recursive approach is more efficient than matrix multiplication for most cases, especially for lower orders.
+
+**References:**
+- Implementation follows the recursive definition from NIST report: https://doi.org/10.6028/jres.126.033
+
+### Division
+
+Division is computed using a **recursive conjugate-folding algorithm** that avoids matrix operations.
+
+The **fold operation** is defined as:
+```math
+\text{fold}(m) = m \cdot \overline{m} \in \mathbb{C}_{n-1}
+```
+
+This reduces the order by one. For division ``a / b``:
+```math
+\frac{a}{b} = \frac{a \cdot \overline{b}}{\text{fold}(b)}
+```
+
+Each fold reduces the denominator's order by 1. After ``n`` folds, the denominator becomes a real number, enabling simple scalar division.
+
+For **abient numbers** (those whose repeated folding produces zero), the algorithm falls back to matrix inversion.
+
+**References:**
+- Recursive division algorithm from NIST report: https://doi.org/10.6028/jres.126.033
 
 ### Conjugation
 
@@ -261,6 +289,53 @@ z = 3.0 + 4.0*im1
 norm(z)  # sqrt(3² + 4²) = 5
 abs(z)   # Same as norm
 ```
+
+### Trigonometric and Hyperbolic Functions
+
+MulticomplexNumbers.jl implements trigonometric and hyperbolic functions using **recursive algorithms** that are more efficient than matrix-based methods.
+
+For a multicomplex number ``x = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_{n-1}``:
+
+**Trigonometric functions:**
+```math
+\sin(x) = \sin(x_0)\cosh(x_1) + i_n \cos(x_0)\sinh(x_1)
+```
+```math
+\cos(x) = \cos(x_0)\cosh(x_1) - i_n \sin(x_0)\sinh(x_1)
+```
+
+**Hyperbolic functions:**
+```math
+\sinh(x) = \sinh(x_0)\cos(x_1) + i_n \cosh(x_0)\sin(x_1)
+```
+```math
+\cosh(x) = \cosh(x_0)\cos(x_1) + i_n \sinh(x_0)\sin(x_1)
+```
+
+These formulas recursively reduce to real number operations at the base case (``n=0``). For order 1 multicomplex numbers (standard complex numbers), the implementation uses Julia's optimized complex arithmetic directly.
+
+Other functions are derived from these:
+- ``\tan(x) = \sin(x) / \cos(x)``
+- ``\tanh(x) = \sinh(x) / \cosh(x)``
+- ``\sec(x) = 1 / \cos(x)``, ``\csc(x) = 1 / \sin(x)``
+- ``\sech(x) = 1 / \cosh(x)``, ``\csch(x) = 1 / \sinh(x)``
+
+Inverse trigonometric and hyperbolic functions currently use matrix representations, as recursive formulas are not provided in the reference literature.
+
+```@repl background
+using MulticomplexNumbers
+
+z = 0.5 + 0.3*im1
+sin(z)
+cos(z)^2 + sin(z)^2  # Pythagorean identity holds
+
+w = 1.0 + 0.5*im1 + 0.3*im2
+sinh(w)
+cosh(w)^2 - sinh(w)^2  # Hyperbolic identity holds
+```
+
+**References:**
+- Recursive formulas from NIST report: https://doi.org/10.6028/jres.126.033 (page 15)
 
 ## Applications
 
