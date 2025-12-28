@@ -711,16 +711,18 @@ end
         ]
 
         # Test different orders
-        orders_to_test = [1, 2, 3, 4]
+        orders_to_test = [1, 2, 3, 4, 5, 6]
 
         @testset "Range: $label, N=$N" for (label, min_val, max_val) in magnitude_ranges, N in orders_to_test
             C = 2^N
 
             # Use order-dependent tolerance: recursive algorithms accumulate more error with depth
-            # N=1,2: 1e-12 (minimal recursion)
-            # N=3: 1e-10 (moderate recursion depth)
-            # N≥4: 1e-9 (deep recursion, many components)
-            tol = N <= 2 ? 1e-12 : N == 3 ? 1e-10 : 1e-9
+            # N=1,2: 1e-12 (~12 digits, 2-4 components, minimal recursion)
+            # N=3: 1e-10 (~10 digits, 8 components, moderate recursion)
+            # N=4: 1e-9 (~9 digits, 16 components, deep recursion)
+            # N=5: 1e-8 (~8 digits, 32 components, very deep recursion)
+            # N=6: 1e-7 (~7 digits, 64 components, extremely deep recursion)
+            tol = N <= 2 ? 1e-12 : N == 3 ? 1e-10 : N == 4 ? 1e-9 : N == 5 ? 1e-8 : 1e-7
 
             # Generate 10 random multicomplex numbers in this range
             for trial in 1:10
@@ -748,31 +750,32 @@ end
             end
         end
 
-        @testset "Extreme values: N=$N" for N in [1, 2, 3]
+        @testset "Extreme values: N=$N" for N in [1, 2, 3, 4]
             C = 2^N
+            tol = N <= 2 ? 1e-12 : N == 3 ? 1e-10 : 1e-9
 
             # Test with very small values (near zero)
             components_small = [1e-10 * rand(rng) for _ in 1:C]
             m_small = Multicomplex{N}(SVector{C}(components_small...))
-            @test exp(m_small) ≈ matrix_exp(m_small) rtol=1e-10
-            @test sin(m_small) ≈ matrix_sin(m_small) rtol=1e-10
+            @test exp(m_small) ≈ matrix_exp(m_small) rtol=tol
+            @test sin(m_small) ≈ matrix_sin(m_small) rtol=tol
 
             # Test with negative large values
             components_neg_large = [-10.0 - 5.0 * rand(rng) for _ in 1:C]
             m_neg_large = Multicomplex{N}(SVector{C}(components_neg_large...))
-            @test exp(m_neg_large) ≈ matrix_exp(m_neg_large) rtol=1e-10
+            @test exp(m_neg_large) ≈ matrix_exp(m_neg_large) rtol=tol
 
             # Test with positive large values
             components_pos_large = [5.0 + 3.0 * rand(rng) for _ in 1:C]
             m_pos_large = Multicomplex{N}(SVector{C}(components_pos_large...))
-            @test exp(m_pos_large) ≈ matrix_exp(m_pos_large) rtol=1e-10
+            @test exp(m_pos_large) ≈ matrix_exp(m_pos_large) rtol=tol
 
             # Test mixed magnitudes (some large, some small)
             components_mixed = [i % 2 == 0 ? 0.1 * rand(rng) : 5.0 * rand(rng) for i in 1:C]
             m_mixed = Multicomplex{N}(SVector{C}(components_mixed...))
-            @test exp(m_mixed) ≈ matrix_exp(m_mixed) rtol=1e-11
-            @test sin(m_mixed) ≈ matrix_sin(m_mixed) rtol=1e-11
-            @test sinh(m_mixed) ≈ matrix_sinh(m_mixed) rtol=1e-11
+            @test exp(m_mixed) ≈ matrix_exp(m_mixed) rtol=tol
+            @test sin(m_mixed) ≈ matrix_sin(m_mixed) rtol=tol
+            @test sinh(m_mixed) ≈ matrix_sinh(m_mixed) rtol=tol
         end
     end
 end
