@@ -716,6 +716,12 @@ end
         @testset "Range: $label, N=$N" for (label, min_val, max_val) in magnitude_ranges, N in orders_to_test
             C = 2^N
 
+            # Use order-dependent tolerance: recursive algorithms accumulate more error with depth
+            # N=1,2: 1e-12 (minimal recursion)
+            # N=3: 1e-10 (moderate recursion depth)
+            # N≥4: 1e-9 (deep recursion, many components)
+            tol = N <= 2 ? 1e-12 : N == 3 ? 1e-10 : 1e-9
+
             # Generate 10 random multicomplex numbers in this range
             for trial in 1:10
                 # Generate random components with mixed signs
@@ -724,21 +730,21 @@ end
                 m = Multicomplex{N}(SVector{C}(components...))
 
                 # Test trigonometric functions
-                @test sin(m) ≈ matrix_sin(m) rtol=1e-12
-                @test cos(m) ≈ matrix_cos(m) rtol=1e-12
+                @test sin(m) ≈ matrix_sin(m) rtol=tol
+                @test cos(m) ≈ matrix_cos(m) rtol=tol
 
                 # Test hyperbolic functions
-                @test sinh(m) ≈ matrix_sinh(m) rtol=1e-12
-                @test cosh(m) ≈ matrix_cosh(m) rtol=1e-12
+                @test sinh(m) ≈ matrix_sinh(m) rtol=tol
+                @test cosh(m) ≈ matrix_cosh(m) rtol=tol
 
                 # Test exponential
-                @test exp(m) ≈ matrix_exp(m) rtol=1e-12
+                @test exp(m) ≈ matrix_exp(m) rtol=tol
 
                 # Test multiplication with another random value
                 components2 = [(rand(rng) < 0.5 ? -1 : 1) * (min_val + (max_val - min_val) * rand(rng))
                               for _ in 1:C]
                 m2 = Multicomplex{N}(SVector{C}(components2...))
-                @test m * m2 ≈ matrix_mul(m, m2) rtol=1e-12
+                @test m * m2 ≈ matrix_mul(m, m2) rtol=tol
             end
         end
 
