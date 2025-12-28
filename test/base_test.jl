@@ -707,7 +707,7 @@ end
         # Test different orders
         orders_to_test = [1, 2, 3, 4, 5, 6]
 
-        @testset "Range: $label, N=$N" for N in orders_to_test
+        @testset "N=$N" for N in orders_to_test
             C = 2^N
 
             # Define order-dependent ranges: higher orders use more conservative bounds
