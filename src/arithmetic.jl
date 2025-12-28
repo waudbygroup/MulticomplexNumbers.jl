@@ -111,10 +111,22 @@ end
     ^(a,b::Real)
 Multicomplex multiplication via the matrix representation.
 """
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.:(^)(a::Multicomplex{T,1,2}, b::Real) where {T}
+    Multicomplex(Complex(a.value[1], a.value[2])^b)
+end
+
+# General case: use matrix representation
 function Base.:(^)(a::Multicomplex{T,N,C}, b::Real) where {T,N,C}
     Multicomplex{N}(SMatrix{C,C}(real(matrep(a)^b))[SVector{C}(SOneTo(C))])
 end
-# integer specialisation needed to avoid method ambiguity
+
+# Optimized case: N=1 (standard complex arithmetic) - integer specialization
+function Base.:(^)(a::Multicomplex{T,1,2}, b::Integer) where {T}
+    Multicomplex(Complex(a.value[1], a.value[2])^b)
+end
+
+# General case: integer specialization needed to avoid method ambiguity
 function Base.:(^)(a::Multicomplex{T,N,C}, b::Integer) where {T,N,C}
     Multicomplex{N}(SMatrix{C,C}(real(matrep(a)^b))[SVector{C}(SOneTo(C))])
 end
@@ -192,6 +204,12 @@ end
     exp(m)
 Multicomplex exponential via the matrix representation.
 """
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.exp(m::Multicomplex{T,1,2}) where {T}
+    Multicomplex(exp(Complex(m.value[1], m.value[2])))
+end
+
+# General case: use matrix representation
 function Base.exp(m::Multicomplex{T,N,C}) where {T,N,C}
     Multicomplex{N}(exp(matrep(m))[SVector{C}(SOneTo(C))])
 end
@@ -204,6 +222,12 @@ end
     log(m)
 Multicomplex logarithm via the matrix representation.
 """
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.log(m::Multicomplex{T,1,2}) where {T}
+    Multicomplex(log(Complex(m.value[1], m.value[2])))
+end
+
+# General case: use matrix representation
 function Base.log(m::Multicomplex{T,N,C}) where {T,N,C}
     Multicomplex{N}(SMatrix{C,C}(log(matrep(m)))[SVector{C}(SOneTo(C))])
 end
@@ -216,6 +240,12 @@ end
     sqrt(m)
 Multicomplex square root via the matrix representation.
 """
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.sqrt(m::Multicomplex{T,1,2}) where {T}
+    Multicomplex(sqrt(Complex(m.value[1], m.value[2])))
+end
+
+# General case: use matrix representation
 function Base.sqrt(m::Multicomplex{T,N,C}) where {T,N,C}
     Multicomplex{N}(SMatrix{C,C}(sqrt(matrep(m)))[SVector{C}(SOneTo(C))])
 end
