@@ -559,6 +559,128 @@ end
     @test @inferred(atanh(Multicomplex(0.5, 0.3))) isa Multicomplex
 end
 
+@testset "Recursive vs Matrix Implementation Correctness" begin
+    # Test that recursive implementations match matrix-based reference calculations
+    # This ensures our optimized recursive algorithms are correct
+
+    using LinearAlgebra
+
+    # Helper function to compute using matrix representation
+    function matrix_sin(m::Multicomplex{T,N,C}) where {T,N,C}
+        M = matrep(m)
+        result_matrix = sin(Matrix(M))  # Convert to mutable for Julia 1.11 compatibility
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    function matrix_cos(m::Multicomplex{T,N,C}) where {T,N,C}
+        M = matrep(m)
+        result_matrix = cos(Matrix(M))
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    function matrix_sinh(m::Multicomplex{T,N,C}) where {T,N,C}
+        M = matrep(m)
+        result_matrix = sinh(Matrix(M))
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    function matrix_cosh(m::Multicomplex{T,N,C}) where {T,N,C}
+        M = matrep(m)
+        result_matrix = cosh(Matrix(M))
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    function matrix_exp(m::Multicomplex{T,N,C}) where {T,N,C}
+        M = matrep(m)
+        result_matrix = exp(Matrix(M))
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    function matrix_mul(a::Multicomplex{T,N,C}, b::Multicomplex{T,N,C}) where {T,N,C}
+        Ma = matrep(a)
+        Mb = matrep(b)
+        result_matrix = Ma * Mb
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    # Test cases for different orders
+    test_values = [
+        (Multicomplex(0.5, 0.3), "N=1"),
+        (Multicomplex(0.5, 0.3, 0.2, 0.1), "N=2"),
+        (Multicomplex(0.5, 0.3, 0.2, 0.1, 0.4, 0.15, 0.25, 0.05), "N=3"),
+    ]
+
+    @testset "Trigonometric: $label" for (m, label) in test_values
+        # sin and cos
+        @test sin(m) ≈ matrix_sin(m) rtol=1e-14
+        @test cos(m) ≈ matrix_cos(m) rtol=1e-14
+
+        # Derived functions (tan, cot, sec, csc) are implemented via sin/cos
+        # so if sin/cos are correct, these should be too
+        @test tan(m) ≈ sin(m) / cos(m)
+        @test cot(m) ≈ cos(m) / sin(m)
+        @test sec(m) ≈ inv(cos(m))
+        @test csc(m) ≈ inv(sin(m))
+    end
+
+    @testset "Hyperbolic: $label" for (m, label) in test_values
+        # sinh and cosh
+        @test sinh(m) ≈ matrix_sinh(m) rtol=1e-14
+        @test cosh(m) ≈ matrix_cosh(m) rtol=1e-14
+
+        # Derived functions
+        @test tanh(m) ≈ sinh(m) / cosh(m)
+        @test coth(m) ≈ cosh(m) / sinh(m)
+        @test sech(m) ≈ inv(cosh(m))
+        @test csch(m) ≈ inv(sinh(m))
+    end
+
+    @testset "Exponential: $label" for (m, label) in test_values
+        @test exp(m) ≈ matrix_exp(m) rtol=1e-14
+    end
+
+    @testset "Multiplication: $label" for (m, label) in test_values
+        # Test recursive multiplication vs matrix multiplication
+        m2 = m * 0.7 + Multicomplex(0.2, -0.1)  # Create another multicomplex
+        @test m * m2 ≈ matrix_mul(m, m2) rtol=1e-14
+    end
+
+    @testset "Division consistency" begin
+        # Division uses recursive conjugate-folding
+        # Verify it's consistent with multiplication and inverse
+        m1 = Multicomplex(0.5, 0.3, 0.2, 0.1)
+        m2 = Multicomplex(0.7, 0.4, 0.15, 0.05)
+
+        # Test: (m1 / m2) * m2 ≈ m1
+        @test (m1 / m2) * m2 ≈ m1 rtol=1e-13
+
+        # Test: m1 / m2 ≈ m1 * inv(m2)
+        @test m1 / m2 ≈ m1 * inv(m2) rtol=1e-14
+    end
+
+    @testset "Complex identities preservation" begin
+        # Verify mathematical identities hold with recursive implementations
+        m = Multicomplex(0.6, 0.4, 0.3, 0.2)
+
+        # Pythagorean identity
+        @test sin(m)^2 + cos(m)^2 ≈ Multicomplex(1.0, 0.0, 0.0, 0.0) rtol=1e-14
+
+        # Hyperbolic identity
+        @test cosh(m)^2 - sinh(m)^2 ≈ Multicomplex(1.0, 0.0, 0.0, 0.0) rtol=1e-14
+
+        # Euler's formula: exp(i*x) ≈ cos(x) + i*sin(x)
+        x = 0.5
+        m_ix = x * im1
+        @test exp(m_ix) ≈ cos(x) * Multicomplex(1.0) + sin(x) * im1 rtol=1e-14
+
+        # Relationship: sinh(x) = (exp(x) - exp(-x))/2
+        @test sinh(m) ≈ (exp(m) - exp(-m)) / 2 rtol=1e-13
+
+        # Relationship: cosh(x) = (exp(x) + exp(-x))/2
+        @test cosh(m) ≈ (exp(m) + exp(-m)) / 2 rtol=1e-13
+    end
+end
+
 @testset "Random number generation" begin
     using Random
 
