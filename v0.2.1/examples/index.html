@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Examples · MulticomplexNumbers.jl</title><meta name="title" content="Examples · MulticomplexNumbers.jl"/><meta property="og:title" content="Examples · MulticomplexNumbers.jl"/><meta property="twitter:title" content="Examples · MulticomplexNumbers.jl"/><meta name="description" content="Documentation for MulticomplexNumbers.jl."/><meta property="og:description" content="Documentation for MulticomplexNumbers.jl."/><meta property="twitter:description" content="Documentation for MulticomplexNumbers.jl."/><meta property="og:url" content="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/examples/"/><meta property="twitter:url" content="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/examples/"/><link rel="canonical" href="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/examples/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">MulticomplexNumbers.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../getting-started/">Getting Started</a></li><li><a class="tocitem" href="../background/">Background</a></li><li><span class="tocitem">User Guide</span><ul><li><a class="tocitem" href="../guide/creating/">Creating Numbers</a></li><li><a class="tocitem" href="../guide/arithmetic/">Arithmetic Operations</a></li><li><a class="tocitem" href="../guide/components/">Accessing Components</a></li><li><a class="tocitem" href="../guide/fft/">FFT Operations</a></li></ul></li><li><span class="tocitem">Applications</span><ul><li><a class="tocitem" href="../applications/nmr/">NMR Spectroscopy</a></li><li><a class="tocitem" href="../applications/differentiation/">Numerical Differentiation</a></li></ul></li><li class="is-active"><a class="tocitem" href>Examples</a><ul class="internal"><li><a class="tocitem" href="#Basic-Multicomplex-Algebra"><span>Basic Multicomplex Algebra</span></a></li><li><a class="tocitem" href="#Arithmetic"><span>Arithmetic</span></a></li><li><a class="tocitem" href="#Component-Access"><span>Component Access</span></a></li><li><a class="tocitem" href="#Matrix-Representation"><span>Matrix Representation</span></a></li><li><a class="tocitem" href="#Numerical-Differentiation"><span>Numerical Differentiation</span></a></li><li><a class="tocitem" href="#Complex-Views"><span>Complex Views</span></a></li><li><a class="tocitem" href="#Type-Promotions"><span>Type Promotions</span></a></li><li><a class="tocitem" href="#FFT-(requires-FFTW)"><span>FFT (requires FFTW)</span></a></li><li><a class="tocitem" href="#High-Precision"><span>High Precision</span></a></li><li><a class="tocitem" href="#Quick-Reference"><span>Quick Reference</span></a></li></ul></li><li><a class="tocitem" href="../api/">API Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Examples</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Examples</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/waudbygroup/MulticomplexNumbers.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/waudbygroup/MulticomplexNumbers.jl/blob/main/docs/src/examples.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Examples"><a class="docs-heading-anchor" href="#Examples">Examples</a><a id="Examples-1"></a><a class="docs-heading-anchor-permalink" href="#Examples" title="Permalink"></a></h1><p>This page provides quick examples demonstrating key features of MulticomplexNumbers.jl.</p><hr/><h2 id="Basic-Multicomplex-Algebra"><a class="docs-heading-anchor" href="#Basic-Multicomplex-Algebra">Basic Multicomplex Algebra</a><a id="Basic-Multicomplex-Algebra-1"></a><a class="docs-heading-anchor-permalink" href="#Basic-Multicomplex-Algebra" title="Permalink"></a></h2><h3 id="Imaginary-Units"><a class="docs-heading-anchor" href="#Imaginary-Units">Imaginary Units</a><a id="Imaginary-Units-1"></a><a class="docs-heading-anchor-permalink" href="#Imaginary-Units" title="Permalink"></a></h3><p>Multicomplex units <code>im1</code> through <code>im6</code> are defined. Each squares to -1:</p><pre><code class="language-julia-repl hljs">julia&gt; using MulticomplexNumbers
+
+julia&gt; im1
+0 + 1*im1
+
+julia&gt; im1 * im1
+-1 + 0*im1
+
+julia&gt; im2
+(0 + 0*im1) + (1 + 0*im1)*im2
+
+julia&gt; im2 * im2
+(-1 + 0*im1) + (0 + 0*im1)*im2</code></pre><p>Products of different units commute and create new basis elements:</p><pre><code class="language-julia-repl hljs">julia&gt; im1 * im2
+(0 + 0*im1) + (0 + 1*im1)*im2
+
+julia&gt; im1 * im2 == im2 * im1
+true</code></pre><p>Interestingly, products of distinct units square to +1 (hyperbolic units):</p><pre><code class="language-julia-repl hljs">julia&gt; (im1 * im2)^2
+(1 + 0*im1) + (0 + 0*im1)*im2</code></pre><h3 id="Creating-Numbers"><a class="docs-heading-anchor" href="#Creating-Numbers">Creating Numbers</a><a id="Creating-Numbers-1"></a><a class="docs-heading-anchor-permalink" href="#Creating-Numbers" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs">julia&gt; z = 1.0 + 2.0*im1  # Complex (order 1)
+1.0 + 2.0*im1
+
+julia&gt; w = 3.0 + 4.0*im1 + 5.0*im2 + 6.0*im1*im2  # Bicomplex (order 2)
+(3.0 + 4.0*im1) + (5.0 + 6.0*im1)*im2
+
+julia&gt; Multicomplex(1.0, 2.0)  # From components
+1.0 + 2.0*im1
+
+julia&gt; Multicomplex(1+2im)  # From Complex
+1 + 2*im1</code></pre><hr/><h2 id="Arithmetic"><a class="docs-heading-anchor" href="#Arithmetic">Arithmetic</a><a id="Arithmetic-1"></a><a class="docs-heading-anchor-permalink" href="#Arithmetic" title="Permalink"></a></h2><h3 id="Basic-Operations"><a class="docs-heading-anchor" href="#Basic-Operations">Basic Operations</a><a id="Basic-Operations-1"></a><a class="docs-heading-anchor-permalink" href="#Basic-Operations" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs">julia&gt; a = 1.0 + 2.0*im1;
+
+julia&gt; b = 3.0 + 4.0*im1;
+
+julia&gt; a + b
+4.0 + 6.0*im1
+
+julia&gt; a * b
+-5.0 + 10.0*im1
+
+julia&gt; a / b
+0.44 + 0.07999999999999999*im1</code></pre><h3 id="Powers-and-Transcendentals"><a class="docs-heading-anchor" href="#Powers-and-Transcendentals">Powers and Transcendentals</a><a id="Powers-and-Transcendentals-1"></a><a class="docs-heading-anchor-permalink" href="#Powers-and-Transcendentals" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs">julia&gt; z = 1.0 + 1.0*im1;
+
+julia&gt; z^2
+0.0 + 2.0*im1
+
+julia&gt; exp(z)
+1.4686939399158851 + 2.2873552871788423*im1
+
+julia&gt; log(z)
+0.34657359027997264 + 0.7853981633974483*im1
+
+julia&gt; sqrt(z)
+1.0986841134678098 + 0.45508986056222733*im1</code></pre><hr/><h2 id="Component-Access"><a class="docs-heading-anchor" href="#Component-Access">Component Access</a><a id="Component-Access-1"></a><a class="docs-heading-anchor-permalink" href="#Component-Access" title="Permalink"></a></h2><h3 id="Extracting-Parts"><a class="docs-heading-anchor" href="#Extracting-Parts">Extracting Parts</a><a id="Extracting-Parts-1"></a><a class="docs-heading-anchor-permalink" href="#Extracting-Parts" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs">julia&gt; z = 1.0 + 2.0*im1 + 3.0*im2 + 4.0*im1*im2;
+
+julia&gt; real(z)  # Order N-1 real part
+1.0 + 2.0*im1
+
+julia&gt; imag(z)  # Order N-1 imaginary part
+3.0 + 4.0*im1
+
+julia&gt; flat(z)  # All components
+4-element StaticArraysCore.SVector{4, Float64} with indices SOneTo(4):
+ 1.0
+ 2.0
+ 3.0
+ 4.0
+
+julia&gt; realest(z)  # First component
+1.0
+
+julia&gt; component(z, 4)  # Specific component (im1*im2 coefficient)
+4.0</code></pre><h3 id="Order-and-Properties"><a class="docs-heading-anchor" href="#Order-and-Properties">Order and Properties</a><a id="Order-and-Properties-1"></a><a class="docs-heading-anchor-permalink" href="#Order-and-Properties" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs">julia&gt; order(1.0 + im1)
+1
+
+julia&gt; order(1.0 + im1 + im2)
+2
+
+julia&gt; isreal(5.0 + 0.0*im1)
+true
+
+julia&gt; isreal(1.0 + 2.0*im1)
+false</code></pre><hr/><h2 id="Matrix-Representation"><a class="docs-heading-anchor" href="#Matrix-Representation">Matrix Representation</a><a id="Matrix-Representation-1"></a><a class="docs-heading-anchor-permalink" href="#Matrix-Representation" title="Permalink"></a></h2><p>Every multicomplex number has an equivalent matrix:</p><pre><code class="language-julia-repl hljs">julia&gt; z = 1.0 + 2.0*im1;
+
+julia&gt; M = matrep(z)
+2×2 StaticArraysCore.SMatrix{2, 2, Float64, 4} with indices SOneTo(2)×SOneTo(2):
+ 1.0  -2.0
+ 2.0   1.0</code></pre><p>The matrix representation preserves algebra:</p><pre><code class="language-julia-repl hljs">julia&gt; w = 3.0 + 4.0*im1;
+
+julia&gt; flat(z * w)
+2-element StaticArraysCore.SVector{2, Float64} with indices SOneTo(2):
+ -5.0
+ 10.0
+
+julia&gt; (matrep(z) * matrep(w))[:, 1]
+2-element StaticArraysCore.SVector{2, Float64} with indices SOneTo(2):
+ -5.0
+ 10.0</code></pre><hr/><h2 id="Numerical-Differentiation"><a class="docs-heading-anchor" href="#Numerical-Differentiation">Numerical Differentiation</a><a id="Numerical-Differentiation-1"></a><a class="docs-heading-anchor-permalink" href="#Numerical-Differentiation" title="Permalink"></a></h2><h3 id="First-Derivative"><a class="docs-heading-anchor" href="#First-Derivative">First Derivative</a><a id="First-Derivative-1"></a><a class="docs-heading-anchor-permalink" href="#First-Derivative" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs">julia&gt; f(x) = x^3;
+
+julia&gt; x = 2.0;
+
+julia&gt; h = 1e-100;
+
+julia&gt; derivative = imag(f(x + h*im1)) / h
+12.0
+
+julia&gt; # Exact: f&#39;(x) = 3x² = 12</code></pre><h3 id="Second-Derivative"><a class="docs-heading-anchor" href="#Second-Derivative">Second Derivative</a><a id="Second-Derivative-1"></a><a class="docs-heading-anchor-permalink" href="#Second-Derivative" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs">julia&gt; f(x) = x^4;
+
+julia&gt; x = 2.0;
+
+julia&gt; h = 1e-50;
+
+julia&gt; result = f(x + h*im1 + h*im2);
+
+julia&gt; second_derivative = component(result, 4) / h^2
+48.0
+
+julia&gt; # Exact: f&#39;&#39;(x) = 12x² = 48</code></pre><hr/><h2 id="Complex-Views"><a class="docs-heading-anchor" href="#Complex-Views">Complex Views</a><a id="Complex-Views-1"></a><a class="docs-heading-anchor-permalink" href="#Complex-Views" title="Permalink"></a></h2><p>Convert multicomplex arrays to complex arrays:</p><pre><code class="language-julia-repl hljs">julia&gt; data = [Multicomplex(1.0, 2.0, 3.0, 4.0)];
+
+julia&gt; c = ascomplex(data, 1);
+
+julia&gt; size(c)
+(2, 1)
+
+julia&gt; c[1]
+1.0 + 2.0im
+
+julia&gt; c[2]
+3.0 + 4.0im</code></pre><hr/><h2 id="Type-Promotions"><a class="docs-heading-anchor" href="#Type-Promotions">Type Promotions</a><a id="Type-Promotions-1"></a><a class="docs-heading-anchor-permalink" href="#Type-Promotions" title="Permalink"></a></h2><p>Different orders automatically promote:</p><pre><code class="language-julia-repl hljs">julia&gt; a = 1.0 + im1;  # Order 1
+
+julia&gt; b = 2.0 + im2;  # Order 2
+
+julia&gt; c = a + b;  # Promoted to order 2
+
+julia&gt; order(c)
+2</code></pre><p>Scalars and Complex promote to multicomplex:</p><pre><code class="language-julia-repl hljs">julia&gt; z = 1.0 + im1;
+
+julia&gt; z + 5.0
+6.0 + 1.0*im1
+
+julia&gt; z + (2.0 + 3.0im)
+3.0 + 4.0*im1</code></pre><hr/><h2 id="FFT-(requires-FFTW)"><a class="docs-heading-anchor" href="#FFT-(requires-FFTW)">FFT (requires FFTW)</a><a id="FFT-(requires-FFTW)-1"></a><a class="docs-heading-anchor-permalink" href="#FFT-(requires-FFTW)" title="Permalink"></a></h2><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create bicomplex signal
+signal = [Multicomplex(cos(2π*k/64), sin(2π*k/64), 0.0, 0.0) for k in 0:63]
+
+# FFT along im1
+fft!(signal, 1)
+
+# Peak at frequency 1
+abs(realest(signal[2]))  # Should be large</code></pre><hr/><h2 id="High-Precision"><a class="docs-heading-anchor" href="#High-Precision">High Precision</a><a id="High-Precision-1"></a><a class="docs-heading-anchor-permalink" href="#High-Precision" title="Permalink"></a></h2><pre><code class="language-julia hljs">julia&gt; z = big&quot;1.0&quot; + big&quot;2.0&quot; * im1;
+
+julia&gt; typeof(z)
+Multicomplex{BigFloat, 1, 2}
+
+julia&gt; exp(z)
+-1.131204383756813... + 2.471726672004818...*im1</code></pre><hr/><h2 id="Quick-Reference"><a class="docs-heading-anchor" href="#Quick-Reference">Quick Reference</a><a id="Quick-Reference-1"></a><a class="docs-heading-anchor-permalink" href="#Quick-Reference" title="Permalink"></a></h2><table><tr><th style="text-align: right">Task</th><th style="text-align: right">Code</th></tr><tr><td style="text-align: right">Create order 1</td><td style="text-align: right"><code>1.0 + 2.0*im1</code></td></tr><tr><td style="text-align: right">Create order 2</td><td style="text-align: right"><code>1.0 + 2.0*im1 + 3.0*im2</code></td></tr><tr><td style="text-align: right">Get components</td><td style="text-align: right"><code>flat(z)</code></td></tr><tr><td style="text-align: right">Get order</td><td style="text-align: right"><code>order(z)</code></td></tr><tr><td style="text-align: right">1st derivative</td><td style="text-align: right"><code>imag(f(x + h*im1)) / h</code></td></tr><tr><td style="text-align: right">2nd derivative</td><td style="text-align: right"><code>component(f(x + h*im1 + h*im2), 4) / h²</code></td></tr><tr><td style="text-align: right">Matrix form</td><td style="text-align: right"><code>matrep(z)</code></td></tr><tr><td style="text-align: right">As complex</td><td style="text-align: right"><code>ascomplex(data, unit)</code></td></tr></table></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../applications/differentiation/">« Numerical Differentiation</a><a class="docs-footer-nextpage" href="../api/">API Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Wednesday 31 December 2025 11:38">Wednesday 31 December 2025</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

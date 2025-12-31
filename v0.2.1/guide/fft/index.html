@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>FFT Operations · MulticomplexNumbers.jl</title><meta name="title" content="FFT Operations · MulticomplexNumbers.jl"/><meta property="og:title" content="FFT Operations · MulticomplexNumbers.jl"/><meta property="twitter:title" content="FFT Operations · MulticomplexNumbers.jl"/><meta name="description" content="Documentation for MulticomplexNumbers.jl."/><meta property="og:description" content="Documentation for MulticomplexNumbers.jl."/><meta property="twitter:description" content="Documentation for MulticomplexNumbers.jl."/><meta property="og:url" content="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/guide/fft/"/><meta property="twitter:url" content="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/guide/fft/"/><link rel="canonical" href="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/guide/fft/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">MulticomplexNumbers.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../../getting-started/">Getting Started</a></li><li><a class="tocitem" href="../../background/">Background</a></li><li><span class="tocitem">User Guide</span><ul><li><a class="tocitem" href="../creating/">Creating Numbers</a></li><li><a class="tocitem" href="../arithmetic/">Arithmetic Operations</a></li><li><a class="tocitem" href="../components/">Accessing Components</a></li><li class="is-active"><a class="tocitem" href>FFT Operations</a><ul class="internal"><li><a class="tocitem" href="#Setup"><span>Setup</span></a></li><li><a class="tocitem" href="#Basic-FFT"><span>Basic FFT</span></a></li><li><a class="tocitem" href="#Unit-Dimension-Association"><span>Unit-Dimension Association</span></a></li><li><a class="tocitem" href="#Complete-Example:-2D-NMR-Processing"><span>Complete Example: 2D NMR Processing</span></a></li><li><a class="tocitem" href="#Phase-Correction"><span>Phase Correction</span></a></li><li><a class="tocitem" href="#Extracting-Complex-Sub-Components"><span>Extracting Complex Sub-Components</span></a></li><li><a class="tocitem" href="#Practical-Tips-for-NMR"><span>Practical Tips for NMR</span></a></li><li><a class="tocitem" href="#Advanced:-Custom-FFT-Dimensions"><span>Advanced: Custom FFT Dimensions</span></a></li><li><a class="tocitem" href="#See-Also"><span>See Also</span></a></li></ul></li></ul></li><li><span class="tocitem">Applications</span><ul><li><a class="tocitem" href="../../applications/nmr/">NMR Spectroscopy</a></li><li><a class="tocitem" href="../../applications/differentiation/">Numerical Differentiation</a></li></ul></li><li><a class="tocitem" href="../../examples/">Examples</a></li><li><a class="tocitem" href="../../api/">API Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">User Guide</a></li><li class="is-active"><a href>FFT Operations</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>FFT Operations</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/waudbygroup/MulticomplexNumbers.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/waudbygroup/MulticomplexNumbers.jl/blob/main/docs/src/guide/fft.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="fft-operations"><a class="docs-heading-anchor" href="#fft-operations">FFT Operations</a><a id="fft-operations-1"></a><a class="docs-heading-anchor-permalink" href="#fft-operations" title="Permalink"></a></h1><p>This page explains how to perform Fourier transforms on multicomplex data, particularly for NMR spectroscopy applications.</p><hr/><h2 id="Setup"><a class="docs-heading-anchor" href="#Setup">Setup</a><a id="Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Setup" title="Permalink"></a></h2><p>FFT support requires the FFTW package:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW  # This loads the FFT extension</code></pre><hr/><h2 id="Basic-FFT"><a class="docs-heading-anchor" href="#Basic-FFT">Basic FFT</a><a id="Basic-FFT-1"></a><a class="docs-heading-anchor-permalink" href="#Basic-FFT" title="Permalink"></a></h2><p>The <code>fft!</code> function performs in-place FFT along a specific imaginary unit:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create bicomplex data
+data = [Multicomplex(rand(4)...) for _ in 1:64]
+
+# FFT along im1 (treating im1 as the complex unit)
+fft!(data, 1)
+
+# FFT along im2
+fft!(data, 2)</code></pre><hr/><h2 id="Unit-Dimension-Association"><a class="docs-heading-anchor" href="#Unit-Dimension-Association">Unit-Dimension Association</a><a id="Unit-Dimension-Association-1"></a><a class="docs-heading-anchor-permalink" href="#Unit-Dimension-Association" title="Permalink"></a></h2><p><strong>This is the most common pattern for NMR data processing.</strong></p><p>In multi-dimensional NMR, we typically associate each imaginary unit with a specific array dimension:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create 2D NMR data (64 × 32 bicomplex array)
+# Dimension 1 (rows): direct dimension, associated with im1
+# Dimension 2 (cols): indirect dimension, associated with im2
+data = Array{Multicomplex{Float64, 2, 4}}(undef, 64, 32)
+
+# ... fill with time-domain data ...
+
+# Transform the direct dimension (im1) along dimension 1
+fft!(data, 1, dims=1)
+
+# Transform the indirect dimension (im2) along dimension 2
+fft!(data, 2, dims=2)</code></pre><p>This pattern extends naturally to higher dimensions:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# 3D NMR data (tricomplex)
+data_3d = Array{Multicomplex{Float64, 3, 8}}(undef, 128, 64, 32)
+
+# ... fill with time-domain data ...
+
+# Transform each dimension with its associated imaginary unit
+fft!(data_3d, 1, dims=1)  # Direct dimension (im1)
+fft!(data_3d, 2, dims=2)  # First indirect (im2)
+fft!(data_3d, 3, dims=3)  # Second indirect (im3)</code></pre><hr/><h2 id="Complete-Example:-2D-NMR-Processing"><a class="docs-heading-anchor" href="#Complete-Example:-2D-NMR-Processing">Complete Example: 2D NMR Processing</a><a id="Complete-Example:-2D-NMR-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#Complete-Example:-2D-NMR-Processing" title="Permalink"></a></h2><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create synthetic 2D NMR signal
+function create_2d_nmr_signal(n1, n2, freq1, freq2)
+    signal = Array{Multicomplex{Float64, 2, 4}}(undef, n1, n2)
+
+    for j in 1:n2, i in 1:n1
+        # Time points
+        t1 = (i-1) / n1
+        t2 = (j-1) / n2
+
+        # Oscillating signal with decay
+        # Direct dimension (im1)
+        s1_real = cos(2π * freq1 * t1) * exp(-t1 * 5.0)
+        s1_imag = sin(2π * freq1 * t1) * exp(-t1 * 5.0)
+
+        # Indirect dimension (im2)
+        s2_real = cos(2π * freq2 * t2) * exp(-t2 * 3.0)
+        s2_imag = sin(2π * freq2 * t2) * exp(-t2 * 3.0)
+
+        # Combine as bicomplex
+        signal[i, j] = Multicomplex(
+            s1_real * s2_real,     # real-real
+            s1_imag * s2_real,     # im1 coefficient
+            s1_real * s2_imag,     # im2 coefficient
+            s1_imag * s2_imag      # im1*im2 coefficient
+        )
+    end
+
+    return signal
+end
+
+# Generate signal
+fid = create_2d_nmr_signal(128, 64, 10.0, 15.0)
+
+# Process: FFT both dimensions
+fft!(fid, 1, dims=1)  # Transform direct dimension
+fft!(fid, 2, dims=2)  # Transform indirect dimension
+
+# The peak should appear near indices corresponding to the frequencies
+# (11, 16) for frequencies 10 and 15 out of 128 and 64 points</code></pre><hr/><h2 id="Phase-Correction"><a class="docs-heading-anchor" href="#Phase-Correction">Phase Correction</a><a id="Phase-Correction-1"></a><a class="docs-heading-anchor-permalink" href="#Phase-Correction" title="Permalink"></a></h2><p>Phase correction is simply multiplication by a phase factor. Use the appropriate imaginary unit for each dimension:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create and transform data
+fid = create_2d_nmr_signal(64, 32, 5.0, 10.0)
+fft!(fid, 1, dims=1)
+fft!(fid, 2, dims=2)
+
+# Zero-order phase correction: multiply by exp(imN * θ)
+fid .*= exp(im1 * π/6)   # 30° correction for direct dimension
+fid .*= exp(im2 * π/4)   # 45° correction for indirect dimension
+
+# For first-order (linear) phase correction, apply varying phases across the dimension
+n = size(fid, 1)
+for i in 1:n
+    θ = π/180 * (i - 1)  # 1° per point
+    fid[i, :] .*= exp(im1 * θ)
+end</code></pre><hr/><h2 id="Extracting-Complex-Sub-Components"><a class="docs-heading-anchor" href="#Extracting-Complex-Sub-Components">Extracting Complex Sub-Components</a><a id="Extracting-Complex-Sub-Components-1"></a><a class="docs-heading-anchor-permalink" href="#Extracting-Complex-Sub-Components" title="Permalink"></a></h2><p>After processing, you often want to extract specific complex projections:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Process 2D spectrum
+fid = create_2d_nmr_signal(64, 32, 5.0, 10.0)
+fft!(fid, 1, dims=1)
+fft!(fid, 2, dims=2)
+
+# Extract the real/im1 complex spectrum (traditional F1 dimension)
+# This gives you the spectrum with im1 as the complex unit
+spectrum_im1 = real.(fid)  # Returns Multicomplex{Float64, 1, 2} array
+
+# Extract as actual Complex numbers for plotting/analysis
+complex_im1 = ascomplex([spectrum_im1[i, j] for i in 1:64, j in 1:32], 1)
+
+# Extract the real/im2 complex spectrum
+# For each point, we want real + im2*i
+function extract_im2_component(data)
+    n1, n2 = size(data)
+    result = Array{Complex{Float64}}(undef, n1, n2)
+    for j in 1:n2, i in 1:n1
+        z = data[i, j]
+        result[i, j] = Complex(realest(z), component(z, 3))
+    end
+    return result
+end
+
+complex_im2 = extract_im2_component(fid)
+
+# Or use ascomplex for the full array
+# This creates a view that maps the specified unit to Complex{T}
+complex_view = ascomplex(fid, 1)  # Map im1 → im (complex unit)</code></pre><hr/><h2 id="Practical-Tips-for-NMR"><a class="docs-heading-anchor" href="#Practical-Tips-for-NMR">Practical Tips for NMR</a><a id="Practical-Tips-for-NMR-1"></a><a class="docs-heading-anchor-permalink" href="#Practical-Tips-for-NMR" title="Permalink"></a></h2><ol><li><p><strong>Dimension-Unit Association</strong>: Always associate <code>im1</code> with the direct (acquisition) dimension, <code>im2</code> with the first indirect, <code>im3</code> with the second indirect, etc.</p></li><li><p><strong>Processing Order</strong>: Process dimensions in the order that makes sense for your experiment, typically:</p><pre><code class="language-julia hljs">fft!(data, 1, dims=1)  # Direct first
+fft!(data, 2, dims=2)  # Then indirect</code></pre></li><li><p><strong>Phase Correction</strong>: Apply phase corrections using the appropriate imaginary unit for each dimension:</p><ul><li>Direct dimension: multiply by <code>exp(im1 * θ)</code></li><li>First indirect: multiply by <code>exp(im2 * θ)</code></li><li>Second indirect: multiply by <code>exp(im3 * θ)</code></li></ul></li><li><p><strong>Memory Efficiency</strong>: FFT is performed in-place, modifying the original array. Make a copy if you need to preserve the original:</p><pre><code class="language-julia hljs">fid_copy = copy(fid)
+fft!(fid_copy, 1, dims=1)</code></pre></li><li><p><strong>Extracting Real Spectra</strong>: For publication, you typically want the magnitude:</p><pre><code class="language-julia hljs">magnitude_spectrum = abs.(realest.(fid))</code></pre></li></ol><hr/><h2 id="Advanced:-Custom-FFT-Dimensions"><a class="docs-heading-anchor" href="#Advanced:-Custom-FFT-Dimensions">Advanced: Custom FFT Dimensions</a><a id="Advanced:-Custom-FFT-Dimensions-1"></a><a class="docs-heading-anchor-permalink" href="#Advanced:-Custom-FFT-Dimensions" title="Permalink"></a></h2><p>You can apply FFT along specific array dimensions:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create 3D array with bicomplex elements
+data = Array{Multicomplex{Float64, 2, 4}}(undef, 32, 32, 32)
+
+# ... fill with data ...
+
+# FFT along im1, but only along dimension 2 of the array
+fft!(data, 1, dims=2)
+
+# FFT along im2, along both dimensions 1 and 3
+fft!(data, 2, dims=(1, 3))
+
+# Most common: one unit per dimension
+fft!(data, 1, dims=1)  # im1 transforms along array dim 1
+fft!(data, 2, dims=2)  # im2 transforms along array dim 2
+# Dimension 3 could be e.g., different experiments</code></pre><hr/><h2 id="See-Also"><a class="docs-heading-anchor" href="#See-Also">See Also</a><a id="See-Also-1"></a><a class="docs-heading-anchor-permalink" href="#See-Also" title="Permalink"></a></h2><ul><li><strong><a href="../../applications/nmr/#nmr-applications">NMR Spectroscopy Applications</a></strong>: Complete NMR workflow examples</li><li><strong><a href="../components/#components">Accessing Components</a></strong>: Extract parts and components</li><li><strong><a href="../../api/#API-Reference">API Reference</a></strong>: Complete function documentation</li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../components/">« Accessing Components</a><a class="docs-footer-nextpage" href="../../applications/nmr/">NMR Spectroscopy »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Wednesday 31 December 2025 11:38">Wednesday 31 December 2025</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
