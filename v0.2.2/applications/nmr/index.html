@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>NMR Spectroscopy · MulticomplexNumbers.jl</title><meta name="title" content="NMR Spectroscopy · MulticomplexNumbers.jl"/><meta property="og:title" content="NMR Spectroscopy · MulticomplexNumbers.jl"/><meta property="twitter:title" content="NMR Spectroscopy · MulticomplexNumbers.jl"/><meta name="description" content="Documentation for MulticomplexNumbers.jl."/><meta property="og:description" content="Documentation for MulticomplexNumbers.jl."/><meta property="twitter:description" content="Documentation for MulticomplexNumbers.jl."/><meta property="og:url" content="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/applications/nmr/"/><meta property="twitter:url" content="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/applications/nmr/"/><link rel="canonical" href="https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/applications/nmr/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">MulticomplexNumbers.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../../getting-started/">Getting Started</a></li><li><a class="tocitem" href="../../background/">Background</a></li><li><span class="tocitem">User Guide</span><ul><li><a class="tocitem" href="../../guide/creating/">Creating Numbers</a></li><li><a class="tocitem" href="../../guide/arithmetic/">Arithmetic Operations</a></li><li><a class="tocitem" href="../../guide/components/">Accessing Components</a></li><li><a class="tocitem" href="../../guide/fft/">FFT Operations</a></li></ul></li><li><span class="tocitem">Applications</span><ul><li class="is-active"><a class="tocitem" href>NMR Spectroscopy</a><ul class="internal"><li><a class="tocitem" href="#Background:-Why-Multicomplex-Numbers-for-NMR?"><span>Background: Why Multicomplex Numbers for NMR?</span></a></li><li><a class="tocitem" href="#Tutorial:-Processing-2D-NMR-Data"><span>Tutorial: Processing 2D NMR Data</span></a></li><li><a class="tocitem" href="#Complete-2D-NMR-Processing-Example"><span>Complete 2D NMR Processing Example</span></a></li><li><a class="tocitem" href="#3D-NMR-Processing"><span>3D NMR Processing</span></a></li><li><a class="tocitem" href="#Advanced:-Selective-Dimension-Processing"><span>Advanced: Selective Dimension Processing</span></a></li><li><a class="tocitem" href="#Tips-for-Real-NMR-Data"><span>Tips for Real NMR Data</span></a></li><li><a class="tocitem" href="#Performance-Considerations"><span>Performance Considerations</span></a></li><li><a class="tocitem" href="#See-Also"><span>See Also</span></a></li></ul></li><li><a class="tocitem" href="../differentiation/">Numerical Differentiation</a></li></ul></li><li><a class="tocitem" href="../../examples/">Examples</a></li><li><a class="tocitem" href="../../api/">API Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Applications</a></li><li class="is-active"><a href>NMR Spectroscopy</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>NMR Spectroscopy</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/waudbygroup/MulticomplexNumbers.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/waudbygroup/MulticomplexNumbers.jl/blob/main/docs/src/applications/nmr.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="nmr-applications"><a class="docs-heading-anchor" href="#nmr-applications">NMR Spectroscopy</a><a id="nmr-applications-1"></a><a class="docs-heading-anchor-permalink" href="#nmr-applications" title="Permalink"></a></h1><p>This tutorial demonstrates how to use multicomplex numbers for multi-dimensional NMR spectroscopy data processing.</p><hr/><h2 id="Background:-Why-Multicomplex-Numbers-for-NMR?"><a class="docs-heading-anchor" href="#Background:-Why-Multicomplex-Numbers-for-NMR?">Background: Why Multicomplex Numbers for NMR?</a><a id="Background:-Why-Multicomplex-Numbers-for-NMR?-1"></a><a class="docs-heading-anchor-permalink" href="#Background:-Why-Multicomplex-Numbers-for-NMR?" title="Permalink"></a></h2><p>In NMR spectroscopy:</p><ul><li>Each time-domain dimension uses <strong>quadrature detection</strong>, recording both real and imaginary components</li><li>A 2D NMR experiment produces data that is complex in both the direct and indirect dimensions</li><li>Traditional approaches store this as complex arrays with special conventions for higher dimensions</li></ul><p><strong>Multicomplex numbers provide a natural, unified representation:</strong></p><ul><li>Order 2 (bicomplex) for 2D NMR: <code>z = a + b*i₁ + c*i₂ + d*i₁i₂</code></li><li>Order 3 (tricomplex) for 3D NMR: 8 components representing all combinations</li><li>Order 4 for 4D NMR, etc.</li></ul><p>Where:</p><ul><li><code>i₁</code> represents the imaginary component of the direct (acquisition) dimension</li><li><code>i₂</code> represents the imaginary component of the first indirect dimension</li><li><code>i₃</code> represents the imaginary component of the second indirect dimension</li><li>And so on...</li></ul><hr/><h2 id="Tutorial:-Processing-2D-NMR-Data"><a class="docs-heading-anchor" href="#Tutorial:-Processing-2D-NMR-Data">Tutorial: Processing 2D NMR Data</a><a id="Tutorial:-Processing-2D-NMR-Data-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial:-Processing-2D-NMR-Data" title="Permalink"></a></h2><h3 id="Step-1:-Setup"><a class="docs-heading-anchor" href="#Step-1:-Setup">Step 1: Setup</a><a id="Step-1:-Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Step-1:-Setup" title="Permalink"></a></h3><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW  # Loads the FFT extension</code></pre><h3 id="Step-2:-Creating-Synthetic-NMR-Data"><a class="docs-heading-anchor" href="#Step-2:-Creating-Synthetic-NMR-Data">Step 2: Creating Synthetic NMR Data</a><a id="Step-2:-Creating-Synthetic-NMR-Data-1"></a><a class="docs-heading-anchor-permalink" href="#Step-2:-Creating-Synthetic-NMR-Data" title="Permalink"></a></h3><p>Let&#39;s create a synthetic 2D NMR signal to demonstrate the workflow:</p><pre><code class="language-julia hljs">&quot;&quot;&quot;
+Create a synthetic 2D NMR time-domain signal.
+
+# Arguments
+- `n1::Int`: Number of points in direct dimension
+- `n2::Int`: Number of points in indirect dimension
+- `freq1::Float64`: Frequency in direct dimension (Hz)
+- `freq2::Float64`: Frequency in indirect dimension (Hz)
+- `decay1::Float64`: Decay rate in direct dimension (1/s)
+- `decay2::Float64`: Decay rate in indirect dimension (1/s)
+&quot;&quot;&quot;
+function create_2d_fid(n1, n2, freq1, freq2, decay1=5.0, decay2=3.0)
+    # Allocate bicomplex array
+    fid = Array{Multicomplex{Float64, 2, 4}}(undef, n1, n2)
+
+    # Generate time-domain signal
+    for j in 1:n2
+        t2 = (j-1) / n2  # Indirect dimension time
+
+        # Indirect dimension signal
+        s2_r = cos(2π * freq2 * t2) * exp(-t2 * decay2)
+        s2_i = sin(2π * freq2 * t2) * exp(-t2 * decay2)
+
+        for i in 1:n1
+            t1 = (i-1) / n1  # Direct dimension time
+
+            # Direct dimension signal
+            s1_r = cos(2π * freq1 * t1) * exp(-t1 * decay1)
+            s1_i = sin(2π * freq1 * t1) * exp(-t1 * decay1)
+
+            # Combine as bicomplex: (s1_r + s1_i*im1) * (s2_r + s2_i*im2)
+            fid[i, j] = Multicomplex(
+                s1_r * s2_r,     # Real-real component
+                s1_i * s2_r,     # im1 coefficient
+                s1_r * s2_i,     # im2 coefficient
+                s1_i * s2_i      # im1*im2 coefficient
+            )
+        end
+    end
+
+    return fid
+end
+
+# Create test data: 128 × 64 points, peaks at 10 Hz (F1) and 15 Hz (F2)
+fid = create_2d_fid(128, 64, 10.0, 15.0)</code></pre><h3 id="Step-3:-Fourier-Transform"><a class="docs-heading-anchor" href="#Step-3:-Fourier-Transform">Step 3: Fourier Transform</a><a id="Step-3:-Fourier-Transform-1"></a><a class="docs-heading-anchor-permalink" href="#Step-3:-Fourier-Transform" title="Permalink"></a></h3><p><strong>Key principle:</strong> Associate each imaginary unit with its corresponding array dimension.</p><pre><code class="language-julia hljs"># Transform direct dimension (im1 along dimension 1)
+fft!(fid, 1, dims=1)
+
+# Transform indirect dimension (im2 along dimension 2)
+fft!(fid, 2, dims=2)
+
+# Now fid contains the 2D frequency-domain spectrum</code></pre><p>This pattern is clean and intuitive: <code>im1</code> ↔ dimension 1, <code>im2</code> ↔ dimension 2.</p><h3 id="Step-4:-Phase-Correction"><a class="docs-heading-anchor" href="#Step-4:-Phase-Correction">Step 4: Phase Correction</a><a id="Step-4:-Phase-Correction-1"></a><a class="docs-heading-anchor-permalink" href="#Step-4:-Phase-Correction" title="Permalink"></a></h3><p>Phase errors are common in NMR. Correct them by multiplying by phase factors:</p><pre><code class="language-julia hljs"># Zero-order phase correction: multiply by exp(imN * θ)
+fid .*= exp(im1 * π/6)   # 30° correction for direct dimension
+fid .*= exp(im2 * π/4)   # 45° correction for indirect dimension</code></pre><p>For first-order (linear) phase correction, apply varying phases across the dimension:</p><pre><code class="language-julia hljs"># First-order correction: 0° to 180° across direct dimension
+n = size(fid, 1)
+for i in 1:n
+    θ = π * (i - 1) / n
+    fid[i, :] .*= exp(im1 * θ)
+end</code></pre><h3 id="Step-5:-Extracting-Complex-Sub-Components"><a class="docs-heading-anchor" href="#Step-5:-Extracting-Complex-Sub-Components">Step 5: Extracting Complex Sub-Components</a><a id="Step-5:-Extracting-Complex-Sub-Components-1"></a><a class="docs-heading-anchor-permalink" href="#Step-5:-Extracting-Complex-Sub-Components" title="Permalink"></a></h3><p>After processing, you often need to extract specific complex projections for visualization or further analysis.</p><h4 id="Extracting-Real/Im1-Component"><a class="docs-heading-anchor" href="#Extracting-Real/Im1-Component">Extracting Real/Im1 Component</a><a id="Extracting-Real/Im1-Component-1"></a><a class="docs-heading-anchor-permalink" href="#Extracting-Real/Im1-Component" title="Permalink"></a></h4><p>This gives you the spectrum as if only <code>im1</code> were the complex unit (traditional F1 view):</p><pre><code class="language-julia hljs"># Method 1: Using real() to get order-1 multicomplex
+spectrum_im1 = real.(fid)  # Returns array of Multicomplex{Float64, 1, 2}
+
+# Convert to standard Complex for plotting
+complex_f1 = [Complex(realest(z), imag(z)) for z in spectrum_im1]
+
+# Method 2: Using ascomplex (creates a view)
+# Note: ascomplex expects contiguous memory, so we may need to reshape
+spectrum_1d = vec(spectrum_im1)
+complex_view = ascomplex(spectrum_1d, 1)</code></pre><h4 id="Extracting-Real/Im2-Component"><a class="docs-heading-anchor" href="#Extracting-Real/Im2-Component">Extracting Real/Im2 Component</a><a id="Extracting-Real/Im2-Component-1"></a><a class="docs-heading-anchor-permalink" href="#Extracting-Real/Im2-Component" title="Permalink"></a></h4><p>This gives you the spectrum with <code>im2</code> as the complex unit:</p><pre><code class="language-julia hljs">&quot;&quot;&quot;Extract the real + im2*i component from bicomplex data.&quot;&quot;&quot;
+function extract_real_im2(data::Array{&lt;:Multicomplex{T,2,4}}) where T
+    n1, n2 = size(data)
+    result = Array{Complex{T}}(undef, n1, n2)
+
+    for j in 1:n2, i in 1:n1
+        z = data[i, j]
+        # Component 1 is real, component 3 is im2 coefficient
+        result[i, j] = Complex(component(z, 1), component(z, 3))
+    end
+
+    return result
+end
+
+complex_f2 = extract_real_im2(fid)</code></pre><h4 id="Extracting-Magnitude-Spectrum"><a class="docs-heading-anchor" href="#Extracting-Magnitude-Spectrum">Extracting Magnitude Spectrum</a><a id="Extracting-Magnitude-Spectrum-1"></a><a class="docs-heading-anchor-permalink" href="#Extracting-Magnitude-Spectrum" title="Permalink"></a></h4><p>For publication, you typically want the magnitude (absolute value):</p><pre><code class="language-julia hljs"># Most real component magnitude
+magnitude = abs.(realest.(fid))
+
+# Or full multicomplex magnitude
+magnitude_full = abs.(fid)</code></pre><hr/><h2 id="Complete-2D-NMR-Processing-Example"><a class="docs-heading-anchor" href="#Complete-2D-NMR-Processing-Example">Complete 2D NMR Processing Example</a><a id="Complete-2D-NMR-Processing-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Complete-2D-NMR-Processing-Example" title="Permalink"></a></h2><p>Here&#39;s a complete workflow:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# 1. Create or load data
+fid = create_2d_fid(256, 128, 12.5, 8.3)
+
+# 2. Apply apodization (window function) if desired
+function apply_exponential_window!(data, lb1, lb2)
+    n1, n2 = size(data)
+
+    for j in 1:n2, i in 1:n1
+        t1 = (i-1) / n1
+        t2 = (j-1) / n2
+        window = exp(-π * lb1 * t1) * exp(-π * lb2 * t2)
+        data[i, j] *= window
+    end
+
+    return data
+end
+
+apply_exponential_window!(fid, 2.0, 1.0)  # 2 Hz in F1, 1 Hz in F2
+
+# 3. Zero-fill (optional, for higher digital resolution)
+function zero_fill(data, new_n1, new_n2)
+    n1, n2 = size(data)
+    T = eltype(data)
+    result = zeros(T, new_n1, new_n2)
+    result[1:n1, 1:n2] .= data
+    return result
+end
+
+fid = zero_fill(fid, 512, 256)
+
+# 4. FFT
+fft!(fid, 1, dims=1)  # Direct dimension
+fft!(fid, 2, dims=2)  # Indirect dimension
+
+# 5. Phase correction
+fid .*= exp(im1 * π/8)   # 22.5° for direct dimension
+fid .*= exp(im2 * π/6)   # 30° for indirect dimension
+
+# 6. Extract magnitude for plotting
+magnitude = abs.(realest.(fid))
+
+# 7. Find peak maximum
+max_val, max_idx = findmax(magnitude)
+println(&quot;Peak at index $(max_idx.I) with intensity $(max_val)&quot;)
+
+# 8. Extract complex projections if needed
+f1_projection = extract_real_im2(fid)    # F1 dimension
+f2_projection = [Complex(realest(z), imag(z)) for z in real.(fid)]  # F2 dimension</code></pre><hr/><h2 id="3D-NMR-Processing"><a class="docs-heading-anchor" href="#3D-NMR-Processing">3D NMR Processing</a><a id="3D-NMR-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#3D-NMR-Processing" title="Permalink"></a></h2><p>For 3D experiments, use tricomplex numbers (order 3):</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# Create 3D data
+fid_3d = Array{Multicomplex{Float64, 3, 8}}(undef, 128, 64, 32)
+
+# ... fill with experimental data ...
+
+# Transform each dimension with its associated unit
+fft!(fid_3d, 1, dims=1)  # Direct dimension (im1)
+fft!(fid_3d, 2, dims=2)  # First indirect (im2)
+fft!(fid_3d, 3, dims=3)  # Second indirect (im3)
+
+# Phase correction for each dimension
+fid_3d .*= exp(im1 * 0.1)   # Direct
+fid_3d .*= exp(im2 * 0.2)   # First indirect
+fid_3d .*= exp(im3 * 0.15)  # Second indirect
+
+# Extract magnitude
+magnitude_3d = abs.(realest.(fid_3d))</code></pre><hr/><h2 id="Advanced:-Selective-Dimension-Processing"><a class="docs-heading-anchor" href="#Advanced:-Selective-Dimension-Processing">Advanced: Selective Dimension Processing</a><a id="Advanced:-Selective-Dimension-Processing-1"></a><a class="docs-heading-anchor-permalink" href="#Advanced:-Selective-Dimension-Processing" title="Permalink"></a></h2><p>Sometimes you want to process only specific dimensions:</p><pre><code class="language-julia hljs">using MulticomplexNumbers
+using FFTW
+
+# 2D array of bicomplex numbers
+data = create_2d_fid(128, 128, 10.0, 15.0)
+
+# Process only the direct dimension
+fft!(data, 1, dims=1)
+# Now: frequency in F1, time in F2
+
+# Apply phase correction only to the transformed dimension
+data .*= exp(im1 * π/4)
+
+# Later, transform F2
+fft!(data, 2, dims=2)
+data .*= exp(im2 * π/6)</code></pre><hr/><h2 id="Tips-for-Real-NMR-Data"><a class="docs-heading-anchor" href="#Tips-for-Real-NMR-Data">Tips for Real NMR Data</a><a id="Tips-for-Real-NMR-Data-1"></a><a class="docs-heading-anchor-permalink" href="#Tips-for-Real-NMR-Data" title="Permalink"></a></h2><ol><li><p><strong>Data Loading</strong>: Convert your NMR data to bicomplex/tricomplex format:</p><pre><code class="language-julia hljs">function nmr_to_bicomplex(real_part, imag_part_1, imag_part_2, cross_part)
+    n1, n2 = size(real_part)
+    result = Array{Multicomplex{Float64, 2, 4}}(undef, n1, n2)
+
+    for j in 1:n2, i in 1:n1
+        result[i, j] = Multicomplex(
+            real_part[i, j],
+            imag_part_1[i, j],
+            imag_part_2[i, j],
+            cross_part[i, j]
+        )
+    end
+
+    return result
+end</code></pre></li><li><p><strong>States-TPPI, Echo-AntiEcho</strong>: Different acquisition modes will affect how you construct the multicomplex array. Consult your spectrometer&#39;s documentation.</p></li><li><p><strong>Linear Prediction</strong>: Can be applied before FFT to extend the FID:</p><pre><code class="language-julia hljs"># Apply LP separately to each complex component
+# This would require extracting components, applying LP, and reconstructing</code></pre></li><li><p><strong>Baseline Correction</strong>: Usually applied to the magnitude spectrum after all processing.</p></li><li><p><strong>Integration with NMRTools.jl</strong>: For production NMR processing, see <a href="https://github.com/waudbygroup/NMRTools.jl">NMRTools.jl</a>, which builds on this package with additional NMR-specific functionality.</p></li></ol><hr/><h2 id="Performance-Considerations"><a class="docs-heading-anchor" href="#Performance-Considerations">Performance Considerations</a><a id="Performance-Considerations-1"></a><a class="docs-heading-anchor-permalink" href="#Performance-Considerations" title="Permalink"></a></h2><ol><li><p><strong>In-place Operations</strong>: <code>fft!</code> modifies the array in-place. Copy if you need the original:</p><pre><code class="language-julia hljs">fid_copy = copy(fid)
+fft!(fid_copy, 1, dims=1)</code></pre></li><li><p><strong>Memory Layout</strong>: Multicomplex arrays are cache-friendly - all components are stored contiguously.</p></li><li><p><strong>Type Stability</strong>: Keep types consistent (don&#39;t mix Float32/Float64) for best performance.</p></li><li><p><strong>Preallocate</strong>: Reuse arrays when processing multiple spectra:</p><pre><code class="language-julia hljs">workspace = similar(fid)
+for spectrum in spectra
+    workspace .= spectrum
+    fft!(workspace, 1, dims=1)
+    fft!(workspace, 2, dims=2)
+    # ... process workspace ...
+end</code></pre></li></ol><hr/><h2 id="See-Also"><a class="docs-heading-anchor" href="#See-Also">See Also</a><a id="See-Also-1"></a><a class="docs-heading-anchor-permalink" href="#See-Also" title="Permalink"></a></h2><ul><li><strong><a href="../../guide/fft/#fft-operations">FFT Operations</a></strong>: Detailed FFT documentation</li><li><strong><a href="../../guide/components/#components">Accessing Components</a></strong>: Extract parts and components</li><li><strong><a href="../../examples/#Examples">Examples</a></strong>: Quick code snippets</li><li><strong><a href="../../api/#API-Reference">API Reference</a></strong>: Complete function documentation</li><li><strong><a href="https://github.com/waudbygroup/NMRTools.jl">NMRTools.jl</a></strong>: Production NMR processing toolkit</li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../guide/fft/">« FFT Operations</a><a class="docs-footer-nextpage" href="../differentiation/">Numerical Differentiation »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Friday 2 January 2026 16:16">Friday 2 January 2026</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
