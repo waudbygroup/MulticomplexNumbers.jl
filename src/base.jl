@@ -155,9 +155,13 @@ flat(m::Multicomplex) = m.value
 
 """Utility function to extract a real-valued component from a multicomplex number"""
 component(m::Multicomplex, k) = m.value[k]
+component(x::Real, k) = k == 1 ? x : throw(BoundsError(x, k))
+component(z::Complex, k) = k == 1 ? real(z) : k == 2 ? imag(z) : throw(BoundsError(z, k))
 
 """Extract the 'most real' component"""
 realest(m::Multicomplex) = m.value[1]
+realest(x::Real) = x
+realest(z::Complex) = real(z)
 
 Base.real(m::Multicomplex{T,0}) where {T} = m.value[1]
 Base.real(m::Multicomplex{T,1}) where {T} = m.value[1]
