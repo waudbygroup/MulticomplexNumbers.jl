@@ -579,6 +579,253 @@ end
     @test @inferred(atanh(Multicomplex(0.5, 0.3))) isa Multicomplex
 end
 
+@testset "Recursive vs Matrix Implementation Correctness" begin
+    # Test that recursive implementations match matrix-based reference calculations
+    # This ensures our optimized recursive algorithms are correct
+
+    using LinearAlgebra
+
+    # Helper function to compute using matrix representation
+    function matrix_sin(m::Multicomplex{T,N,C}) where {T,N,C}
+        M = matrep(m)
+        result_matrix = sin(Matrix(M))  # Convert to mutable for Julia 1.11 compatibility
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    function matrix_cos(m::Multicomplex{T,N,C}) where {T,N,C}
+        M = matrep(m)
+        result_matrix = cos(Matrix(M))
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    function matrix_sinh(m::Multicomplex{T,N,C}) where {T,N,C}
+        M = matrep(m)
+        result_matrix = sinh(Matrix(M))
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    function matrix_cosh(m::Multicomplex{T,N,C}) where {T,N,C}
+        M = matrep(m)
+        result_matrix = cosh(Matrix(M))
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    function matrix_exp(m::Multicomplex{T,N,C}) where {T,N,C}
+        M = matrep(m)
+        result_matrix = exp(Matrix(M))
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    function matrix_mul(a::Multicomplex{T,N,C}, b::Multicomplex{T,N,C}) where {T,N,C}
+        Ma = matrep(a)
+        Mb = matrep(b)
+        result_matrix = Ma * Mb
+        Multicomplex{N}(SVector{C}(result_matrix[:, 1]))
+    end
+
+    # Test cases for different orders
+    test_values = [
+        (Multicomplex(0.5, 0.3), "N=1"),
+        (Multicomplex(0.5, 0.3, 0.2, 0.1), "N=2"),
+        (Multicomplex(0.5, 0.3, 0.2, 0.1, 0.4, 0.15, 0.25, 0.05), "N=3"),
+        (Multicomplex(0.5, 0.3, 0.2, 0.1, 0.4, 0.15, 0.25, 0.05,
+                     0.35, 0.12, 0.18, 0.08, 0.22, 0.11, 0.14, 0.06), "N=4"),
+        (Multicomplex{5}(SVector(0.5, 0.3, 0.2, 0.1, 0.4, 0.15, 0.25, 0.05,
+                                 0.35, 0.12, 0.18, 0.08, 0.22, 0.11, 0.14, 0.06,
+                                 0.28, 0.09, 0.16, 0.07, 0.19, 0.10, 0.13, 0.04,
+                                 0.21, 0.08, 0.12, 0.05, 0.17, 0.06, 0.11, 0.03)), "N=5"),
+        (Multicomplex{6}(SVector(0.5, 0.3, 0.2, 0.1, 0.4, 0.15, 0.25, 0.05,
+                                 0.35, 0.12, 0.18, 0.08, 0.22, 0.11, 0.14, 0.06,
+                                 0.28, 0.09, 0.16, 0.07, 0.19, 0.10, 0.13, 0.04,
+                                 0.21, 0.08, 0.12, 0.05, 0.17, 0.06, 0.11, 0.03,
+                                 0.26, 0.08, 0.15, 0.06, 0.18, 0.09, 0.12, 0.04,
+                                 0.20, 0.07, 0.11, 0.05, 0.16, 0.06, 0.10, 0.03,
+                                 0.24, 0.07, 0.14, 0.05, 0.17, 0.08, 0.11, 0.04,
+                                 0.19, 0.06, 0.10, 0.04, 0.15, 0.05, 0.09, 0.02)), "N=6"),
+    ]
+
+    @testset "Trigonometric: $label" for (m, label) in test_values
+        # sin and cos
+        @test sin(m) ≈ matrix_sin(m) rtol=1e-14
+        @test cos(m) ≈ matrix_cos(m) rtol=1e-14
+
+        # Derived functions (tan, cot, sec, csc) are implemented via sin/cos
+        # so if sin/cos are correct, these should be too
+        @test tan(m) ≈ sin(m) / cos(m)
+        @test cot(m) ≈ cos(m) / sin(m)
+        @test sec(m) ≈ inv(cos(m))
+        @test csc(m) ≈ inv(sin(m))
+    end
+
+    @testset "Hyperbolic: $label" for (m, label) in test_values
+        # sinh and cosh
+        @test sinh(m) ≈ matrix_sinh(m) rtol=1e-14
+        @test cosh(m) ≈ matrix_cosh(m) rtol=1e-14
+
+        # Derived functions
+        @test tanh(m) ≈ sinh(m) / cosh(m)
+        @test coth(m) ≈ cosh(m) / sinh(m)
+        @test sech(m) ≈ inv(cosh(m))
+        @test csch(m) ≈ inv(sinh(m))
+    end
+
+    @testset "Exponential: $label" for (m, label) in test_values
+        @test exp(m) ≈ matrix_exp(m) rtol=1e-14
+    end
+
+    @testset "Multiplication: $label" for (m, label) in test_values
+        # Test recursive multiplication vs matrix multiplication
+        m2 = m * 0.7 + Multicomplex(0.2, -0.1)  # Create another multicomplex
+        @test m * m2 ≈ matrix_mul(m, m2) rtol=1e-14
+    end
+
+    @testset "Division consistency" begin
+        # Division uses recursive conjugate-folding
+        # Verify it's consistent with multiplication and inverse
+        m1 = Multicomplex(0.5, 0.3, 0.2, 0.1)
+        m2 = Multicomplex(0.7, 0.4, 0.15, 0.05)
+
+        # Test: (m1 / m2) * m2 ≈ m1
+        @test (m1 / m2) * m2 ≈ m1 rtol=1e-13
+
+        # Test: m1 / m2 ≈ m1 * inv(m2)
+        @test m1 / m2 ≈ m1 * inv(m2) rtol=1e-14
+    end
+
+    @testset "Complex identities preservation" begin
+        # Verify mathematical identities hold with recursive implementations
+        m = Multicomplex(0.6, 0.4, 0.3, 0.2)
+
+        # Pythagorean identity
+        @test sin(m)^2 + cos(m)^2 ≈ Multicomplex(1.0, 0.0, 0.0, 0.0) rtol=1e-14
+
+        # Hyperbolic identity
+        @test cosh(m)^2 - sinh(m)^2 ≈ Multicomplex(1.0, 0.0, 0.0, 0.0) rtol=1e-14
+
+        # Euler's formula: exp(i*x) ≈ cos(x) + i*sin(x)
+        x = 0.5
+        m_ix = x * im1
+        @test exp(m_ix) ≈ cos(x) * Multicomplex(1.0) + sin(x) * im1 rtol=1e-14
+
+        # Relationship: sinh(x) = (exp(x) - exp(-x))/2
+        @test sinh(m) ≈ (exp(m) - exp(-m)) / 2 rtol=1e-13
+
+        # Relationship: cosh(x) = (exp(x) + exp(-x))/2
+        @test cosh(m) ≈ (exp(m) + exp(-m)) / 2 rtol=1e-13
+    end
+
+    @testset "Random value stress testing" begin
+        # Test recursive algorithms with random values across different magnitude ranges
+        using Random
+
+        rng = MersenneTwister(12345)  # Fixed seed for reproducibility
+
+        # Test different magnitude ranges with order-dependent upper bounds
+        # Higher orders need smaller ranges to avoid numerical overflow in recursive algorithms
+        # For Float64, exp(x) overflows for x > ~709, and recursive algorithms amplify exponentially
+
+        # Test different orders
+        orders_to_test = [1, 2, 3, 4, 5, 6]
+
+        @testset "N=$N" for N in orders_to_test
+            C = 2^N
+
+            # Define order-dependent ranges: higher orders use more conservative bounds
+            magnitude_ranges = if N <= 2
+                [
+                    ("Small [0, 0.1)", 0.0, 0.1),
+                    ("Medium [0.1, 1)", 0.1, 1.0),
+                    ("Large [1, 5)", 1.0, 5.0),
+                    ("Very large [5, 10)", 5.0, 10.0),
+                ]
+            elseif N == 3
+                [
+                    ("Small [0, 0.1)", 0.0, 0.1),
+                    ("Medium [0.1, 1)", 0.1, 1.0),
+                    ("Large [1, 3)", 1.0, 3.0),
+                    ("Very large [3, 5)", 3.0, 5.0),
+                ]
+            else  # N >= 4
+                [
+                    ("Small [0, 0.1)", 0.0, 0.1),
+                    ("Medium [0.1, 1)", 0.1, 1.0),
+                    ("Large [1, 2)", 1.0, 2.0),
+                ]
+            end
+
+            # Use order-dependent tolerance: recursive algorithms accumulate more error with depth
+            # N=1,2: 1e-12 (~12 digits, 2-4 components, minimal recursion)
+            # N=3: 1e-10 (~10 digits, 8 components, moderate recursion)
+            # N=4: 1e-9 (~9 digits, 16 components, deep recursion)
+            # N=5: 1e-8 (~8 digits, 32 components, very deep recursion)
+            # N=6: 1e-7 (~7 digits, 64 components, extremely deep recursion)
+            tol = N <= 2 ? 1e-12 : N == 3 ? 1e-10 : N == 4 ? 1e-9 : N == 5 ? 1e-8 : 1e-7
+
+            for (label, min_val, max_val) in magnitude_ranges
+                @testset "$label" begin
+                    # Generate 10 random multicomplex numbers in this range
+                    for trial in 1:10
+                        # Generate random components with mixed signs
+                        components = [(rand(rng) < 0.5 ? -1 : 1) * (min_val + (max_val - min_val) * rand(rng))
+                                     for _ in 1:C]
+                        m = Multicomplex{N}(SVector{C}(components...))
+
+                        # Test trigonometric functions
+                        @test sin(m) ≈ matrix_sin(m) rtol=tol
+                        @test cos(m) ≈ matrix_cos(m) rtol=tol
+
+                        # Test hyperbolic functions
+                        @test sinh(m) ≈ matrix_sinh(m) rtol=tol
+                        @test cosh(m) ≈ matrix_cosh(m) rtol=tol
+
+                        # Test exponential
+                        @test exp(m) ≈ matrix_exp(m) rtol=tol
+
+                        # Test multiplication with another random value
+                        components2 = [(rand(rng) < 0.5 ? -1 : 1) * (min_val + (max_val - min_val) * rand(rng))
+                                      for _ in 1:C]
+                        m2 = Multicomplex{N}(SVector{C}(components2...))
+                        @test m * m2 ≈ matrix_mul(m, m2) rtol=tol
+                    end
+                end
+            end
+        end
+
+        @testset "Extreme values: N=$N" for N in [1, 2, 3, 4]
+            C = 2^N
+            tol = N <= 2 ? 1e-12 : N == 3 ? 1e-10 : 1e-9
+
+            # Use order-dependent ranges for extreme values
+            # Higher orders need smaller values to avoid overflow
+            max_val = N <= 2 ? 8.0 : N == 3 ? 3.0 : 1.5
+            neg_min = N <= 2 ? -15.0 : N == 3 ? -5.0 : -2.0
+
+            # Test with very small values (near zero)
+            components_small = [1e-10 * rand(rng) for _ in 1:C]
+            m_small = Multicomplex{N}(SVector{C}(components_small...))
+            @test exp(m_small) ≈ matrix_exp(m_small) rtol=tol
+            @test sin(m_small) ≈ matrix_sin(m_small) rtol=tol
+
+            # Test with negative large values (underflow region for exp)
+            components_neg_large = [neg_min - abs(neg_min) * 0.5 * rand(rng) for _ in 1:C]
+            m_neg_large = Multicomplex{N}(SVector{C}(components_neg_large...))
+            @test exp(m_neg_large) ≈ matrix_exp(m_neg_large) rtol=tol
+
+            # Test with positive large values
+            components_pos_large = [max_val * 0.6 + max_val * 0.4 * rand(rng) for _ in 1:C]
+            m_pos_large = Multicomplex{N}(SVector{C}(components_pos_large...))
+            @test exp(m_pos_large) ≈ matrix_exp(m_pos_large) rtol=tol
+
+            # Test mixed magnitudes (some large, some small)
+            components_mixed = [i % 2 == 0 ? 0.1 * rand(rng) : max_val * 0.6 * rand(rng) for i in 1:C]
+            m_mixed = Multicomplex{N}(SVector{C}(components_mixed...))
+            @test exp(m_mixed) ≈ matrix_exp(m_mixed) rtol=tol
+            @test sin(m_mixed) ≈ matrix_sin(m_mixed) rtol=tol
+            @test sinh(m_mixed) ≈ matrix_sinh(m_mixed) rtol=tol
+        end
+    end
+end
+
 @testset "Random number generation" begin
     using Random
 

@@ -111,10 +111,22 @@ end
     ^(a,b::Real)
 Multicomplex multiplication via the matrix representation.
 """
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.:(^)(a::Multicomplex{T,1,2}, b::Real) where {T}
+    Multicomplex(Complex(a.value[1], a.value[2])^b)
+end
+
+# General case: use matrix representation
 function Base.:(^)(a::Multicomplex{T,N,C}, b::Real) where {T,N,C}
     Multicomplex{N}(SMatrix{C,C}(real(matrep(a)^b))[SVector{C}(SOneTo(C))])
 end
-# integer specialisation needed to avoid method ambiguity
+
+# Optimized case: N=1 (standard complex arithmetic) - integer specialization
+function Base.:(^)(a::Multicomplex{T,1,2}, b::Integer) where {T}
+    Multicomplex(Complex(a.value[1], a.value[2])^b)
+end
+
+# General case: integer specialization needed to avoid method ambiguity
 function Base.:(^)(a::Multicomplex{T,N,C}, b::Integer) where {T,N,C}
     Multicomplex{N}(SMatrix{C,C}(real(matrep(a)^b))[SVector{C}(SOneTo(C))])
 end
@@ -188,12 +200,46 @@ end
 ################
 # exponentials #
 ################
+@doc raw"""
+    exp(m::Multicomplex)
+
+Multicomplex exponential using recursive algorithm.
+
+For a multicomplex number ``a = x_0 + i_n x_1`` where ``x_0, x_1 \in \mathbb{C}_{n-1}``:
+
+```math
+\exp(a) = \exp(x_0) \cos(x_1) + i_n \exp(x_0) \sin(x_1)
+```
+
+Equivalently: ``\exp(x_0 + i_n x_1) = \exp(x_0) [\cos(x_1) + i_n \sin(x_1)]``
+
+This recursive approach is more efficient than matrix representation.
+
+# References
+- NIST report equations (44-45): https://doi.org/10.6028/jres.126.033
 """
-    exp(m)
-Multicomplex exponential via the matrix representation.
-"""
+# Base case: real numbers
+function Base.exp(m::Multicomplex{T,0,1}) where {T}
+    Multicomplex{0}(SVector(exp(m.value[1])))
+end
+
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.exp(m::Multicomplex{T,1,2}) where {T}
+    Multicomplex(exp(Complex(m.value[1], m.value[2])))
+end
+
+# Recursive case: N≥2
+# Always use equation 44 - simpler and more reliable
 function Base.exp(m::Multicomplex{T,N,C}) where {T,N,C}
-    Multicomplex{N}(exp(matrep(m))[SVector{C}(SOneTo(C))])
+    # Equation 44: exp(x₀ + i_n x₁) = exp(x₀)[cos(x₁) + i_n sin(x₁)]
+    x0 = real(m)  # Multicomplex{N-1}
+    x1 = imag(m)  # Multicomplex{N-1}
+
+    exp_x0 = exp(x0)
+    y0 = exp_x0 * cos(x1)
+    y1 = exp_x0 * sin(x1)
+
+    Multicomplex(y0, y1)
 end
 
 
@@ -204,6 +250,12 @@ end
     log(m)
 Multicomplex logarithm via the matrix representation.
 """
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.log(m::Multicomplex{T,1,2}) where {T}
+    Multicomplex(log(Complex(m.value[1], m.value[2])))
+end
+
+# General case: use matrix representation
 function Base.log(m::Multicomplex{T,N,C}) where {T,N,C}
     Multicomplex{N}(SMatrix{C,C}(log(matrep(m)))[SVector{C}(SOneTo(C))])
 end
@@ -216,6 +268,12 @@ end
     sqrt(m)
 Multicomplex square root via the matrix representation.
 """
+# Optimized case: N=1 (standard complex arithmetic)
+function Base.sqrt(m::Multicomplex{T,1,2}) where {T}
+    Multicomplex(sqrt(Complex(m.value[1], m.value[2])))
+end
+
+# General case: use matrix representation
 function Base.sqrt(m::Multicomplex{T,N,C}) where {T,N,C}
     Multicomplex{N}(SMatrix{C,C}(sqrt(matrep(m)))[SVector{C}(SOneTo(C))])
 end

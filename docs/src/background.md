@@ -337,6 +337,34 @@ cosh(w)^2 - sinh(w)^2  # Hyperbolic identity holds
 **References:**
 - Recursive formulas from NIST report: https://doi.org/10.6028/jres.126.033 (page 15)
 
+#### Numerical Precision
+
+The recursive algorithms accumulate floating-point rounding errors at each recursion level. For Float64 arithmetic, expected relative precision is:
+
+| Order N | Components | Recursion Depth | Expected Precision |
+|---------|------------|-----------------|-------------------|
+| 1       | 2          | 1               | ~12 digits (1e-12) |
+| 2       | 4          | 2               | ~12 digits (1e-12) |
+| 3       | 8          | 3               | ~10 digits (1e-10) |
+| 4       | 16         | 4               | ~9 digits (1e-9)   |
+| 5       | 32         | 5               | ~8 digits (1e-8)   |
+| 6       | 64         | 6               | ~7 digits (1e-7)   |
+
+These precision bounds reflect the reality that recursive algorithms split and recombine values at each level, accumulating rounding errors. The actual precision depends on:
+- Input magnitudes (larger values → more potential for overflow/underflow)
+- Function being computed (exp, sinh, cosh grow quickly; sin, cos remain bounded)
+- Specific component values
+
+For most scientific computing applications, these precision levels are more than adequate. If higher precision is needed, use `BigFloat` instead of `Float64` for the base type:
+
+```julia
+z = Multicomplex{6}(BigFloat.(components))
+sin(z)  # Will maintain higher precision at cost of performance
+```
+
+!!! note "Precision vs Correctness"
+    The recursive and matrix-based algorithms are both mathematically correct. They simply take different computational paths and accumulate floating-point errors differently. The precision bounds above reflect realistic expectations for floating-point arithmetic, not algorithmic errors.
+
 ## Applications
 
 ### Numerical Differentiation
