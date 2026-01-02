@@ -73,6 +73,26 @@ end
     @test realest(m2) == 1
     @test realest(m3) == 1
     @test realest(m4) == 1
+    # realest on Real and Complex
+    @test realest(5.0) == 5.0
+    @test realest(3) == 3
+    @test realest(1.0 + 2.0im) == 1.0
+    @test realest(3 + 4im) == 3
+
+    # component
+    @test component(m1, 1) == 1
+    @test component(m1, 2) == 2
+    @test component(m2, 1) == 1
+    @test component(m2, 4) == 4
+    # component on Real and Complex
+    @test component(5.0, 1) == 5.0
+    @test component(3, 1) == 3
+    @test_throws BoundsError component(5.0, 2)
+    @test component(1.0 + 2.0im, 1) == 1.0
+    @test component(1.0 + 2.0im, 2) == 2.0
+    @test component(3 + 4im, 1) == 3
+    @test component(3 + 4im, 2) == 4
+    @test_throws BoundsError component(1.0 + 2.0im, 3)
 
     #real
     @test real(m0) == 1
