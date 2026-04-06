@@ -880,3 +880,29 @@ end
     @test @inferred(rand(Multicomplex{Float64,1,2})) isa Multicomplex
     @test @inferred(randn(Multicomplex{Float64,1,2})) isa Multicomplex
 end
+
+@testset "imN" begin
+    # imN matches the predefined constants
+    @test imN(1) == im1
+    @test imN(2) == im2
+    @test imN(3) == im3
+    @test imN(4) == im4
+    @test imN(5) == im5
+    @test imN(6) == im6
+
+    # order is the inverse of imN
+    for n in 1:6
+        @test order(imN(n)) == n
+    end
+
+    # arithmetic works with imN-constructed units
+    @test 1.0 + 1.0 * imN(2) == 1.0 + 1.0 * im2
+    @test exp(imN(1) * π) ≈ Multicomplex(-1.0, 0.0) atol=1e-14
+
+    # Val variant
+    @test imN(Val(3)) == im3
+
+    # error on non-positive
+    @test_throws ArgumentError imN(0)
+    @test_throws ArgumentError imN(-1)
+end

@@ -72,6 +72,29 @@ const im4 = Multicomplex{4}(SVector{16,Int8}(0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
 const im5 = Multicomplex{5}(SVector{32,Int8}(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 const im6 = Multicomplex{6}(SVector{64,Int8}(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
+"""
+    imN(n::Integer)
+
+Construct the n-th imaginary unit programmatically.
+
+    order(imN(n)) == n
+
+# Examples
+```jldoctest
+julia> imN(2) == im2
+true
+
+julia> order(imN(3))
+3
+```
+"""
+function imN(n::Integer)
+    n > 0 || throw(ArgumentError("imaginary unit index must be positive, got $n"))
+    C = 1 << n
+    Multicomplex{n}(SVector{C,Int8}(ntuple(i -> i == (1 << (n - 1)) + 1 ? Int8(1) : Int8(0), Val(C))))
+end
+
+imN(::Val{n}) where {n} = imN(n)
 
 
 
