@@ -6,7 +6,6 @@ CurrentModule = MulticomplexNumbers
 
 This tutorial demonstrates how to use multicomplex numbers for multi-dimensional NMR spectroscopy data processing.
 
----
 
 ## Background: Why Multicomplex Numbers for NMR?
 
@@ -26,7 +25,6 @@ Where:
 - `i₃` represents the imaginary component of the second indirect dimension
 - And so on...
 
----
 
 ## Tutorial: Processing 2D NMR Data
 
@@ -181,7 +179,6 @@ magnitude = abs.(realest.(fid))
 magnitude_full = abs.(fid)
 ```
 
----
 
 ## Complete 2D NMR Processing Example
 
@@ -241,7 +238,6 @@ f1_projection = extract_real_im2(fid)    # F1 dimension
 f2_projection = [Complex(realest(z), imag(z)) for z in real.(fid)]  # F2 dimension
 ```
 
----
 
 ## 3D NMR Processing
 
@@ -270,7 +266,6 @@ fid_3d .*= exp(im3 * 0.15)  # Second indirect
 magnitude_3d = abs.(realest.(fid_3d))
 ```
 
----
 
 ## Advanced: Selective Dimension Processing
 
@@ -295,7 +290,6 @@ fft!(data, 2, dims=2)
 data .*= exp(im2 * π/6)
 ```
 
----
 
 ## Tips for Real NMR Data
 
@@ -330,7 +324,6 @@ data .*= exp(im2 * π/6)
 
 5. **Integration with NMRTools.jl**: For production NMR processing, see [NMRTools.jl](https://github.com/waudbygroup/NMRTools.jl), which builds on this package with additional NMR-specific functionality.
 
----
 
 ## Performance Considerations
 
@@ -354,13 +347,3 @@ data .*= exp(im2 * π/6)
        # ... process workspace ...
    end
    ```
-
----
-
-## See Also
-
-- **[FFT Operations](@ref fft-operations)**: Detailed FFT documentation
-- **[Accessing Components](@ref components)**: Extract parts and components
-- **[Examples](@ref Examples)**: Quick code snippets
-- **[API Reference](@ref)**: Complete function documentation
-- **[NMRTools.jl](https://github.com/waudbygroup/NMRTools.jl)**: Production NMR processing toolkit

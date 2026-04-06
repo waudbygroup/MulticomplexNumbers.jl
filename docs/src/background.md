@@ -1,6 +1,5 @@
 # Background
 
----
 
 ## Introduction
 
@@ -52,8 +51,7 @@ i_j i_k = i_k i_j \quad \text{for all } j, k
 This commutativity distinguishes multicomplex numbers from quaternions and other hypercomplex systems where imaginary units anticommute.
 
 ```@repl background
-# Commutativity
-im1 * im2 == im2 * im1
+im1 * im2 == im2 * im1      # Commutativity
 ```
 
 Interestingly, products of *distinct* imaginary units square to **positive one**:
@@ -62,8 +60,7 @@ Interestingly, products of *distinct* imaginary units square to **positive one**
 ```
 
 ```@repl background
-# Hyperbolic units
-(im1 * im2)^2
+(im1 * im2)^2       # Hyperbolic units
 ```
 
 This reveals an important property: products like ``i_1 i_2`` are **hyperbolic units** (they square to +1), not elliptic units (which square to -1). This is why ``\mathbb{C}_n`` for ``n \geq 2`` contains zero divisors.
@@ -104,9 +101,8 @@ using MulticomplexNumbers
 
 z = 1.0 + 2.0*im1 + 3.0*im2 + 4.0*im1*im2
 
-# Recursive structure: z = real(z) + im2 * imag(z)
-real(z)   # Order 1 (with respect to im2)
-imag(z)   # Order 1
+real(z)   # Recursive structure: z = real(z) + im2 * imag(z)
+imag(z)
 ```
 
 ## Matrix Representations
@@ -163,20 +159,14 @@ using MulticomplexNumbers
 using LinearAlgebra
 
 z = 1.0 + 0.5*im1
-
-# Verify: multiplication via matrices
 w = 2.0 + 0.3*im1
-z * w
 
-# Compare to matrix multiplication
-M_z = matrep(z)
+z * w   # Direct multiplication
+
+M_z = matrep(z)  # Compare to matrix multiplication
 M_w = matrep(w)
 M_product = M_z * M_w
 M_product[:, 1]  # First column contains the components
-
-# Transcendental functions use matrix functions
-exp(z)
-exp(M_z)[:, 1]  # Same result
 ```
 
 ### Zero Divisors

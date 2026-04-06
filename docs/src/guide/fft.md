@@ -6,7 +6,6 @@ CurrentModule = MulticomplexNumbers
 
 This page explains how to perform Fourier transforms on multicomplex data, particularly for NMR spectroscopy applications.
 
----
 
 ## Setup
 
@@ -17,7 +16,6 @@ using MulticomplexNumbers
 using FFTW  # This loads the FFT extension
 ```
 
----
 
 ## Basic FFT
 
@@ -37,7 +35,6 @@ fft!(data, 1)
 fft!(data, 2)
 ```
 
----
 
 ## Unit-Dimension Association
 
@@ -80,7 +77,6 @@ fft!(data_3d, 2, dims=2)  # First indirect (im2)
 fft!(data_3d, 3, dims=3)  # Second indirect (im3)
 ```
 
----
 
 ## Custom FFT Dimensions
 
@@ -107,7 +103,6 @@ fft!(data, 2, dims=2)  # im2 transforms along array dim 2
 # Dimension 3 could be e.g., different experiments
 ```
 
----
 
 ## Inverse FFT
 
@@ -133,7 +128,6 @@ ifft!(data, 2, 2)
 
 An unnormalized inverse FFT is also available via `bfft!`, where `bfft!(fft!(copy(A), n), n) ≈ A .* length(A)`.
 
----
 
 ## Allocating FFT
 
@@ -144,7 +138,6 @@ spectrum = fft(fid, 1)    # fid is unchanged
 fid_back = ifft(spectrum, 1)  # spectrum is unchanged
 ```
 
----
 
 ## Multicomplex Unit Dispatch
 
@@ -155,7 +148,6 @@ fft!(data, im1, 1)  # equivalent to fft!(data, 1, 1)
 fft!(data, im2, 2)  # equivalent to fft!(data, 2, 2)
 ```
 
----
 
 ## Programmatic Imaginary Units
 
@@ -169,7 +161,6 @@ for n in 1:N
 end
 ```
 
----
 
 ## Frequency Shifting
 
@@ -186,10 +177,3 @@ fft!(fid, 1)
 spectrum = fftshift(fid)
 ```
 
----
-
-## See Also
-
-- **[NMR Spectroscopy Applications](@ref nmr-applications)**: Complete NMR workflow examples
-- **[Accessing Components](@ref components)**: Extract parts and components
-- **[API Reference](@ref)**: Complete function documentation

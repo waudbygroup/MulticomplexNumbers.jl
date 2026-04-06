@@ -6,15 +6,12 @@ CurrentModule = MulticomplexNumbers
 
 This page provides complete documentation for all exported types and functions.
 
----
 
 ## Types
 
 ```@docs
 Multicomplex
 ```
-
----
 
 ## Constants
 
@@ -34,9 +31,7 @@ Additional units `im2`, `im3`, `im4`, `im5`, and `im6` follow the same pattern f
 imN
 ```
 
----
 
-## Component Access
 
 ### Order
 
@@ -62,10 +57,8 @@ component
 realest
 ```
 
----
 
 ## Representations
-
 ### Matrix Representation
 
 ```@docs
@@ -78,11 +71,9 @@ matrep
 ascomplex
 ```
 
----
 
 ## Standard Functions
 
-The following `Base` functions are extended for multicomplex numbers:
 
 ### Real and Imaginary Parts
 
@@ -162,12 +153,10 @@ The following `Base` functions are extended for multicomplex numbers:
 - `one(Multicomplex{T,N,C})`: Multiplicative identity
 - `float(Multicomplex{T,N,C})`: Convert to floating-point base type
 
----
 
 ## Multicomplex-Specific Operations
 
 ### Fold Operator
-
 ```@docs
 fold
 ```
@@ -182,13 +171,10 @@ isabient
 
 A multicomplex number is "abient" if it becomes zero after sufficiently many foldings. This property arises because multicomplex numbers are not a composition algebra.
 
----
-
 ## Random Number Generation
 
 The package supports random number generation for multicomplex numbers:
 
-### Uniform Distribution
 
 ```julia
 rand([rng], Multicomplex{T,N,C})            # single random number
@@ -227,14 +213,11 @@ julia> randn(Multicomplex{Float64,2,4}, 5)   # vector of 5 random bicomplex numb
 5-element Vector{Multicomplex{Float64, 2, 4}}: ...
 ```
 
----
 
-## FFT Support (FFTW Extension)
 
 When FFTW.jl is loaded, the following functions become available. All require an explicit `unit` argument — an integer or a multicomplex imaginary constant (e.g. `im2`).
 
 ### In-place Transforms
-
 ```julia
 fft!(A, unit [, dims])     # Forward FFT
 ifft!(A, unit [, dims])    # Inverse FFT (normalized)
@@ -274,10 +257,8 @@ fft!(data, im1)
 spectrum = fft(data, 1)
 ```
 
----
 
 ## Index
-
 ```@index
 Pages = ["api.md"]
 ```

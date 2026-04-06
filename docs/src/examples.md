@@ -6,7 +6,6 @@ CurrentModule = MulticomplexNumbers
 
 This page provides quick examples demonstrating key features of MulticomplexNumbers.jl.
 
----
 
 ## Basic Multicomplex Algebra
 
@@ -63,7 +62,6 @@ julia> Multicomplex(1+2im)  # From Complex
 1 + 2*im1
 ```
 
----
 
 ## Arithmetic
 
@@ -102,7 +100,6 @@ julia> sqrt(z)
 1.09868411346781 + 0.45508986056222733*im1
 ```
 
----
 
 ## Component Access
 
@@ -147,7 +144,6 @@ julia> isreal(1.0 + 2.0*im1)
 false
 ```
 
----
 
 ## Matrix Representation
 
@@ -178,7 +174,6 @@ julia> (matrep(z) * matrep(w))[:, 1]
  10.0
 ```
 
----
 
 ## Numerical Differentiation
 
@@ -214,7 +209,6 @@ julia> second_derivative = component(result, 4) / h^2
 julia> # Exact: f''(x) = 12x² = 48
 ```
 
----
 
 ## Complex Views
 
@@ -235,7 +229,6 @@ julia> c[2]
 3.0 + 4.0im
 ```
 
----
 
 ## Type Promotions
 
@@ -264,7 +257,6 @@ julia> z + (2.0 + 3.0im)
 3.0 + 4.0*im1
 ```
 
----
 
 ## FFT (requires FFTW)
 
@@ -282,7 +274,6 @@ fft!(signal, 1)
 abs(realest(signal[2]))  # Should be large
 ```
 
----
 
 ## High Precision
 
@@ -296,7 +287,6 @@ julia> exp(z)
 -1.131204383756813... + 2.471726672004818...*im1
 ```
 
----
 
 ## Quick Reference
 

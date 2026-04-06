@@ -1,10 +1,10 @@
 # MulticomplexNumbers.jl
 
-A [Julia](http://julialang.org) package for representing [multicomplex numbers](https://en.wikipedia.org/wiki/Multicomplex_number) and performing multicomplex algebra.
+A package for representing multicomlex numbers and performing multicomplex algebra.
 
 ## What are Multicomplex Numbers?
 
-Multicomplex numbers are a generalization of complex numbers, recursively defined to contain multiple imaginary units (``i_1``, ``i_2``, ``i_3``, ...). Unlike quaternions and Clifford algebras, these imaginary units **commute**: ``i_1 i_2 = i_2 i_1``.
+[Multicomplex numbers](https://en.wikipedia.org/wiki/Multicomplex_number) are a generalization of complex numbers, recursively defined to contain multiple imaginary units (``i_1``, ``i_2``, ``i_3``, ...). Unlike quaternions and Clifford algebras, these imaginary units **commute**: ``i_1 i_2 = i_2 i_1``.
 
 ```math
 \mathbb{C}_0 = \mathbb{R}, \quad \mathbb{C}_n = \mathbb{C}_{n-1} + i_n \mathbb{C}_{n-1}
@@ -28,13 +28,12 @@ using MulticomplexNumbers
 using FFTW
 
 # 2D NMR: bicomplex numbers (im1 = direct, im2 = indirect)
-# Create bicomplex FID where each dimension has real + imaginary components
-fid = Array{Multicomplex{Float64, 2, 4}}(undef, 128, 64)
-# ... load your NMR data ...
+# Create random bicomplex FID where each dimension has real + imaginary components
+fid = rand(Multicomplex{Float64, 2, 4}, 128, 64)
 
 # Transform each dimension with its associated imaginary unit
-fft!(fid, 1, dims=1)  # Direct dimension (im1)
-fft!(fid, 2, dims=2)  # Indirect dimension (im2)
+fft!(fid, im1, dims=1)  # Direct dimension (im1)
+fft!(fid, im2, dims=2)  # Indirect dimension (im2)
 
 # Phase correction using appropriate imaginary units
 fid .*= exp(im1 * 0.1)  # Correct direct dimension
@@ -71,11 +70,6 @@ w = 1.0 + 2.0*im1 + 3.0*im2          # Bicomplex (order 2)
 z * w
 exp(w)
 sqrt(w)
-
-# Numerical differentiation
-h = 1e-100
-x = 2.0 + h*im1
-f_prime = imag(x^3) / h  # = 12.0 (exact!)
 ```
 
 ## Features
@@ -87,41 +81,7 @@ f_prime = imag(x^3) / h  # = 12.0 (exact!)
 - **High precision**: Works with `BigFloat` and other `Real` types
 - **Julia integration**: Proper `Number` subtype with promotion rules
 
-## Documentation
 
-```@contents
-Pages = [
-    "getting-started.md",
-    "background.md",
-    "guide/creating.md",
-    "guide/arithmetic.md",
-    "guide/components.md",
-    "guide/fft.md",
-    "applications/nmr.md",
-    "applications/differentiation.md",
-    "examples.md",
-    "api.md"
-]
-Depth = 2
-```
-
----
-
-## Installation
-
-MulticomplexNumbers.jl is a [registered package](http://pkg.julialang.org):
-
-```julia
-using Pkg
-Pkg.add("MulticomplexNumbers")
-```
-
-For FFT support:
-```julia
-Pkg.add("FFTW")
-```
-
----
 
 ## Related Packages
 
@@ -131,7 +91,6 @@ Pkg.add("FFTW")
 - [HyperDualNumbers.jl](https://github.com/JuliaDiff/HyperDualNumbers.jl): Hyper-dual numbers for second derivatives
 - [CliffordAlgebras.jl](https://github.com/ATell-SoundTheory/CliffordAlgebras.jl): Clifford and geometric algebras
 
----
 
 ## References
 
@@ -142,19 +101,3 @@ Pkg.add("FFTW")
 3. **NIST Implementation**: [github.com/usnistgov/multicomplex](https://github.com/usnistgov/multicomplex) - C++ multicomplex library
 
 4. **Original Method**: Lantoine, G., Russell, R. P., Dargent, T. (2012). "Using Multicomplex Variables for Automatic Computation of High-order Derivatives." ACM Trans. Math. Softw. 38(3):16. [doi:10.1145/2168773.2168774](https://doi.org/10.1145/2168773.2168774)
-
----
-
-## Authors
-
-- [Chris Waudby](https://waudbylab.org), UCL School of Pharmacy, London (UK)
-
-## Citing
-
-If you find this package useful, please cite:
-
-> Waudby, C. A. (2022). MulticomplexNumbers.jl. [github.com/waudbygroup/MulticomplexNumbers.jl](https://github.com/waudbygroup/MulticomplexNumbers.jl)
-
-## License
-
-MulticomplexNumbers.jl is licensed under the MIT license; see [LICENSE](https://github.com/waudbygroup/MulticomplexNumbers.jl/blob/main/LICENSE) for the full license text.

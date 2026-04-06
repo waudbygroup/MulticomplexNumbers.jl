@@ -6,13 +6,11 @@ CurrentModule = MulticomplexNumbers
 
 This tutorial demonstrates how to use the multicomplex step method for high-precision numerical differentiation.
 
----
 
 ## The Multicomplex Step Method
 
 The multicomplex step method extends the complex step derivative to compute higher-order derivatives with machine precision accuracy, avoiding the subtractive cancellation errors that plague finite difference methods.
 
----
 
 ## Background: The Problem with Finite Differences
 
@@ -28,7 +26,6 @@ This suffers from a fundamental trade-off:
 
 The optimal `h` is typically around `√ε ≈ 10⁻⁸` for Float64, limiting accuracy to about 8 digits.
 
----
 
 ## The Complex Step Method
 
@@ -52,7 +49,6 @@ f'(x) \approx \frac{\text{Im}[f(x + ih)]}{h}
 
 Since we're not computing a difference, there's **no subtractive cancellation**! We can use arbitrarily small `h`, giving nearly machine-precision derivatives.
 
----
 
 ## First Derivatives with `im1`
 
@@ -81,7 +77,6 @@ abs(f_prime - exact)
 
 The error is at the level of machine epsilon!
 
----
 
 ## Second Derivatives with `im1` and `im2`
 
@@ -112,7 +107,6 @@ exact = 12 * x^2
 abs(second_derivative - exact)
 ```
 
----
 
 ## Third Derivatives with `im1`, `im2`, and `im3`
 
@@ -135,7 +129,6 @@ exact = 60.0
 abs(third_derivative - exact)
 ```
 
----
 
 ## Practical Derivative Helper Function
 
@@ -195,7 +188,6 @@ derivative(f, x, 3)  # f'''(1) = -cos(1) ≈ -0.5403
 derivative(f, x, 4)  # f''''(1) = sin(1) ≈ 0.8415
 ```
 
----
 
 ## Applications
 
@@ -281,7 +273,6 @@ println("Root: $(root)")
 println("Verification f(root) = $(f(root))")
 ```
 
----
 
 ## Practical Tips
 
@@ -305,7 +296,6 @@ println("Verification f(root) = $(f(root))")
    - AD (via ForwardDiff.jl) is more efficient for gradients of functions ℝⁿ → ℝ
    - Multicomplex excels for high-order derivatives of scalar functions
 
----
 
 ## Limitations
 
@@ -324,19 +314,9 @@ println("Verification f(root) = $(f(root))")
 
 4. **Very high orders**: Beyond order ~6, consider other methods (symbolic differentiation, AD with nested dual numbers, etc.)
 
----
 
 ## References
 
 - **Complex Step Approximation**: [Nick Higham's blog](https://nhigham.com/2020/10/06/what-is-the-complex-step-approximation/)
 - **Original Method**: Lantoine, G., Russell, R. P., Dargent, T. (2012). "Using Multicomplex Variables for Automatic Computation of High-order Derivatives." ACM TOMS 38(3):16.
 - **NIST Report**: Bell, I. H., Deiters, U. K. (2021). "Precise Numerical Differentiation of Thermodynamic Functions with Multicomplex Variables." [NIST J. Res. 126:033](https://nvlpubs.nist.gov/nistpubs/jres/126/jres.126.033.pdf)
-
----
-
-## See Also
-
-- **[Creating Numbers](@ref creating)**: How to create multicomplex numbers
-- **[Arithmetic Operations](@ref arithmetic)**: Mathematical operations
-- **[Examples](@ref Examples)**: Quick code snippets
-- **[API Reference](@ref)**: Complete function documentation
