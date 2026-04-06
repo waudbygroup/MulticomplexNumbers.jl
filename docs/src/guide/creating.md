@@ -42,7 +42,7 @@ Number
 
 ## Using Imaginary Units
 
-The package exports `im1` through `im6`:
+The package exports `im1` through `im6` as predefined constants, and [`imN(n)`](@ref) for programmatic construction of any imaginary unit:
 
 ```@repl creating
 using MulticomplexNumbers
@@ -55,6 +55,19 @@ im3  # Third imaginary unit
 z = 3.0 + 4.0*im1                           # Order 1
 w = 1.0 + 2.0*im1 + 3.0*im2                 # Order 2 (auto-promoted)
 v = 1.0 + im1 + im2 + im3 + im1*im2*im3    # Order 3
+```
+
+For orders beyond 6, or when constructing units programmatically (e.g. in a loop), use [`imN`](@ref):
+
+```@repl creating
+using MulticomplexNumbers
+
+imN(2) == im2  # Same as the predefined constant
+
+# Useful in loops over dimensions
+for n in 1:3
+    println("im$n squares to ", imN(n)^2 |> realest)
+end
 ```
 
 ---
@@ -145,6 +158,24 @@ typeof(z)
 
 # Compute with high precision
 exp(z)
+```
+
+---
+
+## Random Multicomplex Numbers
+
+Generate random multicomplex numbers using `rand` and `randn`:
+
+```@repl creating
+using MulticomplexNumbers
+
+rand(Multicomplex{Float64,1,2})       # Uniform components in [0, 1)
+
+randn(Multicomplex{Float64,2,4})      # Normal components
+
+rand(Multicomplex{Float64,1,2}, 3)    # Array of 3 random order-1 numbers
+
+rand(Multicomplex{Float64,2,4}, 2, 3) # 2×3 matrix of random order-2 numbers
 ```
 
 ---
