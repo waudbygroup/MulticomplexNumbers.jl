@@ -876,6 +876,35 @@ end
     m_int = rand(Multicomplex{Int,1,2})
     @test m_int isa Multicomplex{Int,1,2}
 
+    # Test rand array generation
+    v = rand(Multicomplex{Float64,1,2}, 5)
+    @test v isa Vector{Multicomplex{Float64,1,2}}
+    @test length(v) == 5
+
+    M = rand(Multicomplex{Float64,2,4}, 3, 4)
+    @test M isa Matrix{Multicomplex{Float64,2,4}}
+    @test size(M) == (3, 4)
+
+    # Test randn array generation
+    v = randn(Multicomplex{Float64,1,2}, 5)
+    @test v isa Vector{Multicomplex{Float64,1,2}}
+    @test length(v) == 5
+
+    M = randn(Multicomplex{Float64,2,4}, 3, 4)
+    @test M isa Matrix{Multicomplex{Float64,2,4}}
+    @test size(M) == (3, 4)
+
+    # Test randn array generation with explicit RNG
+    rng = MersenneTwister(789)
+    v = randn(rng, Multicomplex{Float64,1,2}, 3)
+    @test v isa Vector{Multicomplex{Float64,1,2}}
+    @test length(v) == 3
+
+    # Test randn array reproducibility
+    rng1 = MersenneTwister(999)
+    rng2 = MersenneTwister(999)
+    @test randn(rng1, Multicomplex{Float64,2,4}, 3) == randn(rng2, Multicomplex{Float64,2,4}, 3)
+
     # Test type inference
     @test @inferred(rand(Multicomplex{Float64,1,2})) isa Multicomplex
     @test @inferred(randn(Multicomplex{Float64,1,2})) isa Multicomplex
@@ -905,4 +934,132 @@ end
     # error on non-positive
     @test_throws ArgumentError imN(0)
     @test_throws ArgumentError imN(-1)
+end
+
+@testset "Conjugation" begin
+    # Order 1: conj negates imaginary part
+    m1 = Multicomplex(1.0, 2.0)
+    @test conj(m1) == Multicomplex(1.0, -2.0)
+
+    # Order 2: conj negates the highest imaginary component
+    m2 = Multicomplex(1.0, 2.0, 3.0, 4.0)
+    @test conj(m2) == Multicomplex(1.0, 2.0, -3.0, -4.0)
+
+    # conj(conj(m)) == m
+    @test conj(conj(m2)) == m2
+
+    # Type inference
+    @test @inferred(conj(m1)) isa Multicomplex
+end
+
+@testset "Absolute value and norm" begin
+    using LinearAlgebra
+
+    m1 = Multicomplex(3.0, 4.0)
+    @test abs2(m1) ≈ 25.0
+    @test abs(m1) ≈ 5.0
+    @test norm(m1) ≈ 5.0
+
+    m2 = Multicomplex(1.0, 2.0, 3.0, 4.0)
+    @test abs2(m2) ≈ 30.0
+    @test abs(m2) ≈ sqrt(30.0)
+end
+
+@testset "log and sqrt" begin
+    # Order 1: matches complex
+    z = 0.5 + 0.3im
+    m = Multicomplex(0.5, 0.3)
+    @test log(m) ≈ Multicomplex(log(z))
+    @test sqrt(m) ≈ Multicomplex(sqrt(z))
+
+    # Inverse relationships: exp(log(m)) ≈ m
+    m2 = Multicomplex(0.5, 0.3, 0.2, 0.1)
+    @test exp(log(m2)) ≈ m2 rtol=1e-12
+    @test sqrt(m2)^2 ≈ m2 rtol=1e-12
+
+    # Type inference
+    @test @inferred(log(Multicomplex(1.0, 0.5))) isa Multicomplex
+    @test @inferred(sqrt(Multicomplex(1.0, 0.5))) isa Multicomplex
+end
+
+@testset "Powers" begin
+    m = Multicomplex(1.0, 2.0)
+    @test m^2 ≈ m * m
+    @test m^3 ≈ m * m * m
+    @test m^0 ≈ Multicomplex(1.0, 0.0)
+    @test m^(-1) ≈ inv(m)
+
+    # Non-integer power
+    @test m^0.5 ≈ sqrt(m)
+
+    # Higher order
+    m2 = Multicomplex(0.5, 0.3, 0.2, 0.1)
+    @test m2^2 ≈ m2 * m2 rtol=1e-12
+end
+
+@testset "Conversions and promotions" begin
+    # Real to multicomplex conversion
+    @test Multicomplex{Float64,1,2}(3) == Multicomplex(3.0, 0.0)
+    @test Multicomplex{Float64,2,4}(3) == Multicomplex(3.0, 0.0, 0.0, 0.0)
+
+    # Complex to multicomplex conversion
+    @test Multicomplex{Float64,1,2}(1+2im) == Multicomplex(1.0, 2.0)
+    @test Multicomplex{Float64,2,4}(1+2im) == Multicomplex(1.0, 2.0, 0.0, 0.0)
+
+    # Multicomplex to real conversion
+    @test Float64(Multicomplex(5.0)) == 5.0
+    @test_throws InexactError Float64(Multicomplex(1.0, 2.0))
+
+    # Order promotion
+    m1 = Multicomplex{Float64,1,2}(SVector(1.0, 2.0))
+    m2_promoted = Multicomplex{Float64,2,4}(m1)
+    @test m2_promoted == Multicomplex(1.0, 2.0, 0.0, 0.0)
+
+    # Type widening
+    @test widen(Multicomplex{Float32,1,2}) == Multicomplex{Float64,1,2}
+
+    # float conversion
+    @test float(Multicomplex{Int,1,2}) == Multicomplex{Float64,1,2}
+    @test float(Multicomplex{Float64,1,2}) == Multicomplex{Float64,1,2}
+end
+
+@testset "Property tests" begin
+    m = Multicomplex(5.0, 0.0)
+    @test isinteger(m) == true
+    @test isinteger(Multicomplex(5.5, 0.0)) == false
+    @test isinteger(Multicomplex(5.0, 1.0)) == false
+
+    @test isfinite(Multicomplex(1.0, 2.0)) == true
+    @test isfinite(Multicomplex(Inf, 2.0)) == false
+
+    @test isnan(Multicomplex(1.0, 2.0)) == false
+    @test isnan(Multicomplex(NaN, 2.0)) == true
+
+    @test isinf(Multicomplex(1.0, 2.0)) == false
+    @test isinf(Multicomplex(Inf, 2.0)) == true
+
+    @test iszero(Multicomplex(0.0, 0.0)) == true
+    @test iszero(Multicomplex(1.0, 0.0)) == false
+
+    @test isone(Multicomplex(1.0, 0.0)) == true
+    @test isone(Multicomplex(1.0, 1.0)) == false
+end
+
+@testset "Hashing" begin
+    m1 = Multicomplex(1.0, 2.0)
+    m2 = Multicomplex(1.0, 2.0)
+    m3 = Multicomplex(1.0, 3.0)
+
+    @test hash(m1) == hash(m2)
+    @test hash(m1) != hash(m3)
+
+    # Can be used as dictionary keys
+    d = Dict(m1 => "a")
+    @test d[m2] == "a"
+end
+
+@testset "flipsign" begin
+    m = Multicomplex(1.0, 2.0)
+    @test flipsign(m, 1.0) == m
+    @test flipsign(m, -1.0) == -m
 end

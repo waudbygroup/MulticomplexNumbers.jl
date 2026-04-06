@@ -191,35 +191,40 @@ The package supports random number generation for multicomplex numbers:
 ### Uniform Distribution
 
 ```julia
-rand([rng], Multicomplex{T,N,C})
+rand([rng], Multicomplex{T,N,C})            # single random number
+rand([rng], Multicomplex{T,N,C}, dims...)    # array of random numbers
 ```
 
-Generates a random multicomplex number with components drawn from the default distribution for type `T`.
+Generates random multicomplex numbers with components drawn from the default distribution for type `T`.
 
 **Example:**
 ```julia
 julia> rand(Multicomplex{Float64,1,2})
 0.234 + 0.891*im1
 
-julia> rand(Multicomplex{Float64,2,4})
-(0.123 + 0.456*im1) + (0.789 + 0.234*im1)*im2
+julia> rand(Multicomplex{Float64,2,4}, 3)    # vector of 3 random bicomplex numbers
+3-element Vector{Multicomplex{Float64, 2, 4}}: ...
+
+julia> rand(Multicomplex{Float64,1,2}, 2, 3) # 2×3 matrix
+2×3 Matrix{Multicomplex{Float64, 1, 2}}: ...
 ```
 
 ### Normal Distribution
 
 ```julia
-randn([rng], Multicomplex{T,N,C}) where {T<:AbstractFloat}
+randn([rng], Multicomplex{T,N,C})            # single random number
+randn([rng], Multicomplex{T,N,C}, dims...)   # array of random numbers
 ```
 
-Generates a random multicomplex number with components drawn from a standard normal distribution. Only available for floating-point types.
+Generates random multicomplex numbers with components drawn from a standard normal distribution. Only available for floating-point types.
 
 **Example:**
 ```julia
 julia> randn(Multicomplex{Float64,1,2})
 -0.543 + 1.234*im1
 
-julia> randn(Multicomplex{Float64,2,4})
-(0.891 - 0.234*im1) + (-1.567 + 0.432*im1)*im2
+julia> randn(Multicomplex{Float64,2,4}, 5)   # vector of 5 random bicomplex numbers
+5-element Vector{Multicomplex{Float64, 2, 4}}: ...
 ```
 
 ---
@@ -256,7 +261,7 @@ bfft(A, unit [, dims])     # Backward FFT (returns copy)
 using MulticomplexNumbers
 using FFTW
 
-data = [Multicomplex(rand(4)...) for _ in 1:64]
+data = rand(Multicomplex{Float64,2,4}, 64)
 
 # In-place forward and inverse
 fft!(data, 1)

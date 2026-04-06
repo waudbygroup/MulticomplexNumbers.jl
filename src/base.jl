@@ -265,18 +265,19 @@ end
 
 """
     randn([rng=GLOBAL_RNG], ::Type{Multicomplex{T,N,C}}) where {T<:AbstractFloat}
+    randn([rng=GLOBAL_RNG], ::Type{Multicomplex{T,N,C}}, dims...) where {T<:AbstractFloat}
 
-Generate a random multicomplex number with components drawn from a standard normal distribution.
+Generate random multicomplex numbers with components drawn from a standard normal distribution.
 
-Only available for floating-point types.
+Only available for floating-point types. Supports generating arrays via `dims` arguments.
 
 # Examples
 ```julia
 julia> randn(Multicomplex{Float64,1,2})
 -0.543 + 1.234*im1
 
-julia> randn(Multicomplex{Float64,2,4})
-(0.891 - 0.234*im1) + (-1.567 + 0.432*im1)*im2
+julia> randn(Multicomplex{Float64,2,4}, 3)
+3-element Vector{Multicomplex{Float64, 2, 4}}: ...
 ```
 """
 function Base.randn(rng::AbstractRNG, ::Type{Multicomplex{T,N,C}}) where {T<:AbstractFloat,N,C}
@@ -285,6 +286,18 @@ end
 
 # Convenience methods without explicit RNG
 Base.randn(::Type{Multicomplex{T,N,C}}) where {T<:AbstractFloat,N,C} = randn(Random.default_rng(), Multicomplex{T,N,C})
+
+# Array-generating methods for randn
+function Base.randn(rng::AbstractRNG, ::Type{Multicomplex{T,N,C}}, dims::Dims) where {T<:AbstractFloat,N,C}
+    A = Array{Multicomplex{T,N,C}}(undef, dims)
+    for i in eachindex(A)
+        A[i] = randn(rng, Multicomplex{T,N,C})
+    end
+    A
+end
+Base.randn(rng::AbstractRNG, ::Type{Multicomplex{T,N,C}}, dims::Integer...) where {T<:AbstractFloat,N,C} = randn(rng, Multicomplex{T,N,C}, Dims(dims))
+Base.randn(::Type{Multicomplex{T,N,C}}, dims::Dims) where {T<:AbstractFloat,N,C} = randn(Random.default_rng(), Multicomplex{T,N,C}, dims)
+Base.randn(::Type{Multicomplex{T,N,C}}, dims::Integer...) where {T<:AbstractFloat,N,C} = randn(Random.default_rng(), Multicomplex{T,N,C}, Dims(dims))
 
 
 ##############
