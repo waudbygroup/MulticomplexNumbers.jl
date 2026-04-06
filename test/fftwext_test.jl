@@ -101,3 +101,87 @@ using Test
         @test ansRe ≈ realest.(test44)
     end
 end
+
+@testset "ifft! round-trip" begin
+    for N in 1:4
+        testRe = rand(64, 32)
+        testIm = rand(64, 32)
+        unit_mc = imN(N)
+        A = testRe + unit_mc * testIm
+        A_orig = copy(A)
+
+        fft!(A, N)
+        ifft!(A, N)
+        @test A ≈ A_orig
+
+        # with specific dim
+        A2 = copy(A_orig)
+        fft!(A2, N, 1)
+        ifft!(A2, N, 1)
+        @test A2 ≈ A_orig
+    end
+end
+
+@testset "allocating fft / ifft" begin
+    testRe = rand(64, 32)
+    testIm = rand(64, 32)
+
+    for N in 1:3
+        unit_mc = imN(N)
+        A = testRe + unit_mc * testIm
+        A_orig = copy(A)
+
+        # fft should not mutate input
+        B = fft(A, N)
+        @test A == A_orig
+        @test B ≈ fft!(copy(A), N)
+
+        # ifft should not mutate input
+        C = ifft(B, N)
+        @test C ≈ A_orig
+    end
+end
+
+@testset "bfft!" begin
+    testRe = rand(64, 32)
+    testIm = rand(64, 32)
+    n = length(testRe)
+
+    for N in 1:3
+        A = testRe + imN(N) * testIm
+        A_orig = copy(A)
+
+        fft!(A, N)
+        bfft!(A, N)
+        @test A ≈ A_orig .* n
+
+        # allocating bfft
+        A2 = fft(A_orig, N)
+        B = bfft(A2, N)
+        @test B ≈ A_orig .* n
+    end
+end
+
+@testset "Multicomplex unit dispatch" begin
+    testRe = rand(64, 32)
+    testIm = rand(64, 32)
+
+    A1 = testRe + im2 * testIm
+    A2 = copy(A1)
+
+    fft!(A1, 2)
+    fft!(A2, im2)
+    @test A1 ≈ A2
+
+    # allocating variant
+    A3 = testRe + im3 * testIm
+    @test fft(A3, 3) ≈ fft(A3, im3)
+end
+
+@testset "fftshift on multicomplex arrays" begin
+    A = [Multicomplex(Float64(i), Float64(i+1)) for i in 1:8]
+    shifted = fftshift(A)
+    @test length(shifted) == length(A)
+    @test shifted[1] == A[5]
+    @test shifted[5] == A[1]
+end

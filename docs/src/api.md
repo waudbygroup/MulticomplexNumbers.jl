@@ -28,6 +28,12 @@ im1
 
 Additional units `im2`, `im3`, `im4`, `im5`, and `im6` follow the same pattern for higher orders.
 
+### Programmatic Construction
+
+```@docs
+imN
+```
+
 ---
 
 ## Component Access
@@ -220,20 +226,27 @@ julia> randn(Multicomplex{Float64,2,4})
 
 ## FFT Support (FFTW Extension)
 
-When FFTW.jl is loaded, the following function becomes available:
+When FFTW.jl is loaded, the following functions become available. All require an explicit `unit` argument — an integer or a multicomplex imaginary constant (e.g. `im2`).
 
-### In-place FFT
+### In-place Transforms
 
 ```julia
-fft!(A::AbstractArray{<:Multicomplex}, unit::Integer)
-fft!(A::AbstractArray{<:Multicomplex}, unit::Integer, dims)
+fft!(A, unit [, dims])     # Forward FFT
+ifft!(A, unit [, dims])    # Inverse FFT (normalized)
+bfft!(A, unit [, dims])    # Backward FFT (unnormalized inverse)
 ```
 
-Performs an in-place FFT on a multicomplex array, treating `unit` as the imaginary unit for the complex FFT.
+### Allocating Transforms
+
+```julia
+fft(A, unit [, dims])      # Forward FFT (returns copy)
+ifft(A, unit [, dims])     # Inverse FFT (returns copy)
+bfft(A, unit [, dims])     # Backward FFT (returns copy)
+```
 
 **Arguments:**
 - `A`: Array of multicomplex numbers
-- `unit`: Which imaginary unit to use (1 for `im1`, 2 for `im2`, etc.)
+- `unit`: Which imaginary unit to use — an integer (1 for `im1`, 2 for `im2`, etc.) or a multicomplex constant (`im1`, `im2`, etc.)
 - `dims`: Dimensions along which to compute the FFT (optional, defaults to all)
 
 **Supported orders:** N = 1, 2, 3, 4
@@ -244,8 +257,16 @@ using MulticomplexNumbers
 using FFTW
 
 data = [Multicomplex(rand(4)...) for _ in 1:64]
-fft!(data, 1)  # FFT along im1
-fft!(data, 2)  # FFT along im2
+
+# In-place forward and inverse
+fft!(data, 1)
+ifft!(data, 1)
+
+# Using multicomplex constants
+fft!(data, im1)
+
+# Allocating (preserves original)
+spectrum = fft(data, 1)
 ```
 
 ---

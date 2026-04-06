@@ -254,6 +254,85 @@ fft!(data, 2, dims=2)  # im2 transforms along array dim 2
 
 ---
 
+## Inverse FFT
+
+Use `ifft!` to perform the inverse Fourier transform. This is essential for NMR reprocessing workflows (e.g. solvent suppression, linear prediction):
+
+```julia
+using MulticomplexNumbers
+using FFTW
+
+data = Array{Multicomplex{Float64, 2, 4}}(undef, 64, 32)
+# ... fill with time-domain data ...
+
+# Forward transform
+fft!(data, 1, 1)
+fft!(data, 2, 2)
+
+# ... apply corrections in frequency domain ...
+
+# Inverse transform back to time domain
+ifft!(data, 1, 1)
+ifft!(data, 2, 2)
+```
+
+An unnormalized inverse FFT is also available via `bfft!`, where `bfft!(fft!(copy(A), n), n) ≈ A .* length(A)`.
+
+---
+
+## Allocating FFT
+
+If you need to preserve the original data, use the allocating variants `fft` and `ifft` (without the `!`):
+
+```julia
+spectrum = fft(fid, 1)    # fid is unchanged
+fid_back = ifft(spectrum, 1)  # spectrum is unchanged
+```
+
+---
+
+## Multicomplex Unit Dispatch
+
+You can pass a multicomplex imaginary constant directly instead of an integer:
+
+```julia
+fft!(data, im1, 1)  # equivalent to fft!(data, 1, 1)
+fft!(data, im2, 2)  # equivalent to fft!(data, 2, 2)
+```
+
+---
+
+## Programmatic Imaginary Units
+
+For loops over dimensions, use `imN(n)` to construct the n-th imaginary unit:
+
+```julia
+# Process all dimensions of an N-dimensional experiment
+for n in 1:N
+    fft!(data, n, n)
+    data .*= exp(imN(n) * phase[n])  # phase correct each dimension
+end
+```
+
+---
+
+## Frequency Shifting
+
+`fftshift` and `ifftshift` from FFTW/AbstractFFTs work directly on multicomplex arrays:
+
+```julia
+using MulticomplexNumbers
+using FFTW
+
+fid = [Multicomplex(rand(4)...) for _ in 1:64]
+fft!(fid, 1)
+
+# Center the zero-frequency component
+spectrum = fftshift(fid)
+```
+
+---
+
 ## See Also
 
 - **[NMR Spectroscopy Applications](@ref nmr-applications)**: Complete NMR workflow examples

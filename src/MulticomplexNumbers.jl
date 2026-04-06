@@ -5,7 +5,7 @@ using StaticArrays
 using PrecompileTools
 
 export Multicomplex
-export im1, im2, im3, im4, im5, im6
+export im1, im2, im3, im4, im5, im6, imN
 export order
 export flat
 export component
