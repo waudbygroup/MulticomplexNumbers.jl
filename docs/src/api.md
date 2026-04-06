@@ -226,7 +226,7 @@ julia> randn(Multicomplex{Float64,2,4})
 
 ## FFT Support (FFTW Extension)
 
-When FFTW.jl is loaded, the following functions become available. All accept `unit` as an integer or a multicomplex imaginary constant (e.g. `im2`). When `unit` is omitted, the highest-order unit is used.
+When FFTW.jl is loaded, the following functions become available. All require an explicit `unit` argument — an integer or a multicomplex imaginary constant (e.g. `im2`).
 
 ### In-place Transforms
 
@@ -267,9 +267,6 @@ fft!(data, im1)
 
 # Allocating (preserves original)
 spectrum = fft(data, 1)
-
-# Default unit (highest order)
-fft!(data)
 ```
 
 ---

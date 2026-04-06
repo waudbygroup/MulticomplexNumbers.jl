@@ -28,14 +28,12 @@ end
 """
     fft!(A::AbstractArray{<:Multicomplex}, unit::Integer [, dims])
     fft!(A::AbstractArray{<:Multicomplex}, unit::Multicomplex [, dims])
-    fft!(A::AbstractArray{<:Multicomplex})
 
 In-place FFT of a multicomplex array, transforming along the specified
 imaginary `unit`. The `unit` can be an integer or a multicomplex imaginary
 constant (e.g. `im2`), from which `order()` is extracted.
 
 When `dims` is omitted, all array dimensions are transformed.
-When `unit` is omitted, the highest-order unit `N` is used.
 """
 fft!(A::AbstractArray{<:Multicomplex}, unit::Integer, dims) =
     _mc_transform!(FFTW.fft!, A, unit, dims)
@@ -49,15 +47,11 @@ fft!(A::AbstractArray{<:Multicomplex}, unit::Multicomplex, dims) =
 fft!(A::AbstractArray{<:Multicomplex}, unit::Multicomplex) =
     fft!(A, order(unit))
 
-fft!(A::AbstractArray{<:Multicomplex{T,N}}) where {T,N} =
-    fft!(A, N)
-
 # --- ifft! ---
 
 """
     ifft!(A::AbstractArray{<:Multicomplex}, unit::Integer [, dims])
     ifft!(A::AbstractArray{<:Multicomplex}, unit::Multicomplex [, dims])
-    ifft!(A::AbstractArray{<:Multicomplex})
 
 In-place inverse FFT of a multicomplex array. Same calling conventions as `fft!`.
 """
@@ -73,15 +67,11 @@ ifft!(A::AbstractArray{<:Multicomplex}, unit::Multicomplex, dims) =
 ifft!(A::AbstractArray{<:Multicomplex}, unit::Multicomplex) =
     ifft!(A, order(unit))
 
-ifft!(A::AbstractArray{<:Multicomplex{T,N}}) where {T,N} =
-    ifft!(A, N)
-
 # --- bfft! ---
 
 """
     bfft!(A::AbstractArray{<:Multicomplex}, unit::Integer [, dims])
     bfft!(A::AbstractArray{<:Multicomplex}, unit::Multicomplex [, dims])
-    bfft!(A::AbstractArray{<:Multicomplex})
 
 In-place unnormalized inverse FFT (backward FFT). Same calling conventions as `fft!`.
 `bfft!(fft!(copy(A), unit), unit) ≈ A .* length(A)`.
@@ -98,14 +88,10 @@ bfft!(A::AbstractArray{<:Multicomplex}, unit::Multicomplex, dims) =
 bfft!(A::AbstractArray{<:Multicomplex}, unit::Multicomplex) =
     bfft!(A, order(unit))
 
-bfft!(A::AbstractArray{<:Multicomplex{T,N}}) where {T,N} =
-    bfft!(A, N)
-
 # --- Allocating variants ---
 
 """
     fft(A::AbstractArray{<:Multicomplex}, unit [, dims])
-    fft(A::AbstractArray{<:Multicomplex})
 
 Allocating FFT — returns a transformed copy, leaving `A` unchanged.
 """
@@ -121,12 +107,8 @@ fft(A::AbstractArray{<:Multicomplex}, unit::Multicomplex, dims) =
 fft(A::AbstractArray{<:Multicomplex}, unit::Multicomplex) =
     fft!(copy(A), order(unit))
 
-fft(A::AbstractArray{<:Multicomplex{T,N}}) where {T,N} =
-    fft!(copy(A), N)
-
 """
     ifft(A::AbstractArray{<:Multicomplex}, unit [, dims])
-    ifft(A::AbstractArray{<:Multicomplex})
 
 Allocating inverse FFT — returns a transformed copy, leaving `A` unchanged.
 """
@@ -142,12 +124,8 @@ ifft(A::AbstractArray{<:Multicomplex}, unit::Multicomplex, dims) =
 ifft(A::AbstractArray{<:Multicomplex}, unit::Multicomplex) =
     ifft!(copy(A), order(unit))
 
-ifft(A::AbstractArray{<:Multicomplex{T,N}}) where {T,N} =
-    ifft!(copy(A), N)
-
 """
     bfft(A::AbstractArray{<:Multicomplex}, unit [, dims])
-    bfft(A::AbstractArray{<:Multicomplex})
 
 Allocating unnormalized inverse FFT — returns a transformed copy, leaving `A` unchanged.
 """
@@ -162,8 +140,5 @@ bfft(A::AbstractArray{<:Multicomplex}, unit::Multicomplex, dims) =
 
 bfft(A::AbstractArray{<:Multicomplex}, unit::Multicomplex) =
     bfft!(copy(A), order(unit))
-
-bfft(A::AbstractArray{<:Multicomplex{T,N}}) where {T,N} =
-    bfft!(copy(A), N)
 
 end

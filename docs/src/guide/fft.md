@@ -300,14 +300,6 @@ fft!(data, im1, 1)  # equivalent to fft!(data, 1, 1)
 fft!(data, im2, 2)  # equivalent to fft!(data, 2, 2)
 ```
 
-When the unit argument is omitted entirely, the highest-order unit is used:
-
-```julia
-# For a bicomplex array (N=2), these are equivalent:
-fft!(data, 2)
-fft!(data)
-```
-
 ---
 
 ## Programmatic Imaginary Units

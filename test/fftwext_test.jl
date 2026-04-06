@@ -178,29 +178,6 @@ end
     @test fft(A3, 3) ≈ fft(A3, im3)
 end
 
-@testset "default unit dispatch" begin
-    testRe = rand(64, 32)
-    testIm = rand(64, 32)
-
-    # For Multicomplex{T,2}, default unit should be 2
-    A = testRe + im2 * testIm
-    A1 = copy(A)
-    A2 = copy(A)
-
-    fft!(A1, 2)
-    fft!(A2)
-    @test A1 ≈ A2
-
-    # ifft! default
-    ifft!(A1, 2)
-    ifft!(A2)
-    @test A1 ≈ A2
-
-    # allocating default
-    A3 = testRe + im3 * testIm
-    @test fft(A3, 3) ≈ fft(A3)
-end
-
 @testset "fftshift on multicomplex arrays" begin
     A = [Multicomplex(Float64(i), Float64(i+1)) for i in 1:8]
     shifted = fftshift(A)
