@@ -81,6 +81,8 @@ Construct the n-th imaginary unit programmatically.
 
 # Examples
 ```jldoctest
+julia> using MulticomplexNumbers
+
 julia> imN(2) == im2
 true
 
