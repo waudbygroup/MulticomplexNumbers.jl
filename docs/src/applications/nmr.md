@@ -322,7 +322,7 @@ data .*= exp(im2 * π/6)
 
 4. **Baseline Correction**: Usually applied to the magnitude spectrum after all processing.
 
-5. **Integration with NMRTools.jl**: For production NMR processing, see [NMRTools.jl](https://github.com/waudbygroup/NMRTools.jl), which builds on this package with additional NMR-specific functionality.
+5. **Integration with NMRTools.jl**: For production NMR processing, see [NMRTools.jl](https://github.com/waudbylab/NMRTools.jl), which builds on this package with additional NMR-specific functionality.
 
 
 ## Performance Considerations

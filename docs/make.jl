@@ -2,15 +2,15 @@ using Documenter
 using MulticomplexNumbers
 
 makedocs(
-    sitename = "MulticomplexNumbers.jl",
-    authors = "Chris Waudby",
-    format = Documenter.HTML(
-        prettyurls = get(ENV, "CI", nothing) == "true",
-        canonical = "https://waudbygroup.github.io/MulticomplexNumbers.jl/stable/",
+    sitename="MulticomplexNumbers.jl",
+    authors="Chris Waudby",
+    format=Documenter.HTML(
+        prettyurls=get(ENV, "CI", nothing) == "true",
+        canonical="https://waudbylab.github.io/MulticomplexNumbers.jl/stable/",
     ),
-    modules = [MulticomplexNumbers],
-    checkdocs = :exports,
-    pages = [
+    modules=[MulticomplexNumbers],
+    checkdocs=:exports,
+    pages=[
         "Home" => "index.md",
         "Getting Started" => "getting-started.md",
         "Background" => "background.md",
@@ -33,5 +33,5 @@ makedocs(
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(
-    repo = "github.com/waudbygroup/MulticomplexNumbers.jl.git"
+    repo="github.com/waudbylab/MulticomplexNumbers.jl.git"
 )

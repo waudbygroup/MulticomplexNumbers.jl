@@ -85,7 +85,7 @@ sqrt(w)
 
 ## Related Packages
 
-- [NMRTools.jl](https://github.com/waudbygroup/NMRTools.jl): A library for handling NMR data in Julia (uses this package)
+- [NMRTools.jl](https://github.com/waudbylab/NMRTools.jl): A library for handling NMR data in Julia (uses this package)
 - [DualNumbers.jl](https://github.com/JuliaDiff/DualNumbers.jl): Dual numbers for first-order automatic differentiation
 - [ForwardDiff.jl](https://github.com/JuliaDiff/ForwardDiff.jl): Forward mode automatic differentiation
 - [HyperDualNumbers.jl](https://github.com/JuliaDiff/HyperDualNumbers.jl): Hyper-dual numbers for second derivatives

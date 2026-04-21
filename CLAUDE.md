@@ -216,7 +216,7 @@ The `matrep()` function converts a multicomplex number to its matrix form.
 
 ```julia
 # Clone the repository
-git clone https://github.com/waudbygroup/MulticomplexNumbers.jl.git
+git clone https://github.com/waudbylab/MulticomplexNumbers.jl.git
 cd MulticomplexNumbers.jl
 
 # Activate the project
@@ -392,7 +392,7 @@ end
 
 - Coverage tracking via Codecov
 - Token: V9ND8Y3R8A (stored in repository secrets)
-- Reports available at: https://codecov.io/gh/waudbygroup/MulticomplexNumbers.jl
+- Reports available at: https://codecov.io/gh/waudbylab/MulticomplexNumbers.jl
 
 ---
 
@@ -401,8 +401,8 @@ end
 ### Documentation Structure
 
 Built with Documenter.jl, hosted on GitHub Pages:
-- **Stable**: https://waudbygroup.github.io/MulticomplexNumbers.jl/stable
-- **Dev**: https://waudbygroup.github.io/MulticomplexNumbers.jl/dev
+- **Stable**: https://waudbylab.github.io/MulticomplexNumbers.jl/stable
+- **Dev**: https://waudbylab.github.io/MulticomplexNumbers.jl/dev
 
 ### Documentation Files
 
@@ -800,7 +800,7 @@ Make error messages more helpful:
 throw(ArgumentError(
     "FFT for multicomplex order $N is not yet supported. " *
     "Currently supported orders: 1, 2, 3. " *
-    "Please file an issue at https://github.com/waudbygroup/MulticomplexNumbers.jl/issues"
+    "Please file an issue at https://github.com/waudbylab/MulticomplexNumbers.jl/issues"
 ))
 ```
 
