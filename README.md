@@ -5,6 +5,8 @@
 [![CI](https://github.com/waudbylab/MulticomplexNumbers.jl/actions/workflows/Runtests.yml/badge.svg)](https://github.com/waudbylab/MulticomplexNumbers.jl/actions/workflows/Runtests.yml)
 [![codecov](https://codecov.io/gh/waudbylab/MulticomplexNumbers.jl/branch/main/graph/badge.svg?token=V9ND8Y3R8A)](https://codecov.io/gh/waudbylab/MulticomplexNumbers.jl)
 
+![MulticomplexNumbers logo](logo.png)
+
 A Julia package for representing multicomplex numbers and performing multicomplex algebra.
 
 ## Installation
