@@ -40,7 +40,7 @@ derivative = imag(f_x) / h  # Returns 12.0 (exact!)
 
 Multicomplex numbers are a generalisation of complex numbers, recursively defined to contain multiple imaginary numbers, $i_1$, $i_2$ etc. Unlike Clifford algebras, these numbers commute, i.e. $i_1i_2=i_2i_1$.
 
-The primary application is **high-precision numerical differentiation**. The multicomplex step method computes derivatives with machine precision, avoiding the subtractive cancellation errors of finite differences.
+The primary application is **high-precision numerical differentiation**. The multicomplex step method computes derivatives with machine precision, avoiding the subtractive cancellation errors of finite differences. They also provide a natural representation of **multi-dimensional NMR** data.
 
 ## Features
 
