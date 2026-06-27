@@ -220,7 +220,8 @@ SUITE["arrays"]["broadcast mul scalar N=2"] = @benchmarkable 2.0 .* $arr2
 #
 # Inputs are reproducible: each sample regenerates the array from a fixed seed.
 # `fft!` mutates in place, so a fresh array is needed for every evaluation
-# (hence evals=1); `seconds` caps the time spent on the larger (4D) cases.
+# (hence evals=1). No time cap is set, so the larger (4D) cases simply take
+# longer to collect their samples rather than being cut short.
 SUITE["fft"] = BenchmarkGroup()
 
 # Array sizes per order (doubled from the previous 4096 / 128 / 32 / 16 per dim).
@@ -238,8 +239,7 @@ for N in 1:4
         SUITE["fft"]["order=$N dim=$d unit=$u"] = @benchmarkable(
             fft!(A, $u, $d),
             setup = (A = rand(MersenneTwister(0x5eed), $MT, $dims...)),
-            evals = 1,
-            seconds = 1
+            evals = 1
         )
     end
 end
