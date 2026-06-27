@@ -40,6 +40,8 @@ Delete this file once the paper is submitted.
 - ✅ API / function documentation — `docs/src/api.md` + docstrings, hosted via Documenter.
 - ✅ Automated tests — `test/` (~420 `@test` assertions, `SafeTestsets`, `@inferred`).
 - ✅ CI — Julia 1.10/1.11/1.12 × Linux/macOS/Windows; Documenter, CompatHelper, TagBot.
+- ✅ Benchmark CI — `.github/workflows/Benchmarks.yml` (AirspeedVelocity) runs the
+  `benchmark/benchmarks.jl` SUITE on each PR and posts a runtime/memory comparison vs `main`.
 - ✅ **Community guidelines** — `CONTRIBUTING.md` (contributing, issues, support) and
   `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1) added.
 

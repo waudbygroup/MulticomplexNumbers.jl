@@ -23,9 +23,7 @@ When reporting a bug, please include:
 
 For usage questions, please open a
 [GitHub issue](https://github.com/waudbylab/MulticomplexNumbers.jl/issues) with
-the `question` label, or start a thread in
-[GitHub Discussions](https://github.com/waudbylab/MulticomplexNumbers.jl/discussions)
-if enabled. You can also consult the
+the `question` label. You can also consult the
 [documentation](https://waudbylab.github.io/MulticomplexNumbers.jl/stable).
 
 ## Contributing code

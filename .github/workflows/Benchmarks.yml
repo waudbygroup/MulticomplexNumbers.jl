@@ -1,0 +1,24 @@
+name: Benchmarks
+on:
+  pull_request_target:
+    branches:
+      - main
+
+# Needed so the action can post/update the results comment on the PR.
+permissions:
+  pull-requests: write
+
+# Only keep the latest benchmark run per PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      # Runs benchmark/benchmarks.jl (the SUITE), comparing this PR against the
+      # default branch, and posts collapsible runtime + memory tables as a PR comment.
+      - uses: MilesCranmer/AirspeedVelocity.jl@action-v1
+        with:
+          julia-version: '1'

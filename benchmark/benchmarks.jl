@@ -56,6 +56,9 @@ SUITE["division"] = BenchmarkGroup()
 SUITE["division"]["N=1"] = @benchmarkable $m1 / $m1
 SUITE["division"]["N=2"] = @benchmarkable $m2 / $m2
 SUITE["division"]["N=3"] = @benchmarkable $m3 / $m3
+SUITE["division"]["inv N=1"] = @benchmarkable inv($m1)
+SUITE["division"]["inv N=2"] = @benchmarkable inv($m2)
+SUITE["division"]["inv N=3"] = @benchmarkable inv($m3)
 
 # Powers
 SUITE["powers"] = BenchmarkGroup()
@@ -88,6 +91,12 @@ SUITE["trigonometric"]["cos N=1"] = @benchmarkable cos($m1)
 SUITE["trigonometric"]["cos N=2"] = @benchmarkable cos($m2)
 SUITE["trigonometric"]["tan N=1"] = @benchmarkable tan($m1)
 SUITE["trigonometric"]["tan N=2"] = @benchmarkable tan($m2)
+SUITE["trigonometric"]["sec N=1"] = @benchmarkable sec($m1)
+SUITE["trigonometric"]["sec N=2"] = @benchmarkable sec($m2)
+SUITE["trigonometric"]["csc N=1"] = @benchmarkable csc($m1)
+SUITE["trigonometric"]["csc N=2"] = @benchmarkable csc($m2)
+SUITE["trigonometric"]["cot N=1"] = @benchmarkable cot($m1)
+SUITE["trigonometric"]["cot N=2"] = @benchmarkable cot($m2)
 
 # Hyperbolic functions
 SUITE["hyperbolic"] = BenchmarkGroup()
@@ -97,6 +106,12 @@ SUITE["hyperbolic"]["cosh N=1"] = @benchmarkable cosh($m1)
 SUITE["hyperbolic"]["cosh N=2"] = @benchmarkable cosh($m2)
 SUITE["hyperbolic"]["tanh N=1"] = @benchmarkable tanh($m1)
 SUITE["hyperbolic"]["tanh N=2"] = @benchmarkable tanh($m2)
+SUITE["hyperbolic"]["sech N=1"] = @benchmarkable sech($m1)
+SUITE["hyperbolic"]["sech N=2"] = @benchmarkable sech($m2)
+SUITE["hyperbolic"]["csch N=1"] = @benchmarkable csch($m1)
+SUITE["hyperbolic"]["csch N=2"] = @benchmarkable csch($m2)
+SUITE["hyperbolic"]["coth N=1"] = @benchmarkable coth($m1)
+SUITE["hyperbolic"]["coth N=2"] = @benchmarkable coth($m2)
 
 # Inverse trigonometric functions
 SUITE["inverse_trig"] = BenchmarkGroup()
@@ -108,13 +123,27 @@ SUITE["inverse_trig"]["acos N=1"] = @benchmarkable acos($m1_small)
 SUITE["inverse_trig"]["acos N=2"] = @benchmarkable acos($m2_small)
 SUITE["inverse_trig"]["atan N=1"] = @benchmarkable atan($m1_small)
 SUITE["inverse_trig"]["atan N=2"] = @benchmarkable atan($m2_small)
+SUITE["inverse_trig"]["asec N=1"] = @benchmarkable asec($m1_small)
+SUITE["inverse_trig"]["asec N=2"] = @benchmarkable asec($m2_small)
+SUITE["inverse_trig"]["acsc N=1"] = @benchmarkable acsc($m1_small)
+SUITE["inverse_trig"]["acsc N=2"] = @benchmarkable acsc($m2_small)
+SUITE["inverse_trig"]["acot N=1"] = @benchmarkable acot($m1_small)
+SUITE["inverse_trig"]["acot N=2"] = @benchmarkable acot($m2_small)
 
 # Inverse hyperbolic functions
 SUITE["inverse_hyperbolic"] = BenchmarkGroup()
 SUITE["inverse_hyperbolic"]["asinh N=1"] = @benchmarkable asinh($m1_small)
 SUITE["inverse_hyperbolic"]["asinh N=2"] = @benchmarkable asinh($m2_small)
+SUITE["inverse_hyperbolic"]["acosh N=1"] = @benchmarkable acosh($m1_small)
+SUITE["inverse_hyperbolic"]["acosh N=2"] = @benchmarkable acosh($m2_small)
 SUITE["inverse_hyperbolic"]["atanh N=1"] = @benchmarkable atanh($m1_small)
 SUITE["inverse_hyperbolic"]["atanh N=2"] = @benchmarkable atanh($m2_small)
+SUITE["inverse_hyperbolic"]["asech N=1"] = @benchmarkable asech($m1_small)
+SUITE["inverse_hyperbolic"]["asech N=2"] = @benchmarkable asech($m2_small)
+SUITE["inverse_hyperbolic"]["acsch N=1"] = @benchmarkable acsch($m1_small)
+SUITE["inverse_hyperbolic"]["acsch N=2"] = @benchmarkable acsch($m2_small)
+SUITE["inverse_hyperbolic"]["acoth N=1"] = @benchmarkable acoth($m1_small)
+SUITE["inverse_hyperbolic"]["acoth N=2"] = @benchmarkable acoth($m2_small)
 
 # Fold and isabient
 SUITE["fold"] = BenchmarkGroup()
