@@ -72,21 +72,28 @@ existing scalar function are required and the source can simply be re-run with a
 different number type — for example in sensitivity analysis, optimisation, and
 the differentiation of thermodynamic functions [@Bell2021].
 
-While Julia has a mature automatic-differentiation ecosystem (e.g.
-`ForwardDiff.jl` [@Revels2016] and `DualNumbers.jl`), these packages are based on
-dual and hyper-dual numbers, which carry truncated Taylor coefficients rather
-than forming a closed algebra. Multicomplex numbers are complementary: they are
-an exact algebraic structure (a true generalisation of $\mathbb{C}$), they
-reproduce ordinary complex arithmetic exactly at order one, and the same objects
-that represent multi-phase data also encode derivatives. Prior implementations
-exist as a NIST C++ library [@Bell2021] and as a MATLAB class [@Casado2020], but
-before this work there was no native, type-stable, generically-typed
-implementation for Julia.
+Existing implementations of multicomplex arithmetic are available in other
+languages — a C++ library from NIST [@Bell2021] and the MATLAB class of
+Algorithm 1008 [@Casado2020] — but neither is usable from Julia, and both fix
+the scalar type to double precision. Within Julia, the established tools for
+derivative computation are dual-number based: `ForwardDiff.jl` [@Revels2016],
+`DualNumbers.jl`, and `HyperDualNumbers.jl` propagate truncated Taylor
+coefficients rather than forming a closed algebra, and target differentiation
+specifically rather than providing a general hypercomplex number type.
+`MulticomplexNumbers.jl` is, to our knowledge, the first native Julia
+implementation of multicomplex algebra, and it differs from this prior art in
+three ways that matter for research use: (i) it is fully generic in the base
+type, so the same code runs in `Float64`, `BigFloat`, or any other `Real`; (ii)
+it is a first-class `Number` subtype with promotion and conversion rules, so it
+composes with Julia's existing array, linear-algebra, and FFT code without
+modification; and (iii) it provides a multicomplex FFT for the multi-dimensional
+NMR application, which has no counterpart in the reference implementations. The
+package is used in production by the NMR data-analysis package `NMRTools.jl`.
 
-The package supports any `Real` base type, including `BigFloat` for
-arbitrary-precision work, ships with an extensive test suite that checks both
-numerical accuracy and type stability across orders, and is documented with a
-mathematical background, a user guide, and worked application examples.
+The package ships with an extensive test suite that checks both numerical
+accuracy and type stability across orders, a benchmark suite run in continuous
+integration, and documentation comprising a mathematical background, a user
+guide, and worked application examples.
 
 # Acknowledgements
 
