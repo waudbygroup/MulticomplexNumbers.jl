@@ -48,7 +48,11 @@ magnetic resonance (NMR) spectroscopy**. Each independently sampled (indirect)
 time dimension of an NMR experiment is acquired in quadrature, carrying its own
 real/imaginary (cosine/sine) phase pair, so an $n$-dimensional experiment is
 naturally and exactly represented by an array of order-$n$ multicomplex numbers,
-with the imaginary unit $i_k$ attached to dimension $k$ [@Delsuc1988]. Holding
+with the imaginary unit $i_k$ attached to dimension $k$ [@Delsuc1988]. The same
+construction applies to any multi-dimensional Fourier experiment whose dimensions
+are each encoded in independent quadrature, including multi-dimensional magnetic
+resonance imaging (MRI), where a two- or three-dimensional image is a bi- or
+tricomplex array. Holding
 the data in this representation lets an entire processing pipeline — apodization,
 the per-dimension Fourier transforms, and phase correction applied independently
 in each dimension — be written as ordinary multicomplex arithmetic, instead of
