@@ -2,6 +2,7 @@ using BenchmarkTools
 using MulticomplexNumbers
 using StaticArrays
 using FFTW  # loads the FFTWExt extension, enabling fft! on multicomplex arrays
+using Random  # for reproducible (fixed-seed) FFT input arrays
 
 # Create a BenchmarkGroup to hold all benchmarks
 const SUITE = BenchmarkGroup()
@@ -203,8 +204,8 @@ SUITE["random"]["randn N=3"] = @benchmarkable randn(Multicomplex{Float64,3,8})
 
 # Array operations
 SUITE["arrays"] = BenchmarkGroup()
-const arr1 = [Multicomplex(1.0, 2.0) for _ in 1:100]
-const arr2 = [Multicomplex(1.0, 2.0, 3.0, 4.0) for _ in 1:100]
+const arr1 = [Multicomplex(1.0, 2.0) for _ in 1:200]
+const arr2 = [Multicomplex(1.0, 2.0, 3.0, 4.0) for _ in 1:200]
 SUITE["arrays"]["sum N=1 array"] = @benchmarkable sum($arr1)
 SUITE["arrays"]["sum N=2 array"] = @benchmarkable sum($arr2)
 SUITE["arrays"]["broadcast add N=1"] = @benchmarkable $arr1 .+ $arr1
@@ -213,22 +214,32 @@ SUITE["arrays"]["broadcast mul scalar N=1"] = @benchmarkable 2.0 .* $arr1
 SUITE["arrays"]["broadcast mul scalar N=2"] = @benchmarkable 2.0 .* $arr2
 
 # Fast Fourier transforms (FFTW extension)
-# An n-dimensional NMR dataset is an order-n multicomplex, n-dimensional array,
-# Fourier transformed along every dimension with that dimension's imaginary unit
-# (i.e. dimension d is transformed against unit i_d via `fft!(A, d, d)`).
+# For an order-N, N-dimensional array (the multi-dimensional NMR layout), we
+# benchmark transforming every combination of array dimension `d` and imaginary
+# unit `u`, i.e. `fft!(A, u, d)` for all u, d in 1:N.
+#
+# Inputs are reproducible: each sample regenerates the array from a fixed seed.
+# `fft!` mutates in place, so a fresh array is needed for every evaluation
+# (hence evals=1); `seconds` caps the time spent on the larger (4D) cases.
 SUITE["fft"] = BenchmarkGroup()
 
-"Transform every dimension of an order-N, N-dimensional array against its own unit."
-function fft_all_dims!(A::AbstractArray{<:Multicomplex{T,N,C}}) where {T,N,C}
-    for d in 1:N
-        fft!(A, d, d)
-    end
-    return A
-end
+# Array sizes per order (doubled from the previous 4096 / 128 / 32 / 16 per dim).
+const FFT_DIMS = Dict(
+    1 => (8192,),
+    2 => (256, 256),
+    3 => (64, 64, 64),
+    4 => (32, 32, 32, 32),
+)
 
-# 1D–4D data (orders 1–4). `fft!` mutates in place, so `setup` regenerates the
-# array for every sample.
-SUITE["fft"]["1D order=1"] = @benchmarkable fft_all_dims!(A) setup=(A = rand(Multicomplex{Float64,1,2}, 4096))
-SUITE["fft"]["2D order=2"] = @benchmarkable fft_all_dims!(A) setup=(A = rand(Multicomplex{Float64,2,4}, 128, 128))
-SUITE["fft"]["3D order=3"] = @benchmarkable fft_all_dims!(A) setup=(A = rand(Multicomplex{Float64,3,8}, 32, 32, 32))
-SUITE["fft"]["4D order=4"] = @benchmarkable fft_all_dims!(A) setup=(A = rand(Multicomplex{Float64,4,16}, 16, 16, 16, 16))
+for N in 1:4
+    dims = FFT_DIMS[N]
+    MT = Multicomplex{Float64, N, 2^N}
+    for d in 1:N, u in 1:N
+        SUITE["fft"]["order=$N dim=$d unit=$u"] = @benchmarkable(
+            fft!(A, $u, $d),
+            setup = (A = rand(MersenneTwister(0x5eed), $MT, $dims...)),
+            evals = 1,
+            seconds = 1
+        )
+    end
+end

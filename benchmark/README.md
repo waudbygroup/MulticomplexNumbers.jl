@@ -75,8 +75,10 @@ The benchmark suite is organized into the following categories:
 - **matrep**: Matrix representation generation
 - **random**: Random number generation (rand, randn)
 - **arrays**: Array operations and broadcasting
-- **fft**: In-place multicomplex FFTs (FFTW extension) for 1D–4D data, transforming
-  every dimension against its own imaginary unit (the multi-dimensional NMR case)
+- **fft**: In-place multicomplex FFTs (FFTW extension) on order-N, N-dimensional
+  arrays (N=1–4, the multi-dimensional NMR layout), benchmarking every combination
+  of array dimension `d` and imaginary unit `u` (`fft!(A, u, d)`). Inputs are
+  fixed-seed random arrays, regenerated per sample because `fft!` mutates in place
 
 ## Performance Tips
 
