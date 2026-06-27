@@ -4,11 +4,11 @@ This directory contains performance benchmarks for the MulticomplexNumbers.jl pa
 
 ## Setup
 
-First, install BenchmarkTools:
+First, install the packages the suite uses:
 
 ```julia
 using Pkg
-Pkg.add("BenchmarkTools")
+Pkg.add(["BenchmarkTools", "StaticArrays", "FFTW"])
 ```
 
 ## Running Benchmarks
@@ -75,6 +75,8 @@ The benchmark suite is organized into the following categories:
 - **matrep**: Matrix representation generation
 - **random**: Random number generation (rand, randn)
 - **arrays**: Array operations and broadcasting
+- **fft**: In-place multicomplex FFTs (FFTW extension) for 1D–4D data, transforming
+  every dimension against its own imaginary unit (the multi-dimensional NMR case)
 
 ## Performance Tips
 
@@ -131,7 +133,8 @@ To reproduce the CI comparison locally, install AirspeedVelocity and run
 
 ```bash
 julia -e 'using Pkg; Pkg.add("AirspeedVelocity")'
-benchpkg MulticomplexNumbers --rev=main,dirty
+# -a passes the extra packages the script needs (kept in sync with the workflow's extra-pkgs)
+benchpkg MulticomplexNumbers --rev=main,dirty -a StaticArrays,FFTW
 ```
 
 Alternatively, compare manually with [PkgBenchmark.jl](https://github.com/JuliaCI/PkgBenchmark.jl):

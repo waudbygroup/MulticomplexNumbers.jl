@@ -1,6 +1,7 @@
 using BenchmarkTools
 using MulticomplexNumbers
 using StaticArrays
+using FFTW  # loads the FFTWExt extension, enabling fft! on multicomplex arrays
 
 # Create a BenchmarkGroup to hold all benchmarks
 const SUITE = BenchmarkGroup()
@@ -210,3 +211,24 @@ SUITE["arrays"]["broadcast add N=1"] = @benchmarkable $arr1 .+ $arr1
 SUITE["arrays"]["broadcast add N=2"] = @benchmarkable $arr2 .+ $arr2
 SUITE["arrays"]["broadcast mul scalar N=1"] = @benchmarkable 2.0 .* $arr1
 SUITE["arrays"]["broadcast mul scalar N=2"] = @benchmarkable 2.0 .* $arr2
+
+# Fast Fourier transforms (FFTW extension)
+# An n-dimensional NMR dataset is an order-n multicomplex, n-dimensional array,
+# Fourier transformed along every dimension with that dimension's imaginary unit
+# (i.e. dimension d is transformed against unit i_d via `fft!(A, d, d)`).
+SUITE["fft"] = BenchmarkGroup()
+
+"Transform every dimension of an order-N, N-dimensional array against its own unit."
+function fft_all_dims!(A::AbstractArray{<:Multicomplex{T,N,C}}) where {T,N,C}
+    for d in 1:N
+        fft!(A, d, d)
+    end
+    return A
+end
+
+# 1D–4D data (orders 1–4). `fft!` mutates in place, so `setup` regenerates the
+# array for every sample.
+SUITE["fft"]["1D order=1"] = @benchmarkable fft_all_dims!(A) setup=(A = rand(Multicomplex{Float64,1,2}, 4096))
+SUITE["fft"]["2D order=2"] = @benchmarkable fft_all_dims!(A) setup=(A = rand(Multicomplex{Float64,2,4}, 128, 128))
+SUITE["fft"]["3D order=3"] = @benchmarkable fft_all_dims!(A) setup=(A = rand(Multicomplex{Float64,3,8}, 32, 32, 32))
+SUITE["fft"]["4D order=4"] = @benchmarkable fft_all_dims!(A) setup=(A = rand(Multicomplex{Float64,4,16}, 16, 16, 16, 16))

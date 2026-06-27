@@ -22,3 +22,5 @@ jobs:
       - uses: MilesCranmer/AirspeedVelocity.jl@action-v1
         with:
           julia-version: '1'
+          # Extra packages the benchmark script needs beyond the package itself.
+          extra-pkgs: StaticArrays,FFTW
