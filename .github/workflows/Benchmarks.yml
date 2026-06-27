@@ -24,3 +24,7 @@ jobs:
           julia-version: '1'
           # Extra packages the benchmark script needs beyond the package itself.
           extra-pkgs: StaticArrays,FFTW
+          # Freeze the benchmark script to the PR head rather than the default
+          # (the base branch), so benchmarks added in the PR — e.g. the fft
+          # group — are measured on both revisions and show up in the comparison.
+          bench-on: ${{ github.event.pull_request.head.sha }}
