@@ -1,0 +1,90 @@
+---
+title: 'MulticomplexNumbers.jl: Multicomplex algebra and high-order numerical differentiation in Julia'
+tags:
+  - Julia
+  - multicomplex numbers
+  - hypercomplex algebra
+  - numerical differentiation
+  - automatic differentiation
+  - NMR spectroscopy
+authors:
+  - name: Christopher A. Waudby
+    orcid: 0000-0001-7810-3753
+    affiliation: 1
+affiliations:
+  - name: UCL School of Pharmacy, University College London, London, United Kingdom
+    index: 1
+date: 27 June 2026
+bibliography: paper.bib
+---
+
+# Summary
+
+`MulticomplexNumbers.jl` is a Julia package for representing multicomplex numbers
+and performing multicomplex algebra. Multicomplex numbers are a commutative
+generalisation of the complex numbers, defined recursively to contain an
+arbitrary number of imaginary units $i_1, i_2, \ldots, i_n$, each squaring to
+$-1$. Unlike quaternions or other Clifford (geometric) algebras, the imaginary
+units commute ($i_j i_k = i_k i_j$), which makes the resulting algebra a natural
+setting for analytic computation [@Bell2021; @Casado2020].
+
+The package provides a single parametric `Multicomplex{T,N,C}` number type that
+integrates fully with Julia's `Number` interface, including promotion and
+conversion rules, so that multicomplex numbers can be used as a drop-in scalar
+type in generic numerical code. It implements the full set of elementary
+arithmetic and transcendental operations ($+$, $-$, $\times$, $/$, powers,
+`exp`, `log`, `sqrt`, and the trigonometric and hyperbolic functions and their
+inverses), together with matrix representations, conjugation, the fold/division
+algorithm, and views that reinterpret arrays of multicomplex numbers as nested
+complex arrays. The type is built on stack-allocated `StaticArrays` storage and
+is type-stable, so arithmetic is allocation-free and competitive with hand-written
+complex code. An optional package extension adds in-place multicomplex fast
+Fourier transforms when `FFTW` is loaded.
+
+# Statement of need
+
+The principal motivation for multicomplex arithmetic is **high-order numerical
+differentiation**. The complex-step derivative approximation,
+$f'(x) \approx \operatorname{Im}\,f(x + i h)/h$, computes first derivatives to
+machine precision because it avoids the subtractive cancellation that limits
+finite-difference schemes, allowing step sizes as small as $h = 10^{-100}$
+[@Squire1998; @Lai2008]. Multicomplex numbers extend this idea to arbitrary
+order: by promoting a function argument to a multicomplex number with several
+independent infinitesimal imaginary perturbations, mixed and higher-order
+partial derivatives can be recovered, again without cancellation error, from the
+appropriate components of the result [@Lantoine2012; @Bell2021]. This makes the
+multicomplex step method attractive whenever exact, high-order derivatives of an
+existing scalar function are required and the source can simply be re-run with a
+different number type — for example in sensitivity analysis, optimisation, and
+the differentiation of thermodynamic functions [@Bell2021].
+
+While Julia has a mature automatic-differentiation ecosystem (e.g.
+`ForwardDiff.jl` [@Revels2016] and `DualNumbers.jl`), these packages are based on
+dual and hyper-dual numbers, which carry truncated Taylor coefficients rather
+than forming a closed division algebra. Multicomplex numbers are complementary:
+they are an exact algebraic field-like structure (a true generalisation of $\mathbb{C}$),
+they reproduce ordinary complex arithmetic exactly at order one, and the same
+objects that encode derivatives also serve as a faithful representation of
+multi-dimensional, multi-phase data. Prior implementations exist as a NIST C++
+library [@Bell2021] and as a MATLAB class [@Casado2020], but before this work
+there was no native, type-stable, generically-typed implementation for Julia.
+
+A second motivating application is **multi-dimensional NMR spectroscopy**, where
+each indirectly-detected dimension carries an independent real/imaginary phase
+pair. An $n$-dimensional NMR experiment is naturally represented by an array of
+order-$n$ multicomplex numbers, and the package's `FFTW` extension performs the
+per-dimension Fourier transforms and phase corrections directly on this
+representation. `MulticomplexNumbers.jl` underpins the NMR data-handling package
+`NMRTools.jl`.
+
+The package supports any `Real` base type, including `BigFloat` for
+arbitrary-precision work, ships with an extensive test suite that checks both
+numerical accuracy and type stability across orders, and is documented with a
+mathematical background, a user guide, and worked application examples.
+
+# Acknowledgements
+
+We thank the developers of the NIST multicomplex C++ library and the authors of
+Algorithm 1008, whose algorithms informed this implementation.
+
+# References
