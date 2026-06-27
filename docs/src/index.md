@@ -1,6 +1,6 @@
 # MulticomplexNumbers.jl
 
-A package for representing multicomlex numbers and performing multicomplex algebra.
+A package for representing multicomplex numbers and performing multicomplex algebra.
 
 ## What are Multicomplex Numbers?
 
