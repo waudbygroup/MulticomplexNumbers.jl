@@ -33,19 +33,19 @@ Rules are provided for the core algebra:
   * the elementary transcendental functions `exp`, `log`, `sqrt`, `sin`, `cos`,
     `tan`, `sinh`, `cosh`, `tanh`.
 
-When both `FFTW` and `ChainRulesCore` are loaded, the allocating FFT operations
-(`fft`, `ifft`, `bfft`) become differentiable as well. The in-place variants
+When both `FFTW` and `ChainRulesCore` are loaded, ChainRules `rrule`s for the
+allocating FFT operations (`fft`, `ifft`, `bfft`) are provided, with adjoints
+`fft ↦ bfft`, `bfft ↦ fft` and `ifft ↦ (1/n)·fft`. The in-place variants
 (`fft!`, `ifft!`, `bfft!`) mutate their argument and are not supported by
 reverse-mode AD.
 
-```julia
-using MulticomplexNumbers, FFTW, Zygote
-
-A = [Multicomplex(0.1, 0.2), Multicomplex(0.3, -0.1),
-     Multicomplex(-0.2, 0.4), Multicomplex(0.05, 0.15)]
-
-Zygote.gradient(X -> abs2(sum(fft(X, 1))), A)
-```
+!!! warning "FFT differentiation under Zygote"
+    The multicomplex transforms are implemented with in-place, unsafe pointer
+    reinterprets. Zygote currently traces that implementation rather than using
+    the ChainRules rules, so differentiating a single `fft`/`ifft`/`bfft`
+    through Zygote yields an incorrect (identity-like) gradient. This is a known
+    limitation. The ChainRules rules themselves are correct and usable by
+    ChainRules-based AD backends.
 
 ## The adjoint of multicomplex multiplication
 
