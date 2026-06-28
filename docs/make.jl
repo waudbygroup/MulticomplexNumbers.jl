@@ -18,7 +18,8 @@ makedocs(
             "Creating Numbers" => "guide/creating.md",
             "Arithmetic Operations" => "guide/arithmetic.md",
             "Accessing Components" => "guide/components.md",
-            "FFT Operations" => "guide/fft.md"
+            "FFT Operations" => "guide/fft.md",
+            "Automatic Differentiation" => "guide/autodiff.md"
         ],
         "Applications" => [
             "NMR Spectroscopy" => "applications/nmr.md",
