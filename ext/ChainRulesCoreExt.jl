@@ -35,7 +35,8 @@ using MulticomplexNumbers: Multicomplex, flat, component, realest, order
 using StaticArrays
 using ChainRulesCore
 using ChainRulesCore: NoTangent, ZeroTangent, AbstractZero, AbstractThunk,
-    Tangent, unthunk, ProjectTo, rrule
+    Tangent, unthunk, ProjectTo
+import ChainRulesCore: rrule   # `import` (not `using`) so we can add methods
 
 #####################################################################
 # Helpers
@@ -53,8 +54,12 @@ using ChainRulesCore: NoTangent, ZeroTangent, AbstractZero, AbstractThunk,
 @inline _asmc(::Multicomplex{T,N,C}, dy::Multicomplex{S,N,C}) where {T,S,N,C} = dy
 @inline _asmc(m::Multicomplex{T,N,C}, dy::AbstractThunk) where {T,N,C} = _asmc(m, unthunk(dy))
 @inline _asmc(m::Multicomplex{T,N,C}, ::AbstractZero) where {T,N,C} = zero(Multicomplex{T,N,C})
+@inline _asmc(m::Multicomplex{T,N,C}, ::Nothing) where {T,N,C} = zero(Multicomplex{T,N,C})
 @inline _asmc(m::Multicomplex{T,N,C}, dy::Tangent) where {T,N,C} =
     Multicomplex{N}(SVector{C}(unthunk(getproperty(dy, :value))...))
+# Zygote represents struct cotangents as plain NamedTuples, not ChainRules Tangents.
+@inline _asmc(m::Multicomplex{T,N,C}, dy::NamedTuple) where {T,N,C} =
+    Multicomplex{N}(SVector{C}(unthunk(dy.value)...))
 @inline _asmc(m::Multicomplex{T,N,C}, dy::AbstractVector) where {T,N,C} =
     Multicomplex{N}(SVector{C,T}(dy))
 @inline _asmc(::Multicomplex{T,0,1}, dy::Real) where {T} = Multicomplex{0}(SVector(dy))
@@ -72,9 +77,12 @@ ChainRulesCore.ProjectTo(m::Multicomplex{T,N,C}) where {T,N,C} =
 
 (p::ProjectTo{Multicomplex})(dx::Multicomplex) = dx
 (p::ProjectTo{Multicomplex})(dx::AbstractZero) = dx
+(p::ProjectTo{Multicomplex})(::Nothing) = ZeroTangent()
 (p::ProjectTo{Multicomplex})(dx::AbstractThunk) = p(unthunk(dx))
 (p::ProjectTo{Multicomplex})(dx::Tangent) =
     Multicomplex{p.N}(SVector{p.C}(unthunk(getproperty(dx, :value))...))
+(p::ProjectTo{Multicomplex})(dx::NamedTuple) =
+    Multicomplex{p.N}(SVector{p.C}(unthunk(dx.value)...))
 
 #####################################################################
 # Constructors (entry points from reals / complex / lower-order)

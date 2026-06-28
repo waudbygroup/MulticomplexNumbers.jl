@@ -20,7 +20,8 @@ using MulticomplexNumbers: Multicomplex, order
 using FFTW
 import FFTW: fft, ifft, bfft
 using ChainRulesCore
-using ChainRulesCore: NoTangent, unthunk, rrule
+using ChainRulesCore: NoTangent, unthunk
+import ChainRulesCore: rrule   # `import` (not `using`) so we can add methods
 
 # Number of points transformed along `dims` (which may be an integer or a collection).
 @inline _tlen(A, dims) = prod(size(A, d) for d in (dims isa Integer ? (dims,) : dims))
