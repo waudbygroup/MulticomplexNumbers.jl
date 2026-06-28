@@ -305,6 +305,32 @@ function rrule(::typeof(*), a::Multicomplex{T,N,C}, b::Multicomplex{T,N,C}) wher
     return y, mul_pullback
 end
 
+# `a * b * c * …` lowers to a single n-ary `*(a, b, c, …)` call. For a product of
+# commuting factors the adjoint w.r.t. each factor is τ(∏ of the other factors)·c̄.
+# Requires ≥3 factors so it never overlaps the 2-argument method above.
+function rrule(::typeof(*), a::Multicomplex{T,N,C}, b::Multicomplex{T,N,C},
+               c::Multicomplex{T,N,C}, rest::Multicomplex{T,N,C}...) where {T,N,C}
+    factors = (a, b, c, rest...)
+    y = a * b
+    for r in (c, rest...)
+        y = y * r
+    end
+    function muln_pullback(ȳ)
+        c̄ = _asmc(y, ȳ)
+        n = length(factors)
+        grads = ntuple(n) do i
+            p = one(Multicomplex{T,N,C})
+            for j in 1:n
+                j == i && continue
+                p = p * factors[j]
+            end
+            _tau(p) * c̄
+        end
+        return (NoTangent(), grads...)
+    end
+    return y, muln_pullback
+end
+
 function rrule(::typeof(inv), m::Multicomplex{T,N,C}) where {T,N,C}
     y = inv(m)
     function inv_pullback(ȳ)
