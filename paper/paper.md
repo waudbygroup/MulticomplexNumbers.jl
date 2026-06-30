@@ -1,5 +1,5 @@
 ---
-title: 'MulticomplexNumbers.jl: Multicomplex algebra and high-order numerical differentiation in Julia'
+title: 'MulticomplexNumbers.jl: Commutative hypercomplex algebra in Julia for multidimensional NMR and numerical differentiation'
 tags:
   - Julia
   - multicomplex numbers
