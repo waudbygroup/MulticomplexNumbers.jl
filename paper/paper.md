@@ -48,11 +48,7 @@ magnetic resonance (NMR) spectroscopy**. Each independently sampled (indirect)
 time dimension of an NMR experiment is acquired in quadrature, carrying its own
 real/imaginary (cosine/sine) phase pair, so an $n$-dimensional experiment is
 naturally and exactly represented by an array of order-$n$ multicomplex numbers,
-with the imaginary unit $i_k$ attached to dimension $k$ [@Delsuc1988]. The same
-construction applies to any multi-dimensional Fourier experiment whose dimensions
-are each encoded in independent quadrature, including multi-dimensional magnetic
-resonance imaging (MRI), where a two- or three-dimensional image is a bi- or
-tricomplex array. Holding
+with the imaginary unit $i_k$ attached to dimension $k$ [@Delsuc1988]. Holding
 the data in this representation lets an entire processing pipeline — apodization,
 the per-dimension Fourier transforms, and phase correction applied independently
 in each dimension — be written as ordinary multicomplex arithmetic, instead of
@@ -76,23 +72,35 @@ existing scalar function are required and the source can simply be re-run with a
 different number type — for example in sensitivity analysis, optimisation, and
 the differentiation of thermodynamic functions [@Bell2021].
 
-Existing implementations of multicomplex arithmetic are available in other
-languages — a C++ library from NIST [@Bell2021] and the MATLAB class of
-Algorithm 1008 [@Casado2020] — but neither is usable from Julia, and both fix
-the scalar type to double precision. Within Julia, the established tools for
-derivative computation are dual-number based: `ForwardDiff.jl` [@Revels2016],
-`DualNumbers.jl`, and `HyperDualNumbers.jl` propagate truncated Taylor
-coefficients rather than forming a closed algebra, and target differentiation
-specifically rather than providing a general hypercomplex number type.
-`MulticomplexNumbers.jl` is, to our knowledge, the first native Julia
+Multicomplex arithmetic has been implemented before in other languages — a C++
+library from NIST [@Bell2021], the MATLAB class of Algorithm 1008 [@Casado2020],
+and the C++/Python library `MultiZ` [@AguirreMesa2020] — but none is usable from
+Julia, and all fix the base type to double precision. These libraries are applied
+chiefly to exact high-order derivatives and sensitivity analysis in engineering,
+for example in solid mechanics, fracture, and design optimisation
+[@AguirreMesa2020], while the order-two (bicomplex, or *tessarine*) case also
+underlies bicomplex function theory and arises in signal processing and bicomplex
+quantum mechanics [@LunaElizarraras2015].
+
+Within the Julia ecosystem, the established tools for derivative computation are
+based on dual numbers: `ForwardDiff.jl` [@Revels2016] implements forward-mode
+automatic differentiation, `DualNumbers.jl` provides first-order dual numbers,
+and `HyperDualNumbers.jl` provides hyper-dual numbers for exact second
+derivatives. These carry truncated Taylor coefficients rather than forming a
+closed algebra, and are specialised for differentiation rather than offering a
+general hypercomplex number type. `CliffordAlgebras.jl` implements Clifford and
+geometric algebras, but there the generating units anticommute
+($e_j e_k = -e_k e_j$); multicomplex units instead commute, giving a different
+algebra better suited to data with several independent, factorised phase
+dimensions. `MulticomplexNumbers.jl` is, to our knowledge, the first native Julia
 implementation of multicomplex algebra, and it differs from this prior art in
-three ways that matter for research use: (i) it is fully generic in the base
-type, so the same code runs in `Float64`, `BigFloat`, or any other `Real`; (ii)
-it is a first-class `Number` subtype with promotion and conversion rules, so it
-composes with Julia's existing array, linear-algebra, and FFT code without
-modification; and (iii) it provides a multicomplex FFT for the multi-dimensional
-NMR application, which has no counterpart in the reference implementations. The
-package is used in production by the NMR data-analysis package `NMRTools.jl`.
+three ways that matter for research use: (i) it is generic in the base type, so
+the same code runs in `Float64`, `BigFloat`, or any other `Real`; (ii) it is a
+first-class `Number` subtype with promotion and conversion rules, so it composes
+with Julia's existing array, linear-algebra, and FFT code without modification;
+and (iii) it provides a multicomplex FFT for the multi-dimensional NMR
+application, with no counterpart in the reference implementations. The package is
+used in production by the NMR data-analysis package `NMRTools.jl`.
 
 The package ships with an extensive test suite that checks both numerical
 accuracy and type stability across orders, a benchmark suite run in continuous
