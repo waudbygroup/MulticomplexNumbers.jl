@@ -14,7 +14,7 @@ authors:
 affiliations:
   - name: UCL School of Pharmacy, University College London, London, United Kingdom
     index: 1
-date: 27 June 2026
+date: 30 June 2026
 bibliography: paper.bib
 ---
 
@@ -31,10 +31,11 @@ setting for analytic computation [@Bell2021; @Casado2020].
 The package provides a single parametric `Multicomplex{T,N,C}` number type that
 integrates fully with Julia's `Number` interface, including promotion and
 conversion rules, so that multicomplex numbers can be used as a drop-in scalar
-type in generic numerical code. It implements the full set of elementary
+type in generic numerical code. Here, `T` is the base type, `N` the number of
+imaginary units, and `C=2^N`. The package implements the full set of elementary
 arithmetic and transcendental operations ($+$, $-$, $\times$, $/$, powers,
 `exp`, `log`, `sqrt`, and the trigonometric and hyperbolic functions and their
-inverses), together with matrix representations, conjugation, the fold/division
+inverses), together with matrix representations, conjugation, fold/division
 algorithm, and views that reinterpret arrays of multicomplex numbers as nested
 complex arrays. The type is built on stack-allocated `StaticArrays` storage and
 is type-stable, so arithmetic is allocation-free and competitive with hand-written
@@ -102,14 +103,10 @@ and (iii) it provides a multicomplex FFT for the multi-dimensional NMR
 application, with no counterpart in the reference implementations. The package is
 used in production by the NMR data-analysis package `NMRTools.jl`.
 
-The package ships with an extensive test suite that checks both numerical
+The package ships with a test suite that checks both numerical
 accuracy and type stability across orders, a benchmark suite run in continuous
 integration, and documentation comprising a mathematical background, a user
 guide, and worked application examples.
 
-# Acknowledgements
-
-We thank the developers of the NIST multicomplex C++ library and the authors of
-Algorithm 1008, whose algorithms informed this implementation.
 
 # References
