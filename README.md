@@ -3,7 +3,7 @@
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://waudbylab.github.io/MulticomplexNumbers.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://waudbylab.github.io/MulticomplexNumbers.jl/dev)
 [![CI](https://github.com/waudbylab/MulticomplexNumbers.jl/actions/workflows/Runtests.yml/badge.svg)](https://github.com/waudbylab/MulticomplexNumbers.jl/actions/workflows/Runtests.yml)
-[![codecov](https://codecov.io/gh/waudbylab/MulticomplexNumbers.jl/branch/main/graph/badge.svg?token=V9ND8Y3R8A)](https://codecov.io/gh/waudbylab/MulticomplexNumbers.jl)
+[![codecov](https://codecov.io/gh/waudbylab/MulticomplexNumbers.jl/graph/badge.svg?token=V9ND8Y3R8A)](https://codecov.io/gh/waudbylab/MulticomplexNumbers.jl)
 
 ![MulticomplexNumbers logo](logo.png)
 
