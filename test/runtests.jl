@@ -6,6 +6,10 @@ using SafeTestsets
     include("base_test.jl")
 end
 
+@safetestset "Documented examples" begin
+    include("examples_test.jl")
+end
+
 @safetestset "FFTWExt" begin
     include("fftwext_test.jl")
 end

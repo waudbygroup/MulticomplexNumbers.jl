@@ -291,9 +291,9 @@ julia --project=. -e 'using Pkg; Pkg.test()'
 
 ### Test Coverage
 
-- Tests run on macOS-latest (configurable in CI)
+- Tests run on Linux, macOS, and Windows across Julia 1.10, 1.11, and 1.12
 - Coverage reports uploaded to Codecov
-- Currently testing Julia 1.9 (nightly commented out)
+- A benchmark suite (`benchmark/benchmarks.jl`) runs on pull requests via AirspeedVelocity
 
 ### Testing FFTW Extension
 
@@ -364,8 +364,8 @@ end
 **Trigger**: Push and pull requests
 **Purpose**: Run test suite
 **Matrix**:
-- Julia versions: 1.9 (nightly commented out)
-- OS: macOS-latest (ubuntu-latest and windows-latest commented out)
+- Julia versions: 1.10, 1.11, 1.12
+- OS: ubuntu-latest, macOS-latest, windows-latest
 - Architecture: x64
 
 **Steps**:
@@ -649,6 +649,13 @@ When working with this codebase, always consider type stability, maintain the te
 ---
 
 ## Codebase Analysis & Critique
+
+> **Note (historical):** The critique below predates the JOSS-preparation work.
+> Several weaknesses it lists have since been resolved and should be read in that
+> light: trigonometric/hyperbolic and inverse functions are implemented; `zero`,
+> `one`, `rand`, and `randn` exist; the FFTW extension supports orders 1–4 with
+> `fft!`/`ifft!`/`bfft!`; CI runs on Linux/macOS/Windows across Julia 1.10–1.12;
+> a benchmark suite runs in CI; and the README no longer contains a "TODO: FFT".
 
 ### Overall Assessment
 

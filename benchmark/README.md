@@ -4,11 +4,11 @@ This directory contains performance benchmarks for the MulticomplexNumbers.jl pa
 
 ## Setup
 
-First, install BenchmarkTools:
+First, install the packages the suite uses:
 
 ```julia
 using Pkg
-Pkg.add("BenchmarkTools")
+Pkg.add(["BenchmarkTools", "StaticArrays", "FFTW"])
 ```
 
 ## Running Benchmarks
@@ -67,6 +67,7 @@ The benchmark suite is organized into the following categories:
 - **hyperbolic**: sinh, cosh, tanh, sech, csch, coth
 - **inverse_trig**: asin, acos, atan, asec, acsc, acot
 - **inverse_hyperbolic**: asinh, acosh, atanh, asech, acsch, acoth
+- **division**: multicomplex division and `inv`
 - **fold**: fold operator and isabient function
 - **conjugation**: Complex conjugation
 - **abs**: Absolute value and abs2
@@ -74,6 +75,10 @@ The benchmark suite is organized into the following categories:
 - **matrep**: Matrix representation generation
 - **random**: Random number generation (rand, randn)
 - **arrays**: Array operations and broadcasting
+- **fft**: In-place multicomplex FFTs (FFTW extension) on order-N, N-dimensional
+  arrays (N=1–4, the multi-dimensional NMR layout), benchmarking every combination
+  of array dimension `d` and imaginary unit `u` (`fft!(A, u, d)`). Inputs are
+  fixed-seed random arrays, regenerated per sample because `fft!` mutates in place
 
 ## Performance Tips
 
@@ -113,18 +118,32 @@ results_new = run(SUITE)
 comparison = judge(results_new, results_old)
 ```
 
-## Continuous Benchmarking
+## Continuous Benchmarking (CI)
 
-For CI/CD integration, consider using [PkgBenchmark.jl](https://github.com/JuliaCI/PkgBenchmark.jl):
+Benchmarks run automatically on every pull request via
+[`.github/workflows/Benchmarks.yml`](../.github/workflows/Benchmarks.yml), which
+uses [AirspeedVelocity.jl](https://github.com/MilesCranmer/AirspeedVelocity.jl).
+
+The action runs this `SUITE` against both the pull request and the `main` branch,
+then posts (and updates) a comment on the PR with **collapsible tables comparing
+runtime and memory** for every benchmark. A regression therefore shows up as a
+slowdown in the PR comment relative to `main`; there is no separate pass/fail
+threshold, so review the comment when changing performance-sensitive code.
+
+To reproduce the CI comparison locally, install AirspeedVelocity and run
+`benchpkg`:
+
+```bash
+julia -e 'using Pkg; Pkg.add("AirspeedVelocity")'
+# -a passes the extra packages the script needs (kept in sync with the workflow's extra-pkgs)
+benchpkg MulticomplexNumbers --rev=main,dirty -a StaticArrays,FFTW
+```
+
+Alternatively, compare manually with [PkgBenchmark.jl](https://github.com/JuliaCI/PkgBenchmark.jl):
 
 ```julia
 using PkgBenchmark
-
-# Benchmark current state
-results = benchmarkpkg("MulticomplexNumbers")
-
-# Compare against a specific commit or tag
-judge("MulticomplexNumbers", "v0.1.0")
+judge("MulticomplexNumbers", "main")  # current checkout vs main
 ```
 
 ## Contributing
